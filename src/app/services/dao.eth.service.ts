@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { EthService } from 'canpay-lib';
 import { daoAbi } from 'src/app/contracts';
 import { environment } from '../../environments/environment';
+import { Http } from '@angular/http';
 
 declare let require: any;
 
@@ -9,8 +10,8 @@ declare let require: any;
 export class DaoEthService extends EthService {
   daoContract: any;
 
-  constructor() {
-    super();
+  constructor(@Inject('Config') private config: any = {}, http: Http) {
+    super({ useTestNet: config.useTestNet }, http);
     this.daoContract = this.createContractInstance(daoAbi, environment.contracts.canYaDao);
   }
 

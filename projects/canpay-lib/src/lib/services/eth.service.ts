@@ -1,4 +1,5 @@
 import { Inject, Injectable, OnDestroy } from '@angular/core';
+import { Http, Response } from '@angular/http';
 import merge from 'lodash.merge';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
@@ -8,6 +9,7 @@ declare var web3;
 
 const canDecimals = 6;
 const gas = { gasPrice: '8000000000', gas: '210000' };
+const gasStationApi = 'https://ethgasstation.info/json/ethgasAPI.json';
 
 export enum WalletType {
   metaMask = 'MetaMask',
@@ -47,7 +49,7 @@ export class EthService implements OnDestroy {
   public account = new BehaviorSubject<string>(null);
   public account$ = this.account.asObservable();
 
-  constructor(@Inject('Config') private conf: any = {}) {
+  constructor(@Inject('Config') private conf: any = {}, protected http: Http) {
     if (typeof web3 !== 'undefined') {
 
       this.web3js = new Web3(web3.currentProvider);
@@ -172,6 +174,22 @@ export class EthService implements OnDestroy {
     return gas;
   }
 
+  getDefaultGasPriceGwei(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.http.get(gasStationApi).toPromise().then(res => {
+          if (res.ok) {
+            resolve(JSON.parse(res.text())['fast'].toString() + '00000000');
+          } else {
+            resolve('11000000000');
+          }
+        });
+      } catch (e) {
+        resolve('11000000000');
+      }
+    });
+  }
+
   amountToCANTokens(amount) {
     return amount * (10 ** canDecimals);
   }
@@ -186,7 +204,7 @@ export class EthService implements OnDestroy {
     return new this.web3js.eth.Contract(abi, address);
   }
 
-  getTransactionReceiptMined = (txHash, interval = 500, blockLimit = 0) => {
+  getTransactionReceiptMined(txHash, interval = 500, blockLimit = 0): Promise<any> {
     const transactionReceiptAsync = (resolve, reject) => {
       this.web3js.eth.getTransactionReceipt(txHash, (error, receipt) => {
         if (error) {

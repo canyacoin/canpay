@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector } from '@angular/core';
-import { createCustomElement } from '@angular/elements';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -19,6 +20,7 @@ import { DaoEthService } from 'src/app/services/dao.eth.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpModule,
     CanpayModule.forRoot({
       useTestNet: environment.contracts.useTestNet,
       contracts: {

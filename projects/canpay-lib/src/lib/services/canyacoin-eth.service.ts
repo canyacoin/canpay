@@ -1,7 +1,9 @@
-import { Injectable, OnDestroy, Inject } from '@angular/core';
-import { EthService } from './eth.service';
-import { CanYaCoin } from '../contracts';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
+import { Http } from '@angular/http';
 import merge from 'lodash.merge';
+
+import { CanYaCoin } from '../contracts';
+import { EthService } from './eth.service';
 
 const DEFAULT_CONFIGS = {
   useTestNet: false,
@@ -15,8 +17,8 @@ const DEFAULT_CONFIGS = {
 export class CanYaCoinEthService extends EthService {
   canyaContract: any;
 
-  constructor( @Inject('Config') private config: any = {}) {
-    super({ useTestNet: config.useTestNet });
+  constructor(@Inject('Config') private config: any = {}, http: Http) {
+    super({ useTestNet: config.useTestNet }, http);
     this.config = merge(DEFAULT_CONFIGS, config);
     this.initContract();
   }
@@ -43,23 +45,45 @@ export class CanYaCoinEthService extends EthService {
     }
   }
 
-  authoriseCANPayment(toRecepient, amount, from = this.getOwnerAccount()) {
+  authoriseCANPayment(toRecepient, amount, from = this.getOwnerAccount()): Promise<any> {
     console.log('CanYaCoinEthService: authoriseCANPayment: ', from, toRecepient, amount);
-    return this.canyaContract.methods.approve(toRecepient, this.amountToCANTokens(amount)).send({ from, ...this.getDefaultGasParams() })
-      .then(tx => this.getTransactionReceiptMined(tx.transactionHash))
-      .then(tx => {
-        tx.status = this.web3js.utils.hexToNumber(tx.status);
-        return tx;
+    return new Promise(async (resolve, reject) => {
+      const tx = await this.canyaContract.methods.approve(toRecepient, this.amountToCANTokens(amount));
+      const gas = await tx.estimateGas();
+      const gasPrice = await this.getDefaultGasPriceGwei();
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => {
+        if (err) {
+          reject(err);
+        }
+        try {
+          const receipt = await this.getTransactionReceiptMined(txHash);
+          receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
+          resolve(receipt);
+        } catch (e) {
+          reject(e);
+        }
       });
+    });
   }
 
-  payWithCAN(toRecepient, amount, from = this.getOwnerAccount()) {
+  payWithCAN(toRecepient, amount, from = this.getOwnerAccount()): Promise<any> {
     console.log('CanYaCoinEthService: payWithCAN: ', from, toRecepient, amount);
-    return this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount)).send({ from, ...this.getDefaultGasParams() })
-      .then(tx => this.getTransactionReceiptMined(tx.transactionHash))
-      .then(tx => {
-        tx.status = this.web3js.utils.hexToNumber(tx.status);
-        return tx;
+    return new Promise(async (resolve, reject) => {
+      const tx = await this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount));
+      const gas = await tx.estimateGas();
+      const gasPrice = await this.getDefaultGasPriceGwei();
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => {
+        if (err) {
+          reject(err);
+        }
+        try {
+          const receipt = await this.getTransactionReceiptMined(txHash);
+          receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
+          resolve(receipt);
+        } catch (e) {
+          reject(e);
+        }
       });
+    });
   }
 }

@@ -19,17 +19,17 @@
     </div>
     <!-- Wizard Steps labels for mobile -->
     <div class="col col-12 col-sm-12 wizard-hidden-desktop bb-1">
-        <div class="row">
-           <div class="col-4 text-center">
-            <p class="text-success">{{ steps[currStep-1] ? steps[currStep-1].name : steps[currStep].name }}</p>
+      <div class="row">
+        <div class="col-4 text-center">
+          <p class="text-success">{{ steps[currStep-1] ? steps[currStep-1]?.name : steps[currStep]?.name }}</p>
         </div>
         <div class="col-4 text-center">
-            <b class="active">{{ steps[currStep].name }}</b>
+          <b class="active">{{ steps[currStep]?.name }}</b>
         </div>
         <div class="col-4 text-center">
-            <p class="text-secondary">{{ steps[currStep+1].name }}</p>
+          <p class="text-secondary">{{ steps[currStep+1]?.name }}</p>
         </div>
-        </div>
+      </div>
     </div>
     <!-- Wizard Steps Components -->
     <div class="col col-12 py-5 wizard-mobile-text-center" [ngClass]="{'col-md-8 col-sm-12': view !== View.Compact }">
@@ -46,8 +46,9 @@
         <canyalib-loading-status [isLoading]="isLoading" [label]="'Checking CAN balance'"></canyalib-loading-status>
         <div *ngIf="insufficientBalance">
           <h5>Insufficient Balance</h5>
-          <p class="wizard-hidden-mobile">You don't have the minimum amount of {{this.amount}} CAN required to complete the process.<br>Please, buy some CAN and re-check your balance to proceed.</p>
-          <p  class="wizard-hidden-desktop">Insufficient CAN. Please, buy some CAN and re-check your balance to proceed.</p>
+          <p class="wizard-hidden-mobile">You don't have the minimum amount of {{this.amount}} CAN required to complete the process.
+            <br>Please, buy some CAN and re-check your balance to proceed.</p>
+          <p class="wizard-hidden-desktop">Insufficient CAN. Please, buy some CAN and re-check your balance to proceed.</p>
           <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" (check)="checkBalance($event)"></canyalib-bancor-wc>
         </div>
       </div>

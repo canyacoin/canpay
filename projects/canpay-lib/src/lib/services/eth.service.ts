@@ -82,7 +82,7 @@ export class EthService implements OnDestroy {
         this.web3Status.next(Web3LoadingStatus.error);
       }
     } else {
-      // this.setProvider(new Web3.providers.HttpProvider('https://ropsten.infura.io/'));
+      this.web3js = new Web3();
       this.web3Status.next(Web3LoadingStatus.noMetaMask);
     }
 

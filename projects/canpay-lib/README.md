@@ -42,8 +42,8 @@ In your module file:
   imports: [
     BrowserModule,
     CanpayModule.forRoot({
+      useTestNet: <TRUE_FALSE>,
       contracts: {
-        useTestNet: <TRUE_FALSE>,
         canyaCoinAddress: <CanYaCoin_ADDRESS>,
         canyaAbi: <CanYaCoin_ABI> // optional, default is set the prod CanYaCoin ABI
       }

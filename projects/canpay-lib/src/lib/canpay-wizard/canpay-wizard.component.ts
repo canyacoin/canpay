@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 
 export enum Step {
@@ -204,7 +205,7 @@ export class CanpayWizardComponent implements OnInit {
     this.updateCurrentStep(Step.balanceCheck);
     this.isLoading = true;
 
-    this.canyaCoinEthService.getCanYaBalance()
+    this.canyaCoinEthService.getCanYaBalance(_acc)
       .then(_balance => {
         console.log('balance: ', _balance);
         this.balance = Number(_balance);

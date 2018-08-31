@@ -1,9 +1,9 @@
 {
   "name": "@canyaio/canpay-lib",
-  "version": "0.1.15",
+  "version": "0.1.17",
   "readme": "README.md",
   "dependencies": {
-    "ng2-bootstrap-modal": "^1.0.1",
+    "ng2-bootstrap-modal": "https://github.com/Sky4CE/ng2-bootstrap-modal/tarball/v.1.0.2",
     "web3": "^1.0.0-beta.34",
     "lodash.merge": "^4.6.1"
   },

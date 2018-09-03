@@ -11,7 +11,7 @@
     "build_lib": "ng build --prod canpay-lib",
     "npm_pack": "cd dist/canpay-lib && npm pack",
     "package": "npm run build_lib && npm run npm_pack",
-    "publish": "npm publish dist/canpay-lib/canyaio-canpay-lib-$VERSION.tgz --access public",
+    "publish": "npm publish dist/canpay-lib/canyaio-canpay-lib-0.1.20.tgz --access public",
     "postinstall": "node patch-web3-crypto.js",
     "init-contracts": "cd ./src && zos init CanPayExample && zos add Dao CanYaCoin",
     "deploy-contracts": "cd ./src && zos push --network local",

@@ -21,7 +21,7 @@ export class DaoEthService extends EthService {
       .then(tx => this.getTransactionReceiptMined(tx.transactionHash))
       .then(tx => {
         console.log('createUserEscrowTx: ', tx);
-        tx.status = this.web3js.utils.hexToNumber(tx.status);
+        tx.status = typeof (tx.status) === 'boolean' ? tx.status : this.web3js.utils.hexToNumber(tx.status);
         return tx;
       });
   }

@@ -9,7 +9,7 @@
           </div>
         </div>
       </div>
-      <canyalib-canpay [dAppName]="canPay.dAppName" [operation]="canPay.operation" [recepient]="canPay.recepient" [amount]="canPay.amount"
+      <canyalib-canpay [dAppName]="canPay.dAppName" [successText]="canPay.successText" [operation]="canPay.operation" [recepient]="canPay.recepient" [amount]="canPay.amount"
         [postAuthorisationProcessName]="canPay.postAuthorisationProcessName" [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults"
         (currentStep)="currentStep($event)" (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)"
         (complete)="canPay.complete($event)" (cancel)="canPay.cancel($event)"></canyalib-canpay>

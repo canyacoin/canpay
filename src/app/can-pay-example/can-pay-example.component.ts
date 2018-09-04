@@ -14,6 +14,7 @@ export class CanPayExampleComponent {
   canPay: CanPay = {
     // properties
     dAppName: 'CanYaDAO',
+    successText: 'Customized success message!', // Default 'Sweet, payment done!'
     operation: Operation.auth, // Authorise or Pay, Default is: Authorise
     recepient: environment.contracts.testAccount,
     amount: 0, // allow the user to enter amount through an input box

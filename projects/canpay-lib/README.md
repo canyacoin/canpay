@@ -71,6 +71,7 @@ In your module file:
   <!-- In your template file -->
   <canyalib-canpay
     [dAppName]="canPay.dAppName"
+    [successText]="canPay.successText"
     [recepient]="canPay.recepient"
     [amount]="canPay.amount"
     (complete)="canPay.complete($event)"

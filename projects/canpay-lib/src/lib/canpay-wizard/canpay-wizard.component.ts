@@ -46,6 +46,7 @@ export interface CanPay {
   amount?: number;
   minAmount?: number;
   maxAmount?: number;
+  successText?: string;
   postAuthorisationProcessName?: string;
   postAuthorisationProcessResults?: ProcessActionResult;
   canyaContract?: Contract;
@@ -86,6 +87,7 @@ export class CanpayWizardComponent implements OnInit {
   @Input() operation = Operation.auth;
   @Input() recepient;
   @Input() dAppName;
+  @Input() successText;
   @Input() amount = 0;
   @Input() minAmount = 0;
   @Input() maxAmount = 0;
@@ -172,6 +174,10 @@ export class CanpayWizardComponent implements OnInit {
 
     if (validationErrors.length) {
       this.error(validationErrors.join(' | '), false);
+    }
+
+    if (this.successText) {
+      this.confirmationDlg.title = this.successText;
     }
 
     this.updateProcessSummaryMsg();

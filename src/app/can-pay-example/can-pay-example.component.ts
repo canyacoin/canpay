@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { Operation, setProcessResult, ProcessAction, CanPay, CanPayData, CanPayService } from 'canpay-lib';
+
 import { DaoEthService } from 'src/app/services/dao.eth.service';
+import { environment } from 'src/environments/environment';
+
+import {
+    CanPay, CanPayData, CanPayService, Operation, ProcessAction, setProcessResult
+} from 'canpay-lib';
 
 @Component({
   selector: 'app-can-pay-example',
@@ -31,7 +35,7 @@ export class CanPayExampleComponent {
     postAuthorisationProcessResults: null
   };
 
-  constructor(private daoEthService: DaoEthService, private canPayService:CanPayService) { }
+  constructor(private daoEthService: DaoEthService, private canPayService: CanPayService) { }
 
   startCanPayUserActivation(canPayData: CanPayData) {
     console.log(canPayData);
@@ -66,8 +70,8 @@ export class CanPayExampleComponent {
     console.log(canPayData);
     this.isVisible = false;
   }
-  
-  modalCanPay(){ 
+
+  modalCanPay() {
     this.canPayService.open(this.canPay);
   }
 }

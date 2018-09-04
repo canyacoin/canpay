@@ -204,6 +204,22 @@ export class EthService implements OnDestroy {
     return new this.web3js.eth.Contract(abi, address);
   }
 
+
+
+  async resolveTransaction(err, txHash, resolve, reject) {
+    if (err) {
+      reject(err);
+    }
+    try {
+      const receipt = await this.getTransactionReceiptMined(txHash);
+      receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
+      resolve(receipt);
+    } catch (e) {
+      reject(e);
+    }
+  }
+
+
   getTransactionReceiptMined(txHash, interval = 500, blockLimit = 0): Promise<any> {
     const transactionReceiptAsync = (resolve, reject) => {
       this.web3js.eth.getTransactionReceipt(txHash, (error, receipt) => {

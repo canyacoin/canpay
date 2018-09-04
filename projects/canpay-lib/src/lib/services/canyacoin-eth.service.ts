@@ -51,18 +51,7 @@ export class CanYaCoinEthService extends EthService {
       const tx = await this.canyaContract.methods.approve(toRecepient, this.amountToCANTokens(amount));
       const gas = await tx.estimateGas();
       const gasPrice = await this.getDefaultGasPriceGwei();
-      tx.send({ from, gas, gasPrice }, async (err, txHash) => {
-        if (err) {
-          reject(err);
-        }
-        try {
-          const receipt = await this.getTransactionReceiptMined(txHash);
-          receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
-          resolve(receipt);
-        } catch (e) {
-          reject(e);
-        }
-      });
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, txHash, resolve, reject));
     });
   }
 
@@ -72,18 +61,8 @@ export class CanYaCoinEthService extends EthService {
       const tx = await this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount));
       const gas = await tx.estimateGas();
       const gasPrice = await this.getDefaultGasPriceGwei();
-      tx.send({ from, gas, gasPrice }, async (err, txHash) => {
-        if (err) {
-          reject(err);
-        }
-        try {
-          const receipt = await this.getTransactionReceiptMined(txHash);
-          receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
-          resolve(receipt);
-        } catch (e) {
-          reject(e);
-        }
-      });
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, txHash, resolve, reject));
     });
   }
+
 }

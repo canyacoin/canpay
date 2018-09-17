@@ -1,0 +1,21 @@
+
+<div class="canpay">
+ <div class="">
+    <button class="btn btn-primary" (click)="modalCanPay()">MODAL</button>
+  </div>  
+
+  <canyalib-canpay
+    *ngIf="isVisible"
+    [dAppName]="canPay.dAppName"
+    [successText]="canPay.successText"
+    [operation]="canPay.operation"
+    [recepient]="canPay.recepient"
+    [amount]="canPay.amount"          
+    [postAuthorisationProcessName]="canPay.postAuthorisationProcessName"
+    [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults"
+    (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)"
+    (complete)="canPay.complete($event)"
+    (cancel)="canPay.cancel($event)"
+    ></canyalib-canpay>
+     
+</div>

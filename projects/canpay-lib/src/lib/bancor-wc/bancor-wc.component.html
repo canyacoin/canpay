@@ -1,0 +1,20 @@
+<div class="text-center">
+  <div class="balance-section">
+    <small>CAN Balance:</small>
+    <div class="balance"> {{ balance | commaSepNum }} </div>
+  </div>
+
+  <div id="bancor-wc" [hidden]="type === 'WITHOUT_INPUT_BOXES'"></div>
+
+  <button class="btn btn-primary" (click)="callCanEx(balance)">
+    Buy CAN Tokens
+  </button>
+
+  <div *ngIf="status === Status.PendingPurchase || status === Status.InProgress" class="buttons-bar">
+    <button class="btn btn-primary fixed-width-200" [disabled]="status === Status.InProgress" (click)="checkBalance()">
+      <i *ngIf="status === Status.InProgress" class="fa fa-circle-o-notch fa-spin fa-fw"></i> Check Balance
+    </button>
+    <button class="btn btn-danger fixed-width-200" (click)="cancel()">Cancel</button>
+  </div>
+
+</div>

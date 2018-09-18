@@ -6,10 +6,8 @@ import { FormDataService } from '../data/formData.service';
 import { PaymentServiceERC } from './payment-erc20.service';
 import { Subscription } from 'rxjs';
 import { ResizeService } from '../../lib/services/resize.service';
-export interface ConfirmModel {
-    title: string;
-    message: string;
-}
+import * as globals from '../globals';
+
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import { ResultComponent } from '../result/result.component';
 
@@ -44,7 +42,6 @@ export class PaymentERCComponent implements OnInit {
 
     constructor(dialogService: DialogService, private router: Router, private resizeService: ResizeService,
         private formDataService: FormDataService, private paymentService: PaymentServiceERC, private resultService: ResultService) {
-            alert('hello')
     }
 
     search(val) {
@@ -85,7 +82,7 @@ export class PaymentERCComponent implements OnInit {
 
     selectCurrency(form, key) {
         this.selectedERC = form.symbol;
-        this.otherstest = form.name;
+        this.otherstest = form.address;
         this.formData.currency = form.name;
 
         this.formData.erc20token = form.address;
@@ -120,13 +117,13 @@ export class PaymentERCComponent implements OnInit {
         return true;
     }
 
-    goToPrevious(form: any) {
-        if (this.save(form)) {
-        }
+    goToPrevious() {
+        this.valueChange.emit(globals.Step.payment);
     }
 
     cancel() {
         this.formData.email = '';
+        this.valueChange.emit(globals.Step.none);
     }
 
     goToNext(form: any, key: any) {
@@ -136,6 +133,7 @@ export class PaymentERCComponent implements OnInit {
             this.formData.key = key;
             // Navigate to the result page
             this.formData.accept = true;
+            this.valueChange.emit(globals.Step.result);
 
         } else {
             this.error = 'Please select a token';

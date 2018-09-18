@@ -8,12 +8,12 @@
     <div class="step step-complete">
         <span class="arrow fa fa-caret-down"></span>Complete</div>
 </div>
-<form class="form" name="form" #personalForm="ngForm" novalidate>
+<form class="form" name="form" #personalForm="ngForm" (ngSubmit)="personalForm.form.valid && goToNext();" novalidate>
     <fieldset class="field_set_overwrite">
         <div class="form-group">
-            <label class="control-label" for="email">Enter Email</label>
-            <input class="form-control ng-pristine ng-invalid ng-touched" #email="ngModel" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
-                id="email" name="email" type="text" placeholder="Email" [(ngModel)]="personal.email" required email
+            <label class="control-label global-font" for="email">Enter Email</label>
+            <input class="form-control ng-pristine ng-invalid ng-touched" #email="ngModel" (input)="validateAddress()"
+                id="email" name="email" type="email" placeholder="Email" [(ngModel)]="personal.email" required email
                 [ngClass]="{ 'is-invalid': personalForm.submitted && email.invalid }" />
             <div *ngIf="personalForm.submitted && email.invalid" class="invalid-feedback">
                 <div *ngIf="email.errors.required">Email is required</div>
@@ -21,11 +21,11 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" for="card-number">Enter Destination Address</label>
+            <label class="control-label global-font" for="card-number">Enter Destination Address</label>
             <div class="input-group">
                 <input class="form-control input-md" readonly="readonly" #address="ngModel" required id="address" name="address"
                     type="text" placeholder="0x683616241b17c1c1327f22df46ae7dc0366b6zc4" [(ngModel)]="personal.address"
-                    (input)="validateAddress($event.target.value)" pattern="^0x[a-fA-F0-9]{40}$">
+                    pattern="^0x[a-fA-F0-9]{40}$">
                 <img *ngIf="metamask" class="input-group-addon metamask" src="./assets/img/metamask.png" width="auto"
                     height="23px" />
                 <img *ngIf="!metamask" class="input-group-addon metamask-grey" src="./assets/img/metamask.png" width="auto"
@@ -35,9 +35,9 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label" for="amount">Enter Amount</label>
+            <label class="control-label global-font" for="amount">Enter Amount</label>
             <div class="input-group">
-                <select class="input-group-addon" style="width: 110px; padding-left: 5px;">
+                <select class="input-group-addon currency-list">
                     <option value="usd" disabled="disabled" selected>$ USD</option>
                 </select>
 
@@ -52,7 +52,7 @@
 
 
     <div class="footer-buttons">
-        <button class="btn btn-success btn-outline-rounded btn-info float-right customColor" (click)="goToNext()">
+        <button class="btn btn-success btn-outline-rounded btn-info float-right customColor" [disabled]="!emailValidation">
             Continue</button>
         <button class="btn btn-outline btn-white-trans float-left" (click)="cancel()">
             Cancel</button>
@@ -60,3 +60,4 @@
     </div>
 </form>
 <span class="text-center help-line">{{error}}</span>
+<br />

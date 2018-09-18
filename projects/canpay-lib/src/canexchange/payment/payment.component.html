@@ -123,3 +123,11 @@
 
 </form>
 <span class="text-center help-line">{{error}}</span>
+<div class="footer-buttons">
+    <button *ngIf="!changeButtonToSelectCurrency" [disabled]="!validData" class="btn btn-success btn-outline-rounded btn-info float-right customColor"
+        (click)="goToNext()">
+        Deposit</button>
+    <button class="btn btn-outline btn-white-trans" (click)="cancel()">
+        Cancel</button>
+
+</div>

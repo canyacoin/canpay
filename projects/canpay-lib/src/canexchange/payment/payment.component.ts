@@ -105,8 +105,8 @@ export class PaymentsComponent implements OnInit {
                     // Navigate to the result page
                     this.formData.accept = true;
                     this.formDataService.setConfirmation(this.workType);
-                    this.valueChange.emit(globals.Step.result);
                 } else {
+                    this.validData = false;
                     this.error = 'Oops! something went wrong, Please try again later.';
                 }
             }, 1000);
@@ -132,6 +132,12 @@ export class PaymentsComponent implements OnInit {
 
     goToPrevious() {
         this.valueChange.emit(globals.Step.details);
+    }
+
+    goToNext() {
+        if (this.validData === true) {
+            this.valueChange.emit(globals.Step.result);
+        }
     }
 
     cancel() {

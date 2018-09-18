@@ -25,17 +25,20 @@ export class OrderComponent implements OnInit {
     orderid: string;
     orderData: any = '';
     id: string;
+    currency: string;
 
     constructor(private orderService: OrderService, private route: ActivatedRoute, private router: Router) {
     }
 
     ngOnInit() {
+        this.currency = 'CAN';
         this.orderService.getOrder(this.route.snapshot.params.id).subscribe(activity => {
             this.orderData = activity;
             this.etherUrl = globals.etherscan + this.orderData.hash;
+            this.currency = this.orderData.currency;
         },
-            (error) => {
-            });
+        (error) => {
+        });
     }
 
     getOrder() {

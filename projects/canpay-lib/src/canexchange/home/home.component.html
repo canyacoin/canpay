@@ -11,7 +11,7 @@
                                 <a> <img class="logo-default" src="./assets/img/CANExchange.svg" width="auto" height="23px"
                                         alt="logo"></a>
                             </div>
-                           
+
                             <div *ngIf="currStep === Step.details">
                                 <canyalib-mt-wizard-personal (valueChange)='stepChanger($event)'></canyalib-mt-wizard-personal>
                             </div>
@@ -33,7 +33,7 @@
                             <div *ngIf="currStep === Step.error">
                                 <canyalib-mt-wizard-error (valueChange)='stepChanger($event)'></canyalib-mt-wizard-error>
                             </div>
-                            
+                            <br />
 
                             <div class="text-center help-line">
                                 <a href="#">Need Help?</a>

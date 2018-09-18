@@ -32,6 +32,7 @@ export class DetailsComponent implements OnInit {
     error: string;
     web3js: any;
     canyaContract: any;
+    emailValidation = false;
 
     constructor(private router: Router, private formDataService: FormDataService, private detailsService: DetailsService,
         private loc: Location, private canYaCoinEthService: CanYaCoinEthService) {
@@ -53,6 +54,7 @@ export class DetailsComponent implements OnInit {
                     });
                 });
 
+                this.validateAddress();
                 this.formData.amount = Number(localStorage.getItem('oldamount'));
                 this.detailsService.getData('CAN').subscribe(
                     (data) => {
@@ -77,8 +79,6 @@ export class DetailsComponent implements OnInit {
         this.personal = this.formDataService.getPersonal();
         this.formData = this.formDataService.getFormData();
         this.personal.currency = null;
-
-
     }
 
     createContractInstance(abi, address) {
@@ -90,10 +90,12 @@ export class DetailsComponent implements OnInit {
         return new this.web3js.eth.Contract(abi, address);
     }
 
-    validateAddress(address) {
-        const trigger = address,
-            regexp = new RegExp('^0x[a-fA-F0-9]{40}$'),
+    validateAddress() {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const trigger = this.personal.email,
+            regexp = new RegExp(re),
             test = regexp.test(trigger);
+        this.emailValidation = test;
     }
 
     cancel() {

@@ -206,11 +206,14 @@ export class EthService implements OnDestroy {
 
 
 
-  async resolveTransaction(err, txHash, resolve, reject) {
+  async resolveTransaction(err, txHash, resolve, reject, onTxHash = null) {
     if (err) {
       reject(err);
     }
     try {
+      if (onTxHash) {
+        onTxHash(txHash);
+      }
       const receipt = await this.getTransactionReceiptMined(txHash);
       receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
       resolve(receipt);
@@ -226,12 +229,10 @@ export class EthService implements OnDestroy {
         if (error) {
           return reject(error);
         }
-
         if (receipt == null) {
           setTimeout(() => transactionReceiptAsync(resolve, reject), interval);
           return;
         }
-
         resolve(receipt);
       });
     };

@@ -42,6 +42,7 @@ export interface Contract {
 export interface CanPay {
   dAppName: string;
   operation?: Operation;
+  onAuthTxHash?: Function;
   recepient: string;
   amount?: number;
   minAmount?: number;
@@ -85,6 +86,7 @@ export class CanpayWizardComponent implements OnInit {
   @Input() view = View.Normal;
   @Input() postAuthorisationProcessName;
   @Input() operation = Operation.auth;
+  @Input() onAuthTxHash;
   @Input() recepient;
   @Input() dAppName;
   @Input() successText;

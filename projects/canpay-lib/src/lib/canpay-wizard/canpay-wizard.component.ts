@@ -16,7 +16,8 @@ export enum Step {
 
 export enum Operation {
   auth = 'Authorise',
-  pay = 'Pay'
+  pay = 'Pay',
+  interact = 'Interact'
 }
 
 export enum ProcessAction {
@@ -153,7 +154,7 @@ export class CanpayWizardComponent implements OnInit {
       {
         name: this.postAuthorisationProcessName,
         value: Step.process,
-        active: !!this.postAuthorisationProcessName
+        active: !!this.postAuthorisationProcessName || this.operation === Operation.interact
       },
       {
         name: 'Confirmation',
@@ -220,7 +221,7 @@ export class CanpayWizardComponent implements OnInit {
         this.account = this.canyaCoinEthService.getOwnerAccount();
         this.insufficientBalance = Number(_balance) < this.amount;
         if (!this.insufficientBalance) {
-          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : Step.payment);
+          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment);
         }
       })
       .catch(err => this.error('Unable to retrieve user CAN balance!'))

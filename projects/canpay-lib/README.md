@@ -171,6 +171,7 @@ Type of CanPay operations, default is Authorise.
 enum Operation {
   auth = 'Authorise', // Request user authoisation to withdraw CAN
   pay = 'Pay' // Request user to pay CAN directly to the specified recepient
+  interact = 'Interact' // Go straight to the post auth process
 }
 ```
 

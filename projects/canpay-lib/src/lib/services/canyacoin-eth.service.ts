@@ -45,7 +45,7 @@ export class CanYaCoinEthService extends EthService {
     }
   }
 
-  authoriseCANPayment(toRecepient, amount, from = this.getOwnerAccount(), onTxHash: Function = null): Promise<any> {
+  authoriseCANPayment(toRecepient, amount, from: string = this.getOwnerAccount(), onTxHash: Function = null): Promise<any> {
     console.log('CanYaCoinEthService: authoriseCANPayment: ', from, toRecepient, amount);
     return new Promise(async (resolve, reject) => {
       const tx = await this.canyaContract.methods.approve(toRecepient, this.amountToCANTokens(amount));

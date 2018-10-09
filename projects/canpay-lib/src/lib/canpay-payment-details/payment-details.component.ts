@@ -1,20 +1,20 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { ResultService } from '../result/result.service';
-import { FormData } from '../data/formData.model';
-import { FormDataService } from '../data/formData.service';
-import { PaymentService } from '../payment/payment.service';
+import { ResultService } from '../../canexchange/result/result.service';
+import { FormData } from '../../canexchange/data/formData.model';
+import { FormDataService } from '../../canexchange/data/formData.service';
+import { PaymentService } from '../../canexchange/payment/payment.service';
 import { ResizeService } from '../../lib/services/resize.service';
 import { Subscription } from 'rxjs';
-import * as globals from '../globals';
+import * as globals from '../../canexchange/globals';
 
 @Component({
-    selector: 'canyalib-mt-wizard-payment'
-    , templateUrl: './payment.component.html',
-    styleUrls: ['./details.component.css']
+    selector: 'canyalib-mt-wizard-payment-details'
+    , templateUrl: './payment-details.component.html',
+    styleUrls: ['./payment-details.component.css']
 })
 
-export class PaymentsComponent implements OnInit {
+export class PaymentDetailsComponent implements OnInit {
     title = 'Please Review and Confirm Your Transaction!';
     workType: boolean;
     form: any;
@@ -35,7 +35,6 @@ export class PaymentsComponent implements OnInit {
     validData = false;
     token_classes = '';
     private resizeSubscription: Subscription;
-    @Output() valueChange = new EventEmitter();
     displayEth = false;
 
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
@@ -118,7 +117,6 @@ export class PaymentsComponent implements OnInit {
             this.etherium = false;
             this.erc20 = !this.erc20;
             this.others = false;
-            this.valueChange.emit(globals.Step.payment_erc20);
 
         }
     }
@@ -133,17 +131,14 @@ export class PaymentsComponent implements OnInit {
     }
 
     goToPrevious() {
-        this.valueChange.emit(globals.Step.details);
     }
 
     goToNext() {
         if (this.validData === true) {
-            this.valueChange.emit(globals.Step.result);
         }
     }
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(globals.Step.none);
     }
 }

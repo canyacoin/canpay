@@ -46,11 +46,14 @@
     </div>
 </div>
 
-<div class="footer-buttons text-center">
+<div class="footer-buttons">
     <span *ngIf="dai" style="position: absolute; right: 6%">Metamask Not Supported</span>
+
     <div class="tip-button float-right" (click)="metamask()" *ngIf="formData.currency !== 'Dai'"> </div>
-    <button class="btn btn-outline btn-white-trans float-left" (click)="cancel();">
-        cancel</button>
+
+
+    <button class="btn btn-outline btn-white-trans btn_res payment-erc text-center" (click)="cancel()">
+        Cancel</button>
     <div class="spinner">
         <div class="bounce1"></div>
         <div class="bounce2"></div>

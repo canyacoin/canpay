@@ -33,6 +33,8 @@ export class DetailsComponent implements OnInit {
     web3js: any;
     canyaContract: any;
     emailValidation = false;
+    amountValidation = false;
+
 
     constructor(private router: Router, private formDataService: FormDataService, private detailsService: DetailsService,
         private loc: Location, private canYaCoinEthService: CanYaCoinEthService) {
@@ -42,7 +44,7 @@ export class DetailsComponent implements OnInit {
             this.web3 = new Web3(window.web3.currentProvider);
             this.web3.eth.getAccounts((err, accs) => {
                 this.personal.address = accs.toString();
-                const contract = web3.eth.contract(globals.abi).at('0x1d462414fe14cf489c7a21cac78509f4bf8cd7c0');
+                const contract = web3.eth.contract(globals.abi).at(globals.canAddress);
                 contract.balanceOf(this.personal.address, (error, balance) => {
                     // Get decimals
                     contract.decimals((error, decimals) => {
@@ -51,19 +53,19 @@ export class DetailsComponent implements OnInit {
 
                         this.personal.amount = Number(localStorage.getItem('oldamount')) - balance;
                         this.formData.eth = this.personal.amount;
+
+                        this.detailsService.getData('CAN').subscribe(
+                            (data) => {
+                                const price = (this.formData.eth * data.data.quotes.USD.price).toFixed(6);
+                                this.formData.usd = +price;
+                                this.personal.usd = +price;
+                                this.amountValidation = true;
+                            }
+                        );
                     });
                 });
 
                 this.validateAddress();
-                this.formData.amount = Number(localStorage.getItem('oldamount'));
-                this.detailsService.getData('CAN').subscribe(
-                    (data) => {
-                        const price = (this.formData.amount * data.data.quotes.USD.price).toFixed(6);
-                        this.formData.eth = +price;
-                        this.formData.usd = +price;
-                        this.personal.usd = +price;
-                    }
-                );
             });
 
         } else {

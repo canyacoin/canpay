@@ -1,23 +1,23 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { ResultService } from '../result/result.service';
-import { FormData } from '../data/formData.model';
-import { FormDataService } from '../data/formData.service';
-import { PaymentServiceERC } from './payment-erc20.service';
+import { ResultService } from '../../canexchange/result/result.service';
+import { FormData } from '../../canexchange/data/formData.model';
+import { FormDataService } from '../../canexchange/data/formData.service';
+import { PaymentDetailsServiceERC } from './payment-erc20.service';
 import { Subscription } from 'rxjs';
 import { ResizeService } from '../../lib/services/resize.service';
-import * as globals from '../globals';
+import * as globals from '../../canexchange/globals';
 
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { ResultComponent } from '../result/result.component';
+import { ResultComponent } from '../../canexchange/result/result.component';
 
 @Component({
-    selector: 'canyalib-mt-wizard-erc20'
+    selector: 'canyalib-mt-wizard-erc20-details'
     , templateUrl: './payment-erc20.component.html',
-    styleUrls: ['../payment/details.component.css']
+    styleUrls: ['../canpay-payment-details/payment-details.component.css']
 })
 
-export class PaymentERCComponent implements OnInit {
+export class PaymentERCDetailsComponent implements OnInit {
     title = 'Please Review and Confirm Your Transaction!';
     workType: boolean;
     form: any;
@@ -43,7 +43,7 @@ export class PaymentERCComponent implements OnInit {
     @Output() valueChange = new EventEmitter();
 
     constructor(dialogService: DialogService, private router: Router, private resizeService: ResizeService,
-        private formDataService: FormDataService, private paymentService: PaymentServiceERC, private resultService: ResultService) {
+        private formDataService: FormDataService, private paymentService: PaymentDetailsServiceERC, private resultService: ResultService) {
     }
 
     search(val) {

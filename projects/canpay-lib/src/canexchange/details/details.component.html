@@ -19,7 +19,6 @@
                 <div *ngIf="email.errors.required">Email is required</div>
             </div>
         </div>
-
         <div class="form-group">
             <label class="control-label global-font" for="card-number">Enter Destination Address</label>
             <div class="input-group">
@@ -52,7 +51,7 @@
 
 
     <div class="footer-buttons">
-        <button class="btn btn-success btn-outline-rounded btn-info float-right customColor" [disabled]="!emailValidation">
+        <button class="btn btn-success btn-outline-rounded btn-info float-right customColor" [disabled]="!emailValidation || !amountValidation">
             Continue</button>
         <button class="btn btn-outline btn-white-trans float-left" (click)="cancel()">
             Cancel</button>

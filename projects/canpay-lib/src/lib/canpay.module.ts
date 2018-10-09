@@ -3,7 +3,9 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
-
+import { PaymentDetailsComponent } from './canpay-payment-details/payment-details.component';
+import { StagingDetailsComponent } from './canpay-staging-qr/staging.component';
+import { PaymentERCDetailsComponent } from './canpay-erc20-listing/payment-erc20.component';
 import { BancorWcComponent } from './bancor-wc/bancor-wc.component';
 import { CanpayModalComponent } from './canpay-modal/canpay-modal.component';
 import { CanpayWizardComponent } from './canpay-wizard/canpay-wizard.component';
@@ -22,6 +24,8 @@ import { ProcessComponent } from './process/process.component';
 import { CanPayService } from './services/canpay.service';
 import { CanYaCoinEthService } from './services/canyacoin-eth.service';
 import { EthService } from './services/eth.service';
+import { StagingDetailsService } from './canpay-staging-qr/staging.service';
+import { PaymentDetailsServiceERC } from './canpay-erc20-listing/payment-erc20.service';
 
 import { FormDataService } from '../canexchange/data/formData.service';
 import { WorkflowService } from '../canexchange/workflow/workflow.service';
@@ -45,6 +49,7 @@ import { OrderService } from '../canexchange/order/order.service';
 import { PaymentServiceERC } from '../canexchange/payment-erc20/payment-erc20.service';
 import { PaymentERCComponent } from '../canexchange/payment-erc20/payment-erc20.component';
 import { ResizeService } from '../lib/services/resize.service';
+import { LoaderComponent } from '../canexchange/loader/loading-status.component';
 
 const COMPONENTS = [
   CanpayModalComponent,
@@ -68,12 +73,16 @@ const COMPONENTS = [
   StagingComponent,
   OrderComponent,
   PaymentERCComponent,
-  HomeComponent
+  HomeComponent,
+  LoaderComponent,
+  PaymentDetailsComponent,
+  StagingDetailsComponent,
+  PaymentERCDetailsComponent
 ];
 
 const PROVIDERS = [
   EthService, CanYaCoinEthService, CanPayService, StagingService, PaymentServiceERC, FormDataService, WorkflowService, DetailsService,
-  ResultService, CompleteService, PaymentService, HttpClientModule, OrderService, ResizeService
+  ResultService, CompleteService, PaymentService, HttpClientModule, OrderService, ResizeService, StagingDetailsService, PaymentDetailsServiceERC
 ];
 
 @NgModule({

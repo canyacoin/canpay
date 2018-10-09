@@ -1,21 +1,5 @@
-<div class="form-progressbar nav-bar">
-    <div class="step step-details done ">
-        <span class="arrow fa fa-caret-down"></span>Details</div>
-    <div class="step step-payment-method previous-done active">
-        <span class="arrow fa fa-caret-down"></span>Payment</div>
-    <div class="step step-deposit">
-        <span class="arrow fa fa-caret-down"></span>Deposit</div>
-    <div class="step step-complete">
-        <span class="arrow fa fa-caret-down"></span>Complete</div>
-</div>
 <form #personalForm="ngForm" class="form" novalidate>
     <div class="text-center payment-body text-center">
-        <div class="text-center go-back float-left ">
-            <b>
-                <a href="javascript:void(0)" (click)="goToPrevious()">
-                    <i class="fas fa-chevron-left"></i> Go Back</a>
-            </b>
-        </div>
         Choose Payment Method
         <br />
         <div class="currency-data">

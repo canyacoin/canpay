@@ -11,7 +11,8 @@ export enum Step {
   payment = 5,
   process = 6,
   confirmation = 7,
-  completed = 8
+  completed = 8,
+  details = 9
 }
 
 export enum Operation {
@@ -139,6 +140,11 @@ export class CanpayWizardComponent implements OnInit {
         active: true
       },
       {
+        name: 'Payment Details',
+        value: Step.details,
+        active: true
+      },
+      {
         name: 'Authorisation',
         value: Step.authorisation,
         active: this.operation === Operation.auth
@@ -190,6 +196,7 @@ export class CanpayWizardComponent implements OnInit {
   }
 
   updateCurrentStep(step) {
+
     this.currStep = step;
     this.currentStep.emit(step);
   }
@@ -224,6 +231,11 @@ export class CanpayWizardComponent implements OnInit {
       .catch(err => this.error('Unable to retrieve user CAN balance!'))
       .then(() => this.isLoading = false);
   }
+
+  stepChanger(step) {
+    this.currStep = step;
+  }
+
 
   checkBalanceAfterCredit(_acc, balance) {
     this.canyaCoinEthService.getCanYaBalance(_acc)

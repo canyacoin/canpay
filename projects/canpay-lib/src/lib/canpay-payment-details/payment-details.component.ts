@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { ResultService } from '../../canexchange/result/result.service';
-import { FormData } from '../../canexchange/data/formData.model';
-import { FormDataService } from '../../canexchange/data/formData.service';
-import { PaymentService } from '../../canexchange/payment/payment.service';
+import { FormData } from '../canpay-data/formData.model';
+import { FormDataService } from '../canpay-data/formData.service';
 import { ResizeService } from '../../lib/services/resize.service';
 import { Subscription } from 'rxjs';
-import * as globals from '../../canexchange/globals';
+import { PaymentDetailsService } from './payment-details.service';
+import { Step } from '../canpay-wizard/canpay-wizard.component';
 
 @Component({
     selector: 'canyalib-mt-wizard-payment-details'
@@ -35,10 +34,10 @@ export class PaymentDetailsComponent implements OnInit {
     validData = false;
     token_classes = '';
     private resizeSubscription: Subscription;
-    displayEth = false;
+    @Output() valueChange = new EventEmitter();
 
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
-        private paymentService: PaymentService, private resultService: ResultService) {
+        private paymentService: PaymentDetailsService) {
     }
 
     ngOnInit() {
@@ -95,7 +94,6 @@ export class PaymentDetailsComponent implements OnInit {
                     this.formData.eth = +price.toFixed(6);
                     this.etherPrise = +price.toFixed(6);
                     this.validData = true;
-                    this.displayEth = true;
                 }
             );
 
@@ -117,6 +115,7 @@ export class PaymentDetailsComponent implements OnInit {
             this.etherium = false;
             this.erc20 = !this.erc20;
             this.others = false;
+            this.valueChange.emit(Step.erc20);
 
         }
     }
@@ -131,14 +130,17 @@ export class PaymentDetailsComponent implements OnInit {
     }
 
     goToPrevious() {
+        this.valueChange.emit(Step.details);
     }
 
     goToNext() {
         if (this.validData === true) {
+            this.valueChange.emit(Step.staging);
         }
     }
 
     cancel() {
         this.formData.email = '';
+       // this.valueChange.emit(Step.none);
     }
 }

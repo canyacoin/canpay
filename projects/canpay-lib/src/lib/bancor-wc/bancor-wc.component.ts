@@ -1,9 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { Renderer2 } from '@angular/core';
-import { HomeComponent } from '../../canexchange/home/home.component';
 import { FormData } from '../../canexchange/data/formData.model';
-import { FormDataService } from '../../canexchange/data/formData.service';
-import { DetailsService } from '../../canexchange/details/details.service';
+import { FormDataService } from '../canpay-data/formData.service';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import { Personal } from '../../canexchange/data/formData.model';
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
@@ -27,7 +25,7 @@ export enum Status {
 })
 export class BancorWcComponent implements OnInit, AfterViewInit {
   @Output() check = new EventEmitter();
-  @Output() amountUpdate = new EventEmitter();
+  @Output() valueChange = new EventEmitter();
   @Input() type = 'WITHOUT_INPUT_BOXES';
   @Input() balance = 0;
   @Input() set isLoading(isLoading: boolean) {
@@ -42,7 +40,7 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   status: Status = Status.New;
   isLoadingBancorWidget = false;
 
-  constructor(private renderer: Renderer2, private detailsService: DetailsService, private dialogService: DialogService,
+  constructor(private renderer: Renderer2, private dialogService: DialogService,
     private formDataService: FormDataService, private canpayWizardComponent: CanpayWizardComponent) { }
 
   ngOnInit() {
@@ -56,8 +54,8 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() { }
 
   public callCanEx(balance) {
-    alert(Step.details)
-    this.amountUpdate.emit(Step.details);
+    alert(Step.details);
+    this.valueChange.emit(Step.details);
   }
 
   addJsToElement(src: string): HTMLScriptElement {

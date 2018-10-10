@@ -1,14 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormData } from '../../canexchange/data/formData.model';
-import { FormDataService } from '../../canexchange/data/formData.service';
-import { CompleteService } from '../../canexchange/complete/complete.service';
+import { FormData } from '../canpay-data/formData.model';
+import { FormDataService } from '../canpay-data/formData.service';
 import { StagingDetailsService } from './staging.service';
-import { Personal } from '../../canexchange/data/formData.model';
+import { Personal } from '../canpay-data/formData.model';
 import { Observable } from 'rxjs';
 import { interval } from 'rxjs';
 import * as globals from '../../canexchange/globals';
-import { CompleteComponent } from '../../canexchange/complete/complete.component';
 
 @Component({
     selector: 'canyalib-mt-wizard-staging-details'
@@ -30,7 +28,7 @@ export class StagingDetailsComponent implements OnInit {
     @Output() valueChange = new EventEmitter();
 
     constructor(private router: Router, private formDataService: FormDataService,
-        private completeService: CompleteService, private stagingService: StagingDetailsService) {
+        private stagingService: StagingDetailsService) {
         const subscription = interval(200 * 60).subscribe(x => {
             try {
                 this.stagingService.checkStatus(this.formData.key).subscribe(activity => {

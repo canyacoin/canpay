@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormData } from '../../canexchange/data/formData.model';
-import { FormDataService } from '../../canexchange/data/formData.service';
-import { Personal } from '../../canexchange/data/formData.model';
-import { DetailsService } from '../../canexchange/details/details.service';
+import { FormDataService } from '../canpay-data/formData.service';
+import { Personal } from '../canpay-data/formData.model';
 
 @Component({
   selector: 'canyalib-input-amount',
@@ -18,7 +17,7 @@ export class InputAmountComponent {
   amount: number;
   personal: Personal;
 
-  constructor(private formDataService: FormDataService, private detailsService: DetailsService) {
+  constructor(private formDataService: FormDataService) {
     this.formData = this.formDataService.getFormData();
     this.personal = this.formDataService.getPersonal();
   }

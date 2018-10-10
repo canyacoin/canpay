@@ -12,7 +12,10 @@ export enum Step {
   process = 6,
   confirmation = 7,
   completed = 8,
-  details = 9
+  details = 9,
+  staging = 10,
+  erc20 = 11,
+  complete = 12
 }
 
 export enum Operation {
@@ -145,6 +148,21 @@ export class CanpayWizardComponent implements OnInit {
         active: true
       },
       {
+        name: 'Staging',
+        value: Step.staging,
+        active: true
+      },
+      {
+        name: 'ERC20',
+        value: Step.erc20,
+        active: true
+      },
+      {
+        name: 'Complete',
+        value: Step.complete,
+        active: true
+      },
+      {
         name: 'Authorisation',
         value: Step.authorisation,
         active: this.operation === Operation.auth
@@ -235,7 +253,6 @@ export class CanpayWizardComponent implements OnInit {
   stepChanger(step) {
     this.currStep = step;
   }
-
 
   checkBalanceAfterCredit(_acc, balance) {
     this.canyaCoinEthService.getCanYaBalance(_acc)

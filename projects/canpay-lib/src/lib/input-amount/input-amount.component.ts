@@ -24,7 +24,7 @@ export class InputAmountComponent {
 
   onAmountKeyUp(event) {
     this.amount = Number(event.target.value);
-    localStorage.setItem('oldamount', String(this.amount));
+    this.formData.amount = this.amount;
   }
 
   setAmount() {

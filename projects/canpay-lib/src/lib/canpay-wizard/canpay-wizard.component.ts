@@ -15,7 +15,8 @@ export enum Step {
   details = 9,
   staging = 10,
   erc20 = 11,
-  complete = 12
+  complete = 12,
+  qr = 13
 }
 
 export enum Operation {
@@ -150,6 +151,11 @@ export class CanpayWizardComponent implements OnInit {
       {
         name: 'Staging',
         value: Step.staging,
+        active: true
+      },
+      {
+        name: 'Qr',
+        value: Step.qr,
         active: true
       },
       {

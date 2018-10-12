@@ -135,7 +135,7 @@ export class PaymentDetailsComponent implements OnInit {
 
     goToNext() {
         if (this.validData === true) {
-            this.valueChange.emit(Step.staging);
+            this.valueChange.emit(Step.qr);
         }
     }
 

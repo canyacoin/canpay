@@ -54,7 +54,6 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() { }
 
   public callCanEx(balance) {
-    alert(Step.details);
     this.valueChange.emit(Step.details);
   }
 

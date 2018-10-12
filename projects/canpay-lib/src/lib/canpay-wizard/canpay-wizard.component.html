@@ -58,11 +58,15 @@
       </div>
 
       <div *ngIf="currStep === Step.details">
-        <canyalib-mt-wizard-payment-details></canyalib-mt-wizard-payment-details>
+        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' ></canyalib-mt-wizard-payment-details>
       </div>
 
+      <div *ngIf="currStep === Step.qr">
+          <canyalib-mt-wizard-qr-details (valueChange)='stepChanger($event)' ></canyalib-mt-wizard-qr-details>
+        </div>
+
       <div *ngIf="currStep === Step.staging">
-        <canyalib-mt-wizard-staging-details></canyalib-mt-wizard-staging-details>
+        <canyalib-mt-wizard-staging-details (valueChange)='stepChanger($event)' ></canyalib-mt-wizard-staging-details>
       </div>
 
       <div *ngIf="currStep === Step.erc20">

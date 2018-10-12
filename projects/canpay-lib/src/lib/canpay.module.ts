@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { PaymentDetailsComponent } from './canpay-payment-details/payment-details.component';
-import { StagingDetailsComponent } from './canpay-staging-qr/staging.component';
+import { StagingDetailsComponent } from './canpay-payment-staging/staging.component';
+import { ResultDetailsComponent } from './canpay-payment-qr/result.component';
 import { PaymentERCDetailsComponent } from './canpay-erc20-listing/payment-erc20.component';
 import { CompleteDetailsComponent } from './canpay-payment-complete/complete.component';
 import { BancorWcComponent } from './bancor-wc/bancor-wc.component';
@@ -25,11 +26,12 @@ import { ProcessComponent } from './process/process.component';
 import { CanPayService } from './services/canpay.service';
 import { CanYaCoinEthService } from './services/canyacoin-eth.service';
 import { EthService } from './services/eth.service';
-import { StagingDetailsService } from './canpay-staging-qr/staging.service';
+import { StagingDetailsService } from './canpay-payment-staging/staging.service';
 import { PaymentDetailsServiceERC } from './canpay-erc20-listing/payment-erc20.service';
 import { PaymentDetailsService } from './canpay-payment-details/payment-details.service';
 import { CompleteDetailsService } from './canpay-payment-complete/complete.service';
 import { FormDataService } from './canpay-data/formData.service';
+import { ResultService } from './canpay-payment-qr/result.service';
 
 import { QRCodeModule } from 'angular2-qrcode';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -60,13 +62,14 @@ const COMPONENTS = [
   PaymentDetailsComponent,
   StagingDetailsComponent,
   PaymentERCDetailsComponent,
-  CompleteDetailsComponent
+  CompleteDetailsComponent,
+  ResultDetailsComponent
 ];
 
 const PROVIDERS = [
   EthService, CanYaCoinEthService, CanPayService, FormDataService,
   HttpClientModule, OrderService, ResizeService, StagingDetailsService, PaymentDetailsServiceERC,
-  CompleteDetailsService, PaymentDetailsService
+  CompleteDetailsService, PaymentDetailsService, ResultService
 ];
 
 @NgModule({

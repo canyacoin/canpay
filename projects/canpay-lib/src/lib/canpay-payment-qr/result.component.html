@@ -1,0 +1,52 @@
+<div class="text-center deposit-body">
+    <h5>
+        <span class="listening">Pay exactly&nbsp;</span>
+        <span *ngIf="formData.currency != 'ETH'">{{formData.eth}}</span>
+        <span *ngIf="formData.currency == 'ETH'">{{formData.eth | number : '1.6-6'}}</span> {{formData.currency}}
+        <span class="listening"> here:</span>
+    </h5>
+
+    <div class="alert alert-success" *ngIf="metamaskpayment">
+        <strong>Success!</strong> This alert box could indicate a successful or positive action.
+    </div>
+
+    <div class="qr-img">
+        <qr-code [value]="etheriumAddress" [size]="220" *ngIf="ethStatus"></qr-code>
+        <qr-code [value]="etheriumAddress" [size]="220" *ngIf="!ethStatus"></qr-code>
+    </div>
+    <div class="address-text">
+        <input type="text" value="{{etheriumAddress}}" disabled *ngIf="ethStatus">
+        <input type="text" value="{{etheriumAddress}}" disabled *ngIf="!ethStatus">
+        <span class="copy-btn">
+            <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="etheriumAddress" (click)="copyToClipboard(etheriumAddress)"
+                *ngIf="ethStatus">
+            <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="etheriumAddress" (click)="copyToClipboard(etheriumAddress)"
+                *ngIf="!ethStatus">
+        </span>
+        <span *ngIf="copied" style="position: absolute; right: -5px; margin-top: 8%">Copied</span>
+    </div>
+
+    <div class="order-text">Your order ID is
+        <b style="color: #6d6d6d;"><a href="{{orderUrl}}" target="_blank">{{formData.key}}</a> </b>
+    </div>
+
+    <div class="listening-payment">
+        <b class="listening">Listening for Payment</b> &nbsp;
+        <img src="./assets/img/CANExchange_listening.svg">
+    </div>
+</div>
+
+<div class="footer-buttons">
+    <span *ngIf="dai" style="position: absolute; right: 6%">Metamask Not Supported</span>
+
+    <div class="tip-button float-right" (click)="metamask()" *ngIf="formData.currency !== 'Dai'"> </div>
+
+
+    <button class="btn btn-outline btn-white-trans btn_res payment-erc text-center" (click)="cancel()">
+        Cancel</button>
+    <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+    </div>
+</div>

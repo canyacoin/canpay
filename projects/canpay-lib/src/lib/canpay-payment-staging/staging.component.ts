@@ -6,7 +6,7 @@ import { StagingDetailsService } from './staging.service';
 import { Personal } from '../canpay-data/formData.model';
 import { Observable } from 'rxjs';
 import { interval } from 'rxjs';
-import * as globals from '../../canexchange/globals';
+import { Step } from '../canpay-wizard/canpay-wizard.component';
 
 @Component({
     selector: 'canyalib-mt-wizard-staging-details'
@@ -34,11 +34,11 @@ export class StagingDetailsComponent implements OnInit {
                 this.stagingService.checkStatus(this.formData.key).subscribe(activity => {
                     if (activity.status === 'COMPLETE') {
                         subscription.unsubscribe();
-                        this.valueChange.emit(globals.Step.complete);
+                        this.valueChange.emit(Step.complete);
 
                     } else if (activity.status === 'ERROR') {
                         subscription.unsubscribe();
-                        this.valueChange.emit(globals.Step.error);
+                        this.valueChange.emit(Step.error);
                     }
                 },
                     (error) => {
@@ -73,10 +73,10 @@ export class StagingDetailsComponent implements OnInit {
         this.formData.date = obj.date;
         this.formData.usd = this.personal.usd;
         if (obj.status === 'PROCESSED' && obj.currency === 'CAN') {
-            this.valueChange.emit(globals.Step.complete);
+            this.valueChange.emit(Step.complete);
 
         } else if (obj.status === 'PROCESSED' && obj.currency === 'ETH') {
-            this.valueChange.emit(globals.Step.staging);
+            this.valueChange.emit(Step.staging);
         }
 
         if (!existingActivity && activity.page !== 'logout') {
@@ -86,7 +86,7 @@ export class StagingDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(globals.Step.none);
+        //this.valueChange.emit(Step.none);
     }
 
     submit() {

@@ -24,7 +24,7 @@
 }*/
 
 .can-display {
-  bottom: 115px; 
+  bottom: 30px; 
   right: 185px; 
   position: absolute; 
   font-size: 14px !important; 
@@ -33,7 +33,7 @@
 }
 
 .erc-display {
-  bottom: 13%;
+  bottom: 3%;
   right: 185px; 
   position: absolute; 
   font-size: 16px !important; 

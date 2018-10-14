@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import * as globals from '../../canexchange/globals';
- import { Location } from '@angular/common';
+import * as globals from '../globals';
+import { Location } from '@angular/common';
 
 @Injectable()
 export class ResultService {
@@ -25,5 +25,5 @@ export class ResultService {
     getGasPrice(): Observable<any> {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/getGas');
     }
- 
+
 }

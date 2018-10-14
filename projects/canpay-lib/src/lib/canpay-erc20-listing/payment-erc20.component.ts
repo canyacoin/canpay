@@ -5,7 +5,7 @@ import { FormDataService } from '../canpay-data/formData.service';
 import { PaymentDetailsServiceERC } from './payment-erc20.service';
 import { Subscription } from 'rxjs';
 import { ResizeService } from '../../lib/services/resize.service';
-import * as globals from '../../canexchange/globals';
+import { Step } from '../canpay-wizard/canpay-wizard.component';
 
 @Component({
     selector: 'canyalib-mt-wizard-erc20-details'
@@ -83,7 +83,6 @@ export class PaymentERCDetailsComponent implements OnInit {
         this.selectedERC = form.symbol;
         this.otherstest = form.address;
         this.formData.currency = form.name;
-
         this.formData.erc20token = form.address;
         this.formData.erc20tokenDecimal = form.decimals;
         this.others = !this.others;
@@ -117,12 +116,12 @@ export class PaymentERCDetailsComponent implements OnInit {
     }
 
     goToPrevious() {
-        this.valueChange.emit(globals.Step.payment);
+        this.valueChange.emit(Step.erc20);
     }
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(globals.Step.none);
+        this.valueChange.emit(Step.details);
     }
 
     goToNext(form: any, key: any) {
@@ -132,7 +131,7 @@ export class PaymentERCDetailsComponent implements OnInit {
             this.formData.key = key;
             // Navigate to the result page
             this.formData.accept = true;
-            this.valueChange.emit(globals.Step.result);
+            this.valueChange.emit(Step.qr);
 
         } else {
             this.error = 'Please select a token';

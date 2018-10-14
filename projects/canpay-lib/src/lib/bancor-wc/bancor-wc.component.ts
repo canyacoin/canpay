@@ -1,9 +1,9 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
 import { Renderer2 } from '@angular/core';
-import { FormData } from '../../canexchange/data/formData.model';
+import { FormData } from '../canpay-data/formData.model';
 import { FormDataService } from '../canpay-data/formData.service';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { Personal } from '../../canexchange/data/formData.model';
+import { Personal } from '../canpay-data/formData.model';
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 
 

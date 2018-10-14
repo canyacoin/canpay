@@ -58,23 +58,28 @@
       </div>
 
       <div *ngIf="currStep === Step.details">
-        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' ></canyalib-mt-wizard-payment-details>
+        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' [destinationAddress]='destinationAddress'
+          [userEmail]='userEmail'></canyalib-mt-wizard-payment-details>
       </div>
 
       <div *ngIf="currStep === Step.qr">
-          <canyalib-mt-wizard-qr-details (valueChange)='stepChanger($event)' ></canyalib-mt-wizard-qr-details>
-        </div>
+        <canyalib-mt-wizard-qr-details (valueChange)='stepChanger($event)'></canyalib-mt-wizard-qr-details>
+      </div>
 
       <div *ngIf="currStep === Step.staging">
-        <canyalib-mt-wizard-staging-details (valueChange)='stepChanger($event)' ></canyalib-mt-wizard-staging-details>
+        <canyalib-mt-wizard-staging-details (valueChange)='stepChanger($event)'></canyalib-mt-wizard-staging-details>
       </div>
 
       <div *ngIf="currStep === Step.erc20">
-        <canyalib-mt-wizard-erc20-details></canyalib-mt-wizard-erc20-details>
+        <canyalib-mt-wizard-erc20-details (valueChange)='stepChanger($event)'></canyalib-mt-wizard-erc20-details>
       </div>
 
       <div *ngIf="currStep === Step.complete">
         <canyalib-mt-wizard-complete-details></canyalib-mt-wizard-complete-details>
+      </div>
+
+      <div *ngIf="currStep === Step.error">
+        <canyalib-mt-wizard-error></canyalib-mt-wizard-error>
       </div>
 
       <div *ngIf="currStep === Step.authorisation">

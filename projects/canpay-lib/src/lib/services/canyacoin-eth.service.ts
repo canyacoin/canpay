@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnDestroy } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import merge from 'lodash.merge';
 
@@ -63,6 +63,16 @@ export class CanYaCoinEthService extends EthService {
       const gasPrice = await this.getDefaultGasPriceGwei();
       tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, txHash, resolve, reject));
     });
+  }
+
+  payWithEth(amount) {
+    console.log('CanYaCoinEthService: payWithEther: ', amount);
+    this.payWithEther(amount);
+  }
+
+  payWithERC20(amount, token, decimal, gas) {
+    console.log('CanYaCoinEthService: payWithErc20Token: ', amount, token, decimal, gas);
+    this.payWithErc20Token(this.config.contracts.canyaCoinAbi, amount, token, decimal, gas);
   }
 
 }

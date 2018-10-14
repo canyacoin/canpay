@@ -24,7 +24,8 @@ export class CanPayExampleComponent {
     amount: 0, // allow the user to enter amount through an input box
     minAmount: 1000, // Default is 1
     maxAmount: 50000, // Default is 'No Maximum'
-
+    destinationAddress: '0x71B7334DA2176E837B6CC1F37Ac29eFA3E1E9F64',
+    userEmail: 'my3d3d@gmail.com',
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),
     cancel: this.cancelCanPayUserActivation.bind(this),

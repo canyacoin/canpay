@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormData } from '../canpay-data/formData.model';
 import { FormDataService } from '../canpay-data/formData.service';
 import { CompleteDetailsService } from './complete.service';
-import * as globals from '../../canexchange/globals';
+import * as globals from '../globals';
 
 @Component({
     selector: 'canyalib-mt-wizard-complete-details'
@@ -12,7 +12,7 @@ import * as globals from '../../canexchange/globals';
 })
 
 export class CompleteDetailsComponent implements OnInit {
-    // title = 'Thanks for staying tuned!';
+
     title = 'Booyah! CAN sent.';
     titleSecond = 'Your receipt has been emailed. ';
     @Input() formData: FormData;
@@ -47,6 +47,6 @@ export class CompleteDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(globals.Step.none);
+       // this.valueChange.emit(Step.none);
     }
 }

@@ -11,16 +11,16 @@
     </div>
 
     <div class="qr-img">
-        <qr-code [value]="etheriumAddress" [size]="220" *ngIf="ethStatus"></qr-code>
-        <qr-code [value]="etheriumAddress" [size]="220" *ngIf="!ethStatus"></qr-code>
+        <qr-code [value]="ethereumAddress" [size]="220" *ngIf="ethStatus"></qr-code>
+        <qr-code [value]="ethereumAddress" [size]="220" *ngIf="!ethStatus"></qr-code>
     </div>
     <div class="address-text">
-        <input type="text" value="{{etheriumAddress}}" disabled *ngIf="ethStatus">
-        <input type="text" value="{{etheriumAddress}}" disabled *ngIf="!ethStatus">
+        <input type="text" value="{{ethereumAddress}}" disabled *ngIf="ethStatus">
+        <input type="text" value="{{ethereumAddress}}" disabled *ngIf="!ethStatus">
         <span class="copy-btn">
-            <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="etheriumAddress" (click)="copyToClipboard(etheriumAddress)"
+            <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="ethereumAddress" (click)="copyToClipboard(ethereumAddress)"
                 *ngIf="ethStatus">
-            <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="etheriumAddress" (click)="copyToClipboard(etheriumAddress)"
+            <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="ethereumAddress" (click)="copyToClipboard(ethereumAddress)"
                 *ngIf="!ethStatus">
         </span>
         <span *ngIf="copied" style="position: absolute; right: -5px; margin-top: 8%">Copied</span>

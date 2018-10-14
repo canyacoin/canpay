@@ -4,8 +4,10 @@ import { FormData, Personal } from '../canpay-data/formData.model';
 import { FormDataService } from '../canpay-data/formData.service';
 import { ResultService } from './result.service';
 import { Http, Response } from '@angular/http';
-import * as globals from '../../canexchange/globals';
+import * as globals from '../globals';
 import { interval } from 'rxjs';
+import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 
 declare var require: any;
 const Web3 = require('web3');
@@ -20,7 +22,7 @@ const gasStationApi = 'https://ethgasstation.info/json/ethgasAPI.json';
 })
 
 export class ResultDetailsComponent implements OnInit {
-    // title = 'Thanks for staying tuned!';
+
     title = 'Pay exactly';
     @Input() formData: FormData;
     isFormValid = false;
@@ -31,7 +33,7 @@ export class ResultDetailsComponent implements OnInit {
     ethStatus = false;
     status: string;
     public web3: any;
-    etheriumAddress: string = globals.etheriumAddress;
+    ethereumAddress: string = globals.ethereumAddress;
     metamaskpayment = false;
     tokenABI: any;
     public MyContract: any;
@@ -43,20 +45,19 @@ export class ResultDetailsComponent implements OnInit {
     @Output() valueChange = new EventEmitter();
 
     constructor(protected http: Http, private resultService: ResultService,
-        private router: Router, private formDataService: FormDataService, private route: Router) {
-        this.tokenABI = globals.abi;
-
+        private router: Router, private formDataService: FormDataService, private route: Router, private canYaCoinEthService: CanYaCoinEthService) {
+ 
         try {
             const subscription = interval(200 * 60).subscribe(x => {
 
                 this.resultService.checkStatus(this.formData.key).subscribe(activity => {
                     if (activity.status === 'IDENTIFIED') {
                         subscription.unsubscribe();
-                        this.valueChange.emit(globals.Step.staging);
+                        this.valueChange.emit(Step.staging);
 
                     } else if (activity.status === 'ERROR') {
                         subscription.unsubscribe();
-                        this.valueChange.emit(globals.Step.error);
+                        this.valueChange.emit(Step.error);
                     }
                 },
                     (error) => {
@@ -103,38 +104,14 @@ export class ResultDetailsComponent implements OnInit {
         }
         this.web3 = new Web3(window.web3.currentProvider);
 
-        this.web3.eth.getAccounts((err, accs) => {
-
-            const user_address = accs.toString();
-
-            if (this.formData.currency === 'ETH') {
-                window.web3.eth.sendTransaction({
-                    to: globals.etheriumAddress,
-                    from: user_address,
-                    value: window.web3.toWei(this.formData.eth, 'ether'),
-                }, function (err, transactionHash) {
-                    if (err) {
-                        return alert('Oh no!: ' + err.message);
-                    }
-                });
-            } else {
-                this.web3js = new Web3(web3.currentProvider);
-                this.canyaContract = this.createContractInstance(this.tokenABI, this.formData.erc20token);
-
-                const MyContract = web3.eth.contract(this.tokenABI);
-                const myContractInstance = MyContract.at(this.formData.erc20token);
-
-                this.resultService.getGasPrice().subscribe(activity => {
-
-                    myContractInstance.transfer(globals.etheriumAddress, this.amountToCANTokens(this.formData.eth),
-                        { from: user_address, gas: activity.fast + '000' });
-
-                });
-
-            }
-
-        });
-
+        if (this.formData.currency === 'ETH') {
+            this.canYaCoinEthService.payWithEth(this.formData.eth);
+        } else {
+            this.resultService.getGasPrice().subscribe(activity => {
+                this.canYaCoinEthService.payWithERC20(this.formData.eth, this.formData.erc20token, this.formData.erc20tokenDecimal,
+                    activity.fast + '000');
+            });
+        }
     }
 
     metamaskEnable() {
@@ -151,11 +128,11 @@ export class ResultDetailsComponent implements OnInit {
         this.formData.usd = this.personal.usd;
 
         if (obj.status === 'PROCESSED' && obj.currency === 'CAN') {
-            this.valueChange.emit(globals.Step.complete);
+            this.valueChange.emit(Step.complete);
         } else if (obj.status === 'PROCESSED' && obj.currency === 'ETH') {
-            this.valueChange.emit(globals.Step.staging);
+            this.valueChange.emit(Step.staging);
         } else if (obj.status === 'PROCESSED' && obj.currency === 'METAMASK') {
-            this.valueChange.emit(globals.Step.complete);
+            this.valueChange.emit(Step.complete);
         }
 
         if (!existingActivity && activity.page !== 'logout') {
@@ -165,7 +142,7 @@ export class ResultDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(globals.Step.none);
+      //  this.valueChange.emit(Step.none);
     }
 
     ngOnInit() {

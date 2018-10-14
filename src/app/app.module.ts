@@ -12,8 +12,8 @@ import { CanpayModule } from 'canpay-lib';
 import { environment } from '../environments/environment';
 import { CanPayExampleComponent } from './can-pay-example/can-pay-example.component';
 import { DaoEthService } from 'src/app/services/dao.eth.service';
-import { OrderComponent } from 'projects/canpay-lib/src/canexchange/order/order.component';
-import { OrderService } from 'projects/canpay-lib/src/canexchange/order/order.service';
+import { OrderComponent } from 'projects/canpay-lib/src/lib/canpay-order/order.component';
+import { OrderService } from 'projects/canpay-lib/src/lib/canpay-order/order.service';
 import { DatePipe } from '@angular/common';
 
 @NgModule({

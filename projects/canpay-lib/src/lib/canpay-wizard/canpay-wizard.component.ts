@@ -16,7 +16,8 @@ export enum Step {
   staging = 10,
   erc20 = 11,
   complete = 12,
-  qr = 13
+  qr = 13,
+  error = 14
 }
 
 export enum Operation {
@@ -59,6 +60,8 @@ export interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
+  destinationAddress: string;
+  userEmail: string;
 }
 
 export function setProcessResult(txOrErr) {
@@ -96,6 +99,8 @@ export class CanpayWizardComponent implements OnInit {
   @Input() amount = 0;
   @Input() minAmount = 0;
   @Input() maxAmount = 0;
+  @Input() destinationAddress;
+  @Input() userEmail;
 
   @Input() set canyaContract(canyaContract: Contract) {
     console.log('setting up canyaContract: ', canyaContract);
@@ -144,29 +149,34 @@ export class CanpayWizardComponent implements OnInit {
         active: true
       },
       {
-        name: 'Payment Details',
+        name: 'CanEx Payment',
         value: Step.details,
         active: true
       },
       {
-        name: 'Staging',
+        name: 'CanEx Staging',
         value: Step.staging,
         active: true
       },
       {
-        name: 'Qr',
+        name: 'CanEx Qr',
         value: Step.qr,
         active: true
       },
       {
-        name: 'ERC20',
+        name: 'CanEx ERC20',
         value: Step.erc20,
+        active: false
+      },
+      {
+        name: 'CanEx Complete',
+        value: Step.complete,
         active: true
       },
       {
-        name: 'Complete',
-        value: Step.complete,
-        active: true
+        name: 'Error',
+        value: Step.error,
+        active: false
       },
       {
         name: 'Authorisation',

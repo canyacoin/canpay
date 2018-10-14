@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormData } from '../data/formData.model';
+import { FormData } from '../canpay-data/formData.model';
 import { OrderService } from './order.service';
-import { Personal } from '../data/formData.model';
+import { Personal } from '../canpay-data/formData.model';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import * as globals from '../globals';
@@ -10,7 +10,7 @@ import * as globals from '../globals';
 @Component({
     selector: 'canyalib-mt-wizard-order'
     , templateUrl: './order.component.html',
-    styleUrls: ['../payment/details.component.css']
+    styleUrls: ['../canpay-payment-details/payment-details.component.css']
 })
 
 export class OrderComponent implements OnInit {

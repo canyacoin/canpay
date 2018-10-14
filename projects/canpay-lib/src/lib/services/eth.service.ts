@@ -2,10 +2,13 @@ import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import merge from 'lodash.merge';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { Step } from '../canpay-wizard/canpay-wizard.component';
+import * as globals from '../globals';
 
 declare let require: any;
 const Web3 = require('web3');
 declare var web3;
+declare let window: any;
 
 const canDecimals = 6;
 const gas = { gasPrice: '8000000000', gas: '210000' };
@@ -36,7 +39,7 @@ export enum Web3LoadingStatus {
 
 @Injectable()
 export class EthService implements OnDestroy {
-
+  public web3: any;
   web3js: any;
   accountInterval: any;
   netType: NetworkType;
@@ -204,7 +207,41 @@ export class EthService implements OnDestroy {
     return new this.web3js.eth.Contract(abi, address);
   }
 
+  payWithEther(amount) {
 
+    this.web3 = new Web3(window.web3.currentProvider);
+    this.web3.eth.getAccounts((err, accs) => {
+      const user_address = accs.toString();
+      window.web3.eth.sendTransaction({
+        to: globals.ethereumAddress,
+        from: user_address,
+        value: window.web3.toWei(amount, 'ether'),
+      }, function (err, transactionHash) {
+        if (err) {
+          return alert('Oh no!: ' + err.message);
+        }
+      });
+
+    });
+  }
+
+
+  payWithErc20Token(abi, amount, token, decimal, gasTx) {
+
+    this.web3 = new Web3(window.web3.currentProvider);
+    this.web3.eth.getAccounts((err, accs) => {
+      const user_address = accs.toString();
+      const MyContracts = web3.eth.contract(abi);
+      const myContractInstances = MyContracts.at(token);
+      myContractInstances.transfer(globals.ethereumAddress, this.amountToERCTokens(amount, decimal),
+        { from: user_address, gas: gasTx });
+
+    });
+  }
+
+  amountToERCTokens(amount, decimal) {
+    return amount * Math.pow(10, decimal);
+  }
 
   async resolveTransaction(err, txHash, resolve, reject) {
     if (err) {

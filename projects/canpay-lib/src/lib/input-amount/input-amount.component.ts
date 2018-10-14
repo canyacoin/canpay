@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormData } from '../../canexchange/data/formData.model';
+import { FormData } from '../canpay-data/formData.model';
 import { FormDataService } from '../canpay-data/formData.service';
 import { Personal } from '../canpay-data/formData.model';
 

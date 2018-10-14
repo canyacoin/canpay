@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { Personal } from '../data/formData.model';
-import { FormDataService } from '../data/formData.service';
-import { FormData } from '../data/formData.model';
+import { Personal } from '../canpay-data/formData.model';
+import { FormDataService } from '../canpay-data/formData.service';
+import { FormData } from '../canpay-data/formData.model';
 import * as globals from '../globals';
 
 @Component({
     selector: 'canyalib-mt-wizard-error',
     templateUrl: './error.component.html',
-    styleUrls: ['../payment/details.component.css']
+    styleUrls: ['../canpay-payment-details/payment-details.component.css']
 })
 
 export class ErrorComponent implements OnInit {
@@ -32,7 +32,7 @@ export class ErrorComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(globals.Step.none);
+        //this.valueChange.emit(Step.none);
     }
 
 }

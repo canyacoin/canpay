@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormData } from '../canpay-data/formData.model';
+import { FormData, Personal } from '../canpay-data/formData.model';
 import { FormDataService } from '../canpay-data/formData.service';
 import { ResizeService } from '../../lib/services/resize.service';
 import { Subscription } from 'rxjs';
 import { PaymentDetailsService } from './payment-details.service';
 import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { CanpayWizardComponent } from '../canpay-wizard/canpay-wizard.component';
 
 @Component({
     selector: 'canyalib-mt-wizard-payment-details'
@@ -35,16 +36,21 @@ export class PaymentDetailsComponent implements OnInit {
     token_classes = '';
     private resizeSubscription: Subscription;
     @Output() valueChange = new EventEmitter();
+    personal: Personal;
+    @Input() destinationAddress;
+    @Input() userEmail;
 
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
-        private paymentService: PaymentDetailsService) {
+        private paymentService: PaymentDetailsService, private canpayWizardComponent: CanpayWizardComponent) {
     }
 
     ngOnInit() {
+
         this.workType = this.formDataService.getConfirmation();
         this.formData = this.formDataService.getFormData();
         this.isFormValid = this.formDataService.isFormValid();
-
+        this.formData.address = this.destinationAddress;
+        this.formData.email = this.userEmail;
         this.paymentService.getTokens().subscribe(data => {
             for (const result of data) {
                 this.tokens.push(result);
@@ -55,6 +61,16 @@ export class PaymentDetailsComponent implements OnInit {
             this.key = data.token;
             this.status = data.status;
         });
+
+        this.paymentService.getDataCmc('ETH').subscribe(
+            (data) => {
+
+                this.formData.amount = this.formData.amount - this.canpayWizardComponent.canPayData().balance;
+                this.formData.eth = Number((this.formData.amount * data.data.quotes.ETH.price).toFixed(6));
+                this.formData.usd = Number((this.formData.amount * data.data.quotes.USD.price).toFixed(6));
+                this.etherPrise =  this.formData.eth;
+            }
+        );
 
         if (window.innerWidth < 769) {
             this.token_classes = 'card-holder col-xs-6 payment-margin-right';
@@ -88,14 +104,7 @@ export class PaymentDetailsComponent implements OnInit {
             this.can = false;
             this.etherium = !this.etherium;
             this.others = false;
-            this.paymentService.getData(currency).subscribe(
-                (data) => {
-                    const price = data.data.price * +this.formData.amount;
-                    this.formData.eth = +price.toFixed(6);
-                    this.etherPrise = +price.toFixed(6);
-                    this.validData = true;
-                }
-            );
+            this.validData = true;
 
             setTimeout(() => {
                 if (this.status && this.formData.currency != null) {

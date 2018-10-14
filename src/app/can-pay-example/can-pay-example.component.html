@@ -13,6 +13,8 @@
     [amount]="canPay.amount"          
     [postAuthorisationProcessName]="canPay.postAuthorisationProcessName"
     [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults"
+    [destinationAddress]="canPay.destinationAddress"
+    [userEmail]="canPay.userEmail"
     (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)"
     (complete)="canPay.complete($event)"
     (cancel)="canPay.cancel($event)"

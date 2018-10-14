@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import * as globals from '../../canexchange/globals';
+import * as globals from '../globals';
 import { Location } from '@angular/common';
 
 @Injectable()
 export class PaymentDetailsService {
     constructor(private http: HttpClient, private loc: Location) { }
+
+    getDataCmc(currency): Observable<any> {
+        return this.http.get(globals.cmc + currency);
+    }
 
     getData(currency): Observable<any> {
         return this.http.get(globals.bancor + currency);

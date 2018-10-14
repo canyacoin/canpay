@@ -9,8 +9,11 @@ import { ResultDetailsComponent } from './canpay-payment-qr/result.component';
 import { PaymentERCDetailsComponent } from './canpay-erc20-listing/payment-erc20.component';
 import { CompleteDetailsComponent } from './canpay-payment-complete/complete.component';
 import { BancorWcComponent } from './bancor-wc/bancor-wc.component';
+import { ErrorComponent } from './canpay-payment-error/error.component';
+import { LoaderComponent } from './canpay-loader/loading-status.component';
 import { CanpayModalComponent } from './canpay-modal/canpay-modal.component';
 import { CanpayWizardComponent } from './canpay-wizard/canpay-wizard.component';
+import { OrderComponent } from './canpay-order/order.component';
 import { CommaSepNumPipe } from './comma-sep-num.pipe';
 import { InputAmountComponent } from './input-amount/input-amount.component';
 import { LoadingStatusComponent } from './loading-status/loading-status.component';
@@ -36,11 +39,8 @@ import { ResultService } from './canpay-payment-qr/result.service';
 import { QRCodeModule } from 'angular2-qrcode';
 import { ClipboardModule } from 'ngx-clipboard';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { OrderComponent } from '../canexchange/order/order.component';
-import { ErrorComponent } from '../canexchange/error/error.component';
-import { OrderService } from '../canexchange/order/order.service';
+import { OrderService } from './canpay-order/order.service';
 import { ResizeService } from '../lib/services/resize.service';
-import { LoaderComponent } from '../canexchange/loader/loading-status.component';
 
 const COMPONENTS = [
   CanpayModalComponent,
@@ -56,14 +56,14 @@ const COMPONENTS = [
   MsgBoxComponent,
   InputAmountComponent,
   CommaSepNumPipe,
-  ErrorComponent,
   OrderComponent,
-  LoaderComponent,
   PaymentDetailsComponent,
   StagingDetailsComponent,
   PaymentERCDetailsComponent,
   CompleteDetailsComponent,
-  ResultDetailsComponent
+  ResultDetailsComponent,
+  ErrorComponent,
+  LoaderComponent
 ];
 
 const PROVIDERS = [

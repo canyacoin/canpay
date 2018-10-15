@@ -204,13 +204,13 @@ export class EthService implements OnDestroy {
 
 
 
-  async resolveTransaction(err, txHash, resolve, reject, onTxHash: Function = null) {
+  async resolveTransaction(err, from, txHash, resolve, reject, onTxHash: Function = null) {
     if (err) {
       reject(err);
     } else {
       try {
         if (onTxHash) {
-          onTxHash(txHash);
+          onTxHash(txHash, from);
         }
         const receipt = await this.getTransactionReceiptMined(txHash);
         receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);

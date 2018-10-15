@@ -51,7 +51,7 @@ export class CanYaCoinEthService extends EthService {
       const tx = await this.canyaContract.methods.approve(toRecepient, this.amountToCANTokens(amount));
       const gas = await tx.estimateGas();
       const gasPrice = await this.getDefaultGasPriceGwei();
-      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, txHash, resolve, reject, onTxHash));
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject, onTxHash));
     });
   }
 
@@ -61,7 +61,7 @@ export class CanYaCoinEthService extends EthService {
       const tx = await this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount));
       const gas = await tx.estimateGas({ from });
       const gasPrice = await this.getDefaultGasPriceGwei();
-      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, txHash, resolve, reject));
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
     });
   }
 

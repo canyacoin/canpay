@@ -276,7 +276,7 @@ export class CanpayWizardComponent implements OnInit {
   error(msg, autoDismiss = true) {
     this.errMsg = msg;
     if (autoDismiss) {
-      setTimeout(() => this.errMsg = null, 8000);
+      setTimeout(() => this.errMsg = null, 30000);
     }
   }
 

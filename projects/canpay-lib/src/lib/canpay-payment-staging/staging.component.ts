@@ -15,7 +15,6 @@ import { Step } from '../canpay-wizard/canpay-wizard.component';
 })
 
 export class StagingDetailsComponent implements OnInit {
-    // title = 'Thanks for staying tuned!';
     title = 'Booyah! CAN sent.';
     titleSecond = 'Your receipt has been emailed. ';
     @Input() formData: FormData;

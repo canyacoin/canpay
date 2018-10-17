@@ -11,10 +11,8 @@ To streamline the process, we've created a component that takes care of the foll
 - Check for the installed user wallet (Metamask or Trust)
 - Guide the user to install or unlock the wallet
 - Check the user CAN balance
-- Allow a user to buy CAN or ETH (for gas) if he doesn't have enough balance
-- Paying in CAN in a dApp, requires 2 transactions:
-  - First, user has to authorise a payment from his address to the dApp address
-  - Second, the dApp needs to withdraw the authorised funds and complete the user operation.
+- Allow a user to buy CAN's if he doesn't have enough .
+- Allow a user to buy CAN's with ETH or supported ERC20 token.
 - Before poping up Metamask dialog to the user to execute a transaction, the wizard explains the transaction purpose and what's going to happen.
 - After authorising a payment, the wizard calles (optionally) configured callback so the developer can do the authorised payment through his dApp contract.
 - A callback is triggered upon successful completion for the whole operation
@@ -120,6 +118,8 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | postAuthorisationProcessName| **Optional** Action name to be exexuted after payment authorisation, *Ex: 'Task Deposit'*. |
 | startPostAuthorisationProcess | **Optional** callback to be triggered after a user authorisation for the requested amount. It's used to allow a developer to execute external/extended payment operation from the CanYaCoin contract to the dApp contract. <br/> **Input:** [CanPayData](#canpaydata)|
 | postAuthorisationProcessResults | **Optional** if *postAuthorisationProcessName* is set. It's used to notify the wizard of the success or failure of the postAuthorisationProcess.|
+| destinationAddress | It is the destination address of the user where the CANS will be transferred. |
+| userEmail | It is the email address of the user. |
 
 ## Interfaces
 
@@ -140,6 +140,8 @@ interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
+  destinationAddress: string;
+  userEmail: string;
 }
 ```
 
@@ -157,7 +159,13 @@ enum Step {
   payment = 5,
   process = 6,
   confirmation = 7,
-  completed = 8
+  completed = 8,
+  details = 9,
+  staging = 10,
+  erc20 = 11,
+  complete = 12,
+  qr = 13,
+  error = 14
 }
 ```
 
@@ -230,6 +238,7 @@ The [CanPayExample](./src/app/can-pay-example/can-pay-example.component.ts) is a
 - Start your local test net 'truffle' instance by running `ganache-cli --port 9545` 
 - From main project directory, deploy CanYaCoin and Dao contracts to your testnet by running `npm run init-deploy-contracts`
 - Update [environment vars](../../src/environments/environment.ts) with the deployed contract addresses, you will find the addresses in the file `zos.local.json` under `./src/` directory
+- Update [global vars](projects/canpay-lib/src/lib/globals.ts) with appropriate staging address.
 - Run `npm run build_lib && npm start`
 - Open your browser at http://localhost:4200
 - Done!

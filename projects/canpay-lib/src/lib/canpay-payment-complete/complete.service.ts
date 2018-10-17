@@ -8,17 +8,12 @@ import { Location } from '@angular/common';
 export class CompleteDetailsService {
     constructor(private http: HttpClient, private loc: Location) { }
 
+    // sends mail request
     sentMail(data: any): Observable<any> {
-
         return this.http.post(globals.rootUrlDev + globals.contextPath + 'api/sendMail', data);
     }
 
-    getHostUrl() {
-        const angularRoute = this.loc.path();
-        const url = window.location.href.replace('4200', '8080');
-        return url.replace('/complete', '');
-    }
-
+    // it checks the status of tx
     checkStatus(id: any): Observable<any> {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/staging/' + id);
     }

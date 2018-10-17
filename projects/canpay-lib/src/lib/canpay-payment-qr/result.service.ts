@@ -8,20 +8,17 @@ import { Location } from '@angular/common';
 export class ResultService {
     constructor(private http: HttpClient, private loc: Location) { }
 
+    // save the tx
     save(data: any): Observable<any> {
         return this.http.post(globals.rootUrlDev + globals.contextPath + 'api/saveTransaction', data);
     }
 
-    getHostUrl() {
-        const angularRoute = this.loc.path();
-        const url = window.location.href.replace('4200', '8080');
-        return url.replace(angularRoute, '');
-    }
-
+    // check status of tx
     checkStatus(id: any): Observable<any> {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/staging/' + id);
     }
 
+    // get gas price
     getGasPrice(): Observable<any> {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/getGas');
     }

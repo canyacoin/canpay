@@ -43,6 +43,7 @@ export class PaymentERCDetailsComponent implements OnInit {
     }
 
     search(val) {
+        // for erc token search
         this.tokens = this.tokenData1.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
     }
 
@@ -51,6 +52,7 @@ export class PaymentERCDetailsComponent implements OnInit {
         this.formData = this.formDataService.getFormData();
         this.isFormValid = this.formDataService.isFormValid();
 
+        // get list of supported erc20 tokens
         this.paymentService.getTokens().subscribe(data => {
             this.tokenData1 = data;
             this.listStatus = false;
@@ -59,6 +61,7 @@ export class PaymentERCDetailsComponent implements OnInit {
             }
         });
 
+        // get status
         this.paymentService.getSessionId().subscribe(data => {
             this.key = data.token;
             this.status = data.status;
@@ -79,6 +82,7 @@ export class PaymentERCDetailsComponent implements OnInit {
         });
     }
 
+    // to convert erc20 token to CAN
     selectCurrency(form, key) {
         this.selectedERC = form.symbol;
         this.otherstest = form.address;
@@ -86,6 +90,7 @@ export class PaymentERCDetailsComponent implements OnInit {
         this.formData.erc20token = form.address;
         this.formData.erc20tokenDecimal = form.decimals;
         this.others = !this.others;
+
         this.paymentService.getData(form.symbol).subscribe(
             (data) => {
                 const price = data.data.price * + this.formData.amount;

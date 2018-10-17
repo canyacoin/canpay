@@ -8,26 +8,24 @@ import { Location } from '@angular/common';
 export class PaymentDetailsService {
     constructor(private http: HttpClient, private loc: Location) { }
 
+    // get conversion rates from coin market cap api
     getDataCmc(currency): Observable<any> {
         return this.http.get(globals.cmc + currency);
     }
 
+    // get conversion rates from bancor api
     getData(currency): Observable<any> {
         return this.http.get(globals.bancor + currency);
     }
 
+    // get list of tokes
     getTokens(): Observable<any> {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/getTokens');
     }
 
+    // gets current session
     getSessionId(): Observable<any> {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/getunique');
-    }
-
-    getHostUrl() {
-        const angularRoute = this.loc.path();
-        const url = window.location.href.replace('4200', '8080');
-        return url.replace(angularRoute, '');
     }
 
 }

@@ -217,8 +217,8 @@ A utility function that sets the `postAuthorisationProcessResults` based on the 
 ```javascript
 function setProcessResult(txOrErr) {
   this.postAuthorisationProcessResults = {
-    type: txOrErr.status !== 1 ? ProcessAction.error : ProcessAction.success,
-    msg: txOrErr.status !== 1 ? (txOrErr.message || 'Transaction failed') : null
+    type: txOrErr.status ? ProcessAction.error : ProcessAction.success,
+    msg: txOrErr.status ? (txOrErr.message || 'Transaction failed') : null
   };
 }
 ```

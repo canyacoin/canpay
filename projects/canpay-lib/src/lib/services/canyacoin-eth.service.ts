@@ -17,6 +17,8 @@ const DEFAULT_CONFIGS = {
 export class CanYaCoinEthService extends EthService {
   canyaContract: any;
 
+  decimals = 6;
+
   constructor(@Inject('Config') private config: any = {}, http: Http) {
     super({ useTestNet: config.useTestNet }, http);
     this.config = merge(DEFAULT_CONFIGS, config);
@@ -26,6 +28,20 @@ export class CanYaCoinEthService extends EthService {
   initContract(abi = this.config.contracts.canyaCoinAbi, address = this.config.contracts.canyaCoinAddress) {
     console.log('CanYaCoinEthService configs: ', this.config);
     return this.canyaContract = this.createContractInstance(abi, address);
+  }
+
+  getAmountWithDecimals(canAmount: number): number {
+    return canAmount * (10 ** this.decimals);
+  }
+
+  async getAllowance(owner: string, spender: string): Promise<number> {
+    try {
+      const allowance = await this.canyaContract.methods.allowance(owner, spender).call();
+      console.log('Allowance: ', allowance);
+      return Promise.resolve(allowance);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   async getCanYaBalance(userAddress: string = this.getOwnerAccount()): Promise<string> {

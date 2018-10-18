@@ -19,8 +19,9 @@ export class CanPayExampleComponent {
     // properties
     dAppName: 'CanYaDAO',
     successText: 'Customized success message!', // Default 'Sweet, payment done!'
-    operation: Operation.auth, // Authorise or Pay, Default is: Authorise
     recepient: environment.contracts.testAccount,
+    operation: Operation.auth, // Authorise, Pay or Interact, Default is: Authorise
+    onAuthTxHash: onAuthTxHash.bind(this), // Call a function after the txHash is available (i.e. once the tx has been sent)
     amount: 0, // allow the user to enter amount through an input box
     minAmount: 1000, // Default is 1
     maxAmount: 50000, // Default is 'No Maximum'
@@ -39,26 +40,15 @@ export class CanPayExampleComponent {
 
   startCanPayUserActivation(canPayData: CanPayData) {
     console.log(canPayData);
-    this.daoEthService.createUserEscrow(canPayData.account, canPayData.amount)
+
+    const onTxCallback = (txHash: string, from: string) => {
+      // do something
+    };
+
+    this.daoEthService.createUserEscrow(canPayData.account, canPayData.amount, onTxCallback)
       // setProcessResult is a helper utility that takes the returned 'tx' from the 'createUserEscrow' and set the appropriate result as failed or success tx.
       .then(setProcessResult.bind(this.canPay))
       .catch(setProcessResult.bind(this.canPay));
-
-    /*
-    // another way to set the result is as follows
-    this.daoEthService.createUserEscrow(canPayData.amount)
-      .then(tx =>
-        this.CanPay.postAuthorisationProcessResults = {
-          type: tx.status === 1 ? ProcessAction.success : ProcessAction.error,
-          msg: tx.status === 1 ? null : 'Transaction Failed'
-        })
-      .catch(err => {
-        this.CanPay.postAuthorisationProcessResults = {
-          type: ProcessAction.error,
-          msg: err.message || 'Transaction Failed'
-        };
-      });
-      */
   }
 
   completeCanPayUserActivation(canPayData: CanPayData) {

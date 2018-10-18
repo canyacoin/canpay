@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { EthService } from 'canpay-lib';
-import { daoAbi } from 'src/app/contracts';
-import { environment } from '../../environments/environment';
 import { Http } from '@angular/http';
+
+import { daoAbi } from 'src/app/contracts';
+
+import { EthService } from 'canpay-lib';
+import { environment } from '../../environments/environment';
 
 declare let require: any;
 
@@ -15,15 +17,14 @@ export class DaoEthService extends EthService {
     this.daoContract = this.createContractInstance(daoAbi, environment.contracts.canYaDao);
   }
 
-  createUserEscrow(fromAccount = this.account.value, amount) {
+  async createUserEscrow(fromAccount = this.account.value, amount, onTxHash: Function): Promise<any> {
     console.log('createUserEscrow: ', this.daoContract, fromAccount, amount);
-    return this.daoContract.methods.createUserEscrow(this.amountToCANTokens(amount)).send({ from: fromAccount, ...this.getDefaultGasParams() })
-      .then(tx => this.getTransactionReceiptMined(tx.transactionHash))
-      .then(tx => {
-        console.log('createUserEscrowTx: ', tx);
-        tx.status = typeof (tx.status) === 'boolean' ? tx.status : this.web3js.utils.hexToNumber(tx.status);
-        return tx;
-      });
+    return new Promise((resolve, reject) => {
+      this.daoContract.methods.createUserEscrow(this.amountToCANTokens(amount))
+        .send({ from: fromAccount, ...this.getDefaultGasParams() },
+          async (err, txHash) => this.eth.resolveTransaction(err, fromAccount, txHash, resolve, reject, onTxHash));
+      // send the onTxHash method here to utilise the callback
+    });
   }
 
   balanceOfUser(user = this.account.value) {

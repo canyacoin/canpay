@@ -200,7 +200,11 @@ export class CanpayWizardComponent implements OnInit {
   setAccount(_acc) {
     console.log('setAccount: ', _acc);
     this.account = _acc;
-    setTimeout(() => !this.amount ? this.updateCurrentStep(Step.paymentAmount) : this.checkBalance(_acc), 200);
+    setTimeout(() => this.operation === Operation.interact
+      ? this.updateCurrentStep(Step.process)
+      : !this.amount
+        ? this.updateCurrentStep(Step.paymentAmount)
+        : this.checkBalance(_acc), 200);
   }
 
   setAmount(amount) {

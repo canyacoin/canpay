@@ -136,9 +136,7 @@ export class EthService implements OnDestroy {
   }
 
   private checkAccountMetaMask() {
-    console.log('checkAccountMetaMask..');
     this.web3js.eth.getAccounts().then((accs: string[]) => {
-      console.log('Web3Service: loadedaccounts: ' + JSON.stringify(accs));
       if (accs[0] !== this.account.value) {
         console.log('Web3Service: new account found: ' + JSON.stringify(accs[0]));
         this.account.next(accs[0]);
@@ -206,16 +204,20 @@ export class EthService implements OnDestroy {
 
 
 
-  async resolveTransaction(err, txHash, resolve, reject) {
+  async resolveTransaction(err, from, txHash, resolve, reject, onTxHash: Function = null) {
     if (err) {
       reject(err);
-    }
-    try {
-      const receipt = await this.getTransactionReceiptMined(txHash);
-      receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
-      resolve(receipt);
-    } catch (e) {
-      reject(e);
+    } else {
+      try {
+        if (onTxHash) {
+          onTxHash(txHash, from);
+        }
+        const receipt = await this.getTransactionReceiptMined(txHash);
+        receipt.status = typeof (receipt.status) === 'boolean' ? receipt.status : this.web3js.utils.hexToNumber(receipt.status);
+        resolve(receipt);
+      } catch (e) {
+        reject(e);
+      }
     }
   }
 
@@ -226,12 +228,10 @@ export class EthService implements OnDestroy {
         if (error) {
           return reject(error);
         }
-
         if (receipt == null) {
           setTimeout(() => transactionReceiptAsync(resolve, reject), interval);
           return;
         }
-
         resolve(receipt);
       });
     };

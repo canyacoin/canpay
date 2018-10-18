@@ -16,7 +16,8 @@ export enum Step {
 
 export enum Operation {
   auth = 'Authorise',
-  pay = 'Pay'
+  pay = 'Pay',
+  interact = 'Interact'
 }
 
 export enum ProcessAction {
@@ -42,6 +43,7 @@ export interface Contract {
 export interface CanPay {
   dAppName: string;
   operation?: Operation;
+  onAuthTxHash?: Function;
   recepient: string;
   amount?: number;
   minAmount?: number;
@@ -58,8 +60,8 @@ export interface CanPay {
 
 export function setProcessResult(txOrErr) {
   this.postAuthorisationProcessResults = {
-    type: txOrErr.status !== 1 ? ProcessAction.error : ProcessAction.success,
-    msg: txOrErr.status !== 1 ? (txOrErr.message || 'Transaction failed') : null
+    type: !txOrErr.status ? ProcessAction.error : ProcessAction.success,
+    msg: !txOrErr.status ? (txOrErr.message || 'Transaction failed') : null
   };
 }
 
@@ -85,6 +87,7 @@ export class CanpayWizardComponent implements OnInit {
   @Input() view = View.Normal;
   @Input() postAuthorisationProcessName;
   @Input() operation = Operation.auth;
+  @Input() onAuthTxHash;
   @Input() recepient;
   @Input() dAppName;
   @Input() successText;
@@ -131,12 +134,12 @@ export class CanpayWizardComponent implements OnInit {
       {
         name: 'Pay Amount',
         value: Step.paymentAmount,
-        active: !this.amount
+        active: !this.amount && this.operation !== Operation.interact
       },
       {
         name: 'Balance Check',
         value: Step.balanceCheck,
-        active: true
+        active: true && this.operation !== Operation.interact
       },
       {
         name: 'Authorisation',
@@ -151,7 +154,7 @@ export class CanpayWizardComponent implements OnInit {
       {
         name: this.postAuthorisationProcessName,
         value: Step.process,
-        active: !!this.postAuthorisationProcessName
+        active: !!this.postAuthorisationProcessName || this.operation === Operation.interact
       },
       {
         name: 'Confirmation',
@@ -197,7 +200,11 @@ export class CanpayWizardComponent implements OnInit {
   setAccount(_acc) {
     console.log('setAccount: ', _acc);
     this.account = _acc;
-    setTimeout(() => !this.amount ? this.updateCurrentStep(Step.paymentAmount) : this.checkBalance(_acc), 200);
+    setTimeout(() => this.operation === Operation.interact
+      ? this.updateCurrentStep(Step.process)
+      : !this.amount
+        ? this.updateCurrentStep(Step.paymentAmount)
+        : this.checkBalance(_acc), 200);
   }
 
   setAmount(amount) {
@@ -218,7 +225,7 @@ export class CanpayWizardComponent implements OnInit {
         this.account = this.canyaCoinEthService.getOwnerAccount();
         this.insufficientBalance = Number(_balance) < this.amount;
         if (!this.insufficientBalance) {
-          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : Step.payment);
+          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment);
         }
       })
       .catch(err => this.error('Unable to retrieve user CAN balance!'))
@@ -273,7 +280,7 @@ export class CanpayWizardComponent implements OnInit {
   error(msg, autoDismiss = true) {
     this.errMsg = msg;
     if (autoDismiss) {
-      setTimeout(() => this.errMsg = null, 8000);
+      setTimeout(() => this.errMsg = null, 30000);
     }
   }
 

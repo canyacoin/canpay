@@ -111,6 +111,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | Property | Description |
 | --- | --- |
 | dAppName | Name of the dApp to be displayed to the user as a merchant name. |
+| onAuthTxHash | Function to execute once the hash of the transaction is returned from the authorisation operation. |
 | recepient | The dApp contract address that will receive the payment |
 | amount | **Optional** If set, no amount-input-box will be displayed to the user and the specified amount will be forced.|
 | minAmount | **Optional** If amount is set, this will be the minum accepted amount from the user.|
@@ -129,6 +130,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 interface CanPay {
   dAppName: string;
   operation?: Operation;
+  onAuthTxHash? : Function;
   recepient: string;
   amount?: number;
   minAmount?: number;
@@ -169,6 +171,7 @@ Type of CanPay operations, default is Authorise.
 enum Operation {
   auth = 'Authorise', // Request user authoisation to withdraw CAN
   pay = 'Pay' // Request user to pay CAN directly to the specified recepient
+  interact = 'Interact' // Go straight to the post auth process
 }
 ```
 
@@ -214,8 +217,8 @@ A utility function that sets the `postAuthorisationProcessResults` based on the 
 ```javascript
 function setProcessResult(txOrErr) {
   this.postAuthorisationProcessResults = {
-    type: txOrErr.status !== 1 ? ProcessAction.error : ProcessAction.success,
-    msg: txOrErr.status !== 1 ? (txOrErr.message || 'Transaction failed') : null
+    type: txOrErr.status ? ProcessAction.error : ProcessAction.success,
+    msg: txOrErr.status ? (txOrErr.message || 'Transaction failed') : null
   };
 }
 ```

@@ -134,12 +134,12 @@ export class CanpayWizardComponent implements OnInit {
       {
         name: 'Pay Amount',
         value: Step.paymentAmount,
-        active: !this.amount
+        active: !this.amount && this.operation !== Operation.interact
       },
       {
         name: 'Balance Check',
         value: Step.balanceCheck,
-        active: true
+        active: true && this.operation !== Operation.interact
       },
       {
         name: 'Authorisation',

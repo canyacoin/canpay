@@ -23,4 +23,9 @@ export class ResultService {
         return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/getGas');
     }
 
+    // get token by address
+    getByAddress(address: string): Observable<any> {
+        return this.http.get(globals.rootUrlDev + globals.contextPath + 'api/getbyaddress/' + address);
+    }
+
 }

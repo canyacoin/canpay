@@ -39,7 +39,7 @@ export class CompleteDetailsComponent implements OnInit {
                 });
         } catch (e) {
         }
-        this.completeService.sentMail(this.formData).subscribe(activity => {
+        this.completeService.sentMail(this.formData.key).subscribe(activity => {
 
         });
 

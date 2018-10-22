@@ -41,13 +41,13 @@ export class ResultDetailsComponent implements OnInit {
     canyaContract: any;
     message: string;
     orderUrl: string;
-    dai = false;
     @Output() valueChange = new EventEmitter();
 
     constructor(protected http: Http, private resultService: ResultService,
         private router: Router, private formDataService: FormDataService, private route: Router, private canYaCoinEthService: CanYaCoinEthService) {
- 
+
         try {
+
             const subscription = interval(200 * 60).subscribe(x => {
 
                 this.resultService.checkStatus(this.formData.key).subscribe(activity => {
@@ -67,19 +67,6 @@ export class ResultDetailsComponent implements OnInit {
         } catch (e) {
 
         }
-    }
-
-    createContractInstance(abi, address) {
-        if (!this.web3js) {
-            console.log('Error createContractInstance, web3 provider not initialized');
-            return;
-        }
-
-        return new this.web3js.eth.Contract(abi, address);
-    }
-
-    amountToCANTokens(amount) {
-        return amount * Math.pow(10, this.formData.erc20tokenDecimal);
     }
 
     submit() {
@@ -142,7 +129,7 @@ export class ResultDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-      //  this.valueChange.emit(Step.none);
+        this.valueChange.emit(Step.buyCan);
     }
 
     ngOnInit() {
@@ -150,16 +137,24 @@ export class ResultDetailsComponent implements OnInit {
         this.copied = false;
         this.formData = this.formDataService.getFormData();
         this.orderUrl = globals.order + this.formData.key;
-        if (this.formData.currency === 'ETH') {
-            this.ethStatus = true;
-        }
-
-        if (this.formData.currency === 'Dai') {
-            this.dai = true;
-        }
 
         this.isFormValid = this.formDataService.isFormValid();
         this.personal = this.formDataService.getPersonal();
+
+        if (this.formData.currency === 'ETH') {
+            this.ethStatus = true;
+            this.metamaskEnable();
+        } else {
+            this.resultService.getByAddress(this.formData.erc20token).subscribe(activity => {
+                if (activity.status === 1) {
+                    this.metamaskEnable();
+                }
+            },
+                (error) => {
+
+                });
+
+        }
 
         this.resultService.save(this.formData).subscribe(activity => {
         });

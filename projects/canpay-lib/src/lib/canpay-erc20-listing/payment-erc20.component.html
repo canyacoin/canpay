@@ -22,7 +22,7 @@
                 <canyalib-loader [isLoading]="listStatus" [label]="'Loading Tokens'"></canyalib-loader>
                 <div [className]="token_classes" style="margin-right: 8px; " *ngFor="let token of tokens;">
 
-                    <div [ngClass]="otherstest == token.address ? 'card-body active' : 'card-body'" style="cursor: pointer;"
+                    <div [ngClass]="otherstest == token.address ? 'card-body active' : 'card-body'" style="cursor: pointer;" *ngIf="token.status > 0"
                         (click)="selectCurrency(token, key)">
                         <div class="radio float-right">
 

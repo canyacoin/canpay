@@ -53,7 +53,7 @@ export class StagingDetailsComponent implements OnInit {
         this.isFormValid = this.formDataService.isFormValid();
         this.etherUrl = 'https://etherscan.io/tx/' + this.formData.hash;
         this.orderUrl = 'http://staging.canexchange.io/#/order/' + this.formData.key;
-        this.stagingService.sentMail(this.formData).subscribe(activity => {
+        this.stagingService.sentMail(this.formData.key).subscribe(activity => {
 
         });
 

@@ -8,13 +8,13 @@ export const etherscan = 'https://etherscan.io/tx/';
 export const order = 'http://staging.canexchange.io/#/order/';
 export let oldAmount: string;
 
-// export const socketsDev = '//staging.canexchange.io';
-// export const rootUrlDev = 'http://staging.canexchange.io';
-// export const contextPath = '/backend/';
-
-export const socketsDev = '//localhost:8080';
-export const rootUrlDev = 'http://localhost:8080';
+ export const socketsDev = '//canpay-dot-canex-217605.appspot.com';
+export const rootUrlDev = 'https://canpay-dot-canex-217605.appspot.com';
 export const contextPath = '/';
+
+// export const socketsDev = '//localhost:8080';
+// export const rootUrlDev = 'http://localhost:8080';
+// export const contextPath = '/';
 
 // staging address where ETH or Tokens are going to be received
 export const ethereumAddress = '0xf0725197ca2c41e61912d97c91febcee21664f65';

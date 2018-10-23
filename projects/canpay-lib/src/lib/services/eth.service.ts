@@ -181,6 +181,8 @@ export class EthService implements OnDestroy {
           } else {
             resolve('11000000000');
           }
+        }).catch(e => {
+          resolve('11000000000');
         });
       } catch (e) {
         resolve('11000000000');

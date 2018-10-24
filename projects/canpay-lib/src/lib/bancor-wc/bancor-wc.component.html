@@ -6,11 +6,9 @@
 
   <div id="bancor-wc" [hidden]="type === 'WITHOUT_INPUT_BOXES'"></div>
 
-  <button *ngIf="type === 'WITHOUT_INPUT_BOXES' && status === Status.New && !isLoadingBancorWidget" class="btn btn-primary" (click)="open()" [disabled]="isLoadingBancorWidget">
-    Buy CAN Tokens    
+  <button class="btn btn-primary" (click)="callCanEx(balance)">
+    Buy CAN Tokens
   </button>
-
-  <button *ngIf="isLoadingBancorWidget" class="btn btn-default"><img src="assets/img/loader.svg" height="36px" alt="Loader"> Loading Bancor Widget</button>
 
   <div *ngIf="status === Status.PendingPurchase || status === Status.InProgress" class="buttons-bar">
     <button class="btn btn-primary fixed-width-200" [disabled]="status === Status.InProgress" (click)="checkBalance()">

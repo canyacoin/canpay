@@ -1,21 +1,21 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Injector } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { Injector, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { ClipboardModule } from 'ngx-clipboard';
 
-import { AppRoutingModule } from './app-routing.module';
-
-import { AppComponent } from './app.component';
+import { DaoEthService } from 'src/app/services/dao.eth.service';
 
 import { CanpayModule } from 'canpay-lib';
 import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { CanPayExampleComponent } from './can-pay-example/can-pay-example.component';
-import { DaoEthService } from 'src/app/services/dao.eth.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CanPayExampleComponent,
+    CanPayExampleComponent
   ],
   imports: [
     BrowserModule,

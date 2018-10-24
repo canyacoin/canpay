@@ -26,6 +26,9 @@ export class CanPayExampleComponent {
     minAmount: 1000, // Default is 1
     maxAmount: 50000, // Default is 'No Maximum'
 
+    // CanExchange
+    destinationAddress: environment.contracts.testAccount, // account to credit from CanEx (can be overriden)
+    userEmail: '<your email>', // email to which the canexchange confirmation should be sent
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),
     cancel: this.cancelCanPayUserActivation.bind(this),

@@ -1,5 +1,12 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
-import { Renderer2 } from '@angular/core';
+import {
+    AfterViewInit, Component, EventEmitter, Input, OnInit, Output, Renderer2
+} from '@angular/core';
+import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
+import { interval } from 'rxjs';
+
+import { FormData, Personal } from '../canpay-data/formData.model';
+import { FormDataService } from '../canpay-data/formData.service';
+import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 
 declare var BancorConvertWidget: any;
 
@@ -17,6 +24,7 @@ export enum Status {
 })
 export class BancorWcComponent implements OnInit, AfterViewInit {
   @Output() check = new EventEmitter();
+  @Output() valueChange = new EventEmitter();
   @Input() type = 'WITHOUT_INPUT_BOXES';
   @Input() balance = 0;
   @Input() set isLoading(isLoading: boolean) {
@@ -24,45 +32,28 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
       this.status = Status.New;
     }
   }
-
+  @Input() formData: FormData;
+  personal: Personal;
   currentBalance: Number;
   Status = Status;
   status: Status = Status.New;
   isLoadingBancorWidget = false;
 
-  constructor(private renderer: Renderer2) { }
+  constructor(private renderer: Renderer2, private dialogService: DialogService,
+    private formDataService: FormDataService, private canpayWizardComponent: CanpayWizardComponent) { }
 
   ngOnInit() {
-    if (this.isBancorLoaded()) { return; }
-
-    this.isLoadingBancorWidget = true;
-    this.addJsToElement('https://widget-convert.bancor.network/v1').onload = () => {
-      console.log('BancorConvertWidget Tag loaded');
-      this.isLoadingBancorWidget = false;
-      this.initBancorWidget();
-    };
+    this.formData = this.formDataService.getFormData();
+    this.personal = this.formDataService.getPersonal();
+    const subscription = interval(3000).subscribe(x => {
+      this.canpayWizardComponent.checkBalanceAfterCredit(this.formData.address);
+    });
   }
 
   ngAfterViewInit() { }
 
-  isBancorLoaded() {
-    try {
-      if (BancorConvertWidget) { return true; }
-    } catch (e) { console.log('BancorConvertWidget is not initialized'); }
-
-    return false;
-  }
-
-  initBancorWidget() {
-    if (!this.isBancorLoaded()) { return; }
-
-    BancorConvertWidget.init({
-      'type': this.type,
-      'baseCurrencyId': '5a6f61ece3de16000123763a',
-      'pairCurrencyId': '5937d635231e97001f744267',
-      'primaryColor': '#00BFFF',
-      'primaryColorHover': '55DAFB'
-    });
+  public callCanEx(balance) {
+    this.valueChange.emit(Step.details);
   }
 
   addJsToElement(src: string): HTMLScriptElement {
@@ -74,7 +65,6 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   }
 
   open() {
-    BancorConvertWidget.showConvertPopup('buy');
     this.status = Status.PendingPurchase;
   }
 

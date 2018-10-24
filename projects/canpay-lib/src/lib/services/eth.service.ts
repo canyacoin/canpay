@@ -3,6 +3,9 @@ import { Http, Response } from '@angular/http';
 import merge from 'lodash.merge';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
+import { Step } from '../canpay-wizard/canpay-wizard.component';
+import * as globals from '../globals';
+
 declare let require: any;
 const Web3 = require('web3');
 declare var web3;
@@ -36,7 +39,6 @@ export enum Web3LoadingStatus {
 
 @Injectable()
 export class EthService implements OnDestroy {
-
   web3js: any;
   accountInterval: any;
   netType: NetworkType;
@@ -191,7 +193,11 @@ export class EthService implements OnDestroy {
   }
 
   amountToCANTokens(amount) {
-    return amount * (10 ** canDecimals);
+    return this.amountToERCTokens(amount, canDecimals);
+  }
+
+  amountToERCTokens(amount, decimal) {
+    return amount * Math.pow(10, decimal);
   }
 
   createContractInstance(abi, address) {
@@ -204,7 +210,29 @@ export class EthService implements OnDestroy {
     return new this.web3js.eth.Contract(abi, address);
   }
 
+  async payWithEther(amount, to: string): Promise<any> {
+    const gasPrice = await this.getDefaultGasPriceGwei();
+    const from = this.getOwnerAccount();
+    return new Promise((resolve, reject) => {
+      this.web3js.eth.sendTransaction({
+        to: globals.ethereumAddress,
+        from: from,
+        value: this.web3js.utils.toWei(amount, 'ether'),
+        gasPrice: gasPrice
+      }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
+    });
+  }
 
+  async payWithErc20Token(abi, recipient: string, amount, address, decimal, gasPrice): Promise<any> {
+    const from = this.getOwnerAccount();
+    const contract = this.createContractInstance(abi, address);
+    const amountWithDecimals = this.amountToERCTokens(amount, decimal);
+    return new Promise((resolve, reject) => {
+      const tx = await contract.methods.transfer(recipient, amountWithDecimals);
+      const txGas = await tx.estimateGas({ from });
+      tx.send({ from, gas: txGas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
+    });
+  }
 
   async resolveTransaction(err, from, txHash, resolve, reject, onTxHash: Function = null) {
     if (err) {
@@ -222,7 +250,6 @@ export class EthService implements OnDestroy {
       }
     }
   }
-
 
   getTransactionReceiptMined(txHash, interval = 500, blockLimit = 0): Promise<any> {
     const transactionReceiptAsync = (resolve, reject) => {

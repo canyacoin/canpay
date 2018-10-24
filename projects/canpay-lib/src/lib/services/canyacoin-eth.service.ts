@@ -81,4 +81,13 @@ export class CanYaCoinEthService extends EthService {
     });
   }
 
+  payWithEth(amount, to: string) {
+    console.log('CanYaCoinEthService: payWithEther: ', amount);
+    this.payWithEther(amount, to);
+  }
+
+  payWithERC20(amount, recipient, token, decimal, gas) {
+    console.log('CanYaCoinEthService: payWithErc20Token: ', amount, token, decimal, gas);
+    this.payWithErc20Token(this.config.contracts.canyaCoinAbi, recipient, amount, token, decimal, gas);
+  }
 }

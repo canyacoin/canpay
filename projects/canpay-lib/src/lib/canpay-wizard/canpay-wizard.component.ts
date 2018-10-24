@@ -11,7 +11,13 @@ export enum Step {
   payment = 5,
   process = 6,
   confirmation = 7,
-  completed = 8
+  completed = 8,
+  details = 9,
+  staging = 10,
+  erc20 = 11,
+  complete = 12,
+  qr = 13,
+  error = 14
 }
 
 export enum Operation {
@@ -56,6 +62,8 @@ export interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
+  destinationAddress: string;
+  userEmail: string;
 }
 
 export function setProcessResult(txOrErr) {
@@ -94,6 +102,8 @@ export class CanpayWizardComponent implements OnInit {
   @Input() amount = 0;
   @Input() minAmount = 0;
   @Input() maxAmount = 0;
+  @Input() destinationAddress;
+  @Input() userEmail;
 
   @Input() set canyaContract(canyaContract: Contract) {
     console.log('setting up canyaContract: ', canyaContract);
@@ -232,6 +242,23 @@ export class CanpayWizardComponent implements OnInit {
       .then(() => this.isLoading = false);
   }
 
+  stepChanger(step) {
+    this.currStep = step;
+  }
+
+  checkBalanceAfterCredit(_acc) {
+    this.canyaCoinEthService.getCanYaBalance(_acc)
+      .then(_balance => {
+        console.log('balance: ', _balance);
+        this.balance = Number(_balance);
+        this.account = this.canyaCoinEthService.getOwnerAccount();
+        this.insufficientBalance = Number(_balance) < this.amount;
+        if (!this.insufficientBalance) {
+          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : Step.payment);
+        }
+      });
+  }
+
   notifyPaymentAuthorised(tx) {
     console.log('authorisedTx: ', tx);
     this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
@@ -283,5 +310,4 @@ export class CanpayWizardComponent implements OnInit {
       setTimeout(() => this.errMsg = null, 30000);
     }
   }
-
 }

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { QRCodeModule } from 'angular2-qrcode';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -68,7 +69,7 @@ const COMPONENTS = [
 
 const PROVIDERS = [
   EthService, CanYaCoinEthService, CanPayService, FormDataService,
-  HttpClientModule, OrderService, ResizeService, StagingDetailsService, PaymentDetailsServiceERC,
+  OrderService, ResizeService, StagingDetailsService, PaymentDetailsServiceERC,
   CompleteDetailsService, PaymentDetailsService, ResultService
 ];
 
@@ -76,6 +77,8 @@ const PROVIDERS = [
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
+    HttpModule,
     BootstrapModalModule.forRoot({ container: document.body }),
     ClipboardModule,
     QRCodeModule

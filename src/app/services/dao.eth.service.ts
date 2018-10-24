@@ -22,7 +22,7 @@ export class DaoEthService extends EthService {
     return new Promise((resolve, reject) => {
       this.daoContract.methods.createUserEscrow(this.amountToCANTokens(amount))
         .send({ from: fromAccount, ...this.getDefaultGasParams() },
-          async (err, txHash) => this.eth.resolveTransaction(err, fromAccount, txHash, resolve, reject, onTxHash));
+          async (err, txHash) => this.resolveTransaction(err, fromAccount, txHash, resolve, reject, onTxHash));
       // send the onTxHash method here to utilise the callback
     });
   }

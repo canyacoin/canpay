@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { ResizeService } from '../../lib/services/resize.service';
 import { FormData, Personal } from '../canpay-data/formData.model';
 import { FormDataService } from '../canpay-data/formData.service';
-import { ResizeService } from '../../lib/services/resize.service';
-import { Subscription } from 'rxjs';
+import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 import { PaymentDetailsService } from './payment-details.service';
-import { Step } from '../canpay-wizard/canpay-wizard.component';
-import { CanpayWizardComponent } from '../canpay-wizard/canpay-wizard.component';
 
 @Component({
     selector: 'canyalib-mt-wizard-payment-details'
@@ -18,9 +18,9 @@ export class PaymentDetailsComponent implements OnInit {
     title = 'Please Review and Confirm Your Transaction!';
     workType: boolean;
     form: any;
-    @Input() formData: FormData;
     isFormValid = false;
     can = false;
+    @Input() formData: FormData;
     etherium = false;
     etherPrise: number;
     key: any;
@@ -68,7 +68,7 @@ export class PaymentDetailsComponent implements OnInit {
                 this.formData.amount = this.formData.amount - this.canpayWizardComponent.canPayData().balance;
                 this.formData.eth = Number((this.formData.amount * data.data.quotes.ETH.price).toFixed(6));
                 this.formData.usd = Number((this.formData.amount * data.data.quotes.USD.price).toFixed(6));
-                this.etherPrise =  this.formData.eth;
+                this.etherPrise = this.formData.eth;
             }
         );
 
@@ -125,7 +125,6 @@ export class PaymentDetailsComponent implements OnInit {
             this.erc20 = !this.erc20;
             this.others = false;
             this.valueChange.emit(Step.erc20);
-
         }
     }
 
@@ -150,6 +149,6 @@ export class PaymentDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-       // this.valueChange.emit(Step.none);
+        // this.valueChange.emit(Step.none);
     }
 }

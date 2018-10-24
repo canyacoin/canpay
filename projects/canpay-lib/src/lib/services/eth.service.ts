@@ -227,7 +227,7 @@ export class EthService implements OnDestroy {
     const from = this.getOwnerAccount();
     const contract = this.createContractInstance(abi, address);
     const amountWithDecimals = this.amountToERCTokens(amount, decimal);
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const tx = await contract.methods.transfer(recipient, amountWithDecimals);
       const txGas = await tx.estimateGas({ from });
       tx.send({ from, gas: txGas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));

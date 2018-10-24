@@ -13,10 +13,10 @@ export enum Step {
   confirmation = 7,
   completed = 8,
   details = 9,
-  staging = 10,
   erc20 = 11,
-  complete = 12,
   qr = 13,
+  staging = 10,
+  complete = 12,
   error = 14
 }
 

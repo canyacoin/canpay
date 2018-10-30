@@ -62,7 +62,7 @@ export interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
-  enableCanEx: boolean;
+  enableCanEx?: boolean;
   destinationAddress: string;
   userEmail: string;
 }

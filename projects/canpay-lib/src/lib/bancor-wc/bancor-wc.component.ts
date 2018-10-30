@@ -54,7 +54,7 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() { }
 
   buyCan() {
-    if this.enableCanEx {
+    if (this.enableCanEx) {
       this.callCanEx();
     } else {
 

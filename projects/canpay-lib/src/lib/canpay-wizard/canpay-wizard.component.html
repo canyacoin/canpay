@@ -52,7 +52,8 @@
             the process.
             <br>Please, buy some CAN and re-check your balance to proceed.</p>
           <p class="wizard-hidden-desktop">Insufficient CAN. Please, buy some CAN and re-check your balance to proceed.</p>
-          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" (valueChange)='stepChanger($event)' (check)="checkBalance($event)"></canyalib-bancor-wc>
+          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" [enableCanEx]="enableCanEx" (valueChange)='stepChanger($event)'
+            (check)="checkBalance($event)"></canyalib-bancor-wc>
         </div>
       </div>
 

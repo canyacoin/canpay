@@ -62,6 +62,7 @@ export interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
+  enableCanEx: boolean;
   destinationAddress: string;
   userEmail: string;
 }
@@ -102,6 +103,7 @@ export class CanpayWizardComponent implements OnInit {
   @Input() amount = 0;
   @Input() minAmount = 0;
   @Input() maxAmount = 0;
+  @Input() enableCanEx = true;
   @Input() destinationAddress;
   @Input() userEmail;
 

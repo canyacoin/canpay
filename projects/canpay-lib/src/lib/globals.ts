@@ -12,8 +12,8 @@ export const socketsDev = '//canpay-dot-canex-217605.appspot.com';
 export const rootUrlDev = 'https://canpay-dot-canex-217605.appspot.com';
 export const contextPath = '/';
 
-// export const socketsDev = '//localhost:8080';
-// export const rootUrlDev = 'http://localhost:8080';
+// export const socketsDev = '//canpay-backend-dot-staging-can-work.appspot.com';
+// export const rootUrlDev = 'https://canpay-backend-dot-staging-can-work.appspot.com';
 // export const contextPath = '/';
 
 // staging address where ETH or Tokens are going to be received

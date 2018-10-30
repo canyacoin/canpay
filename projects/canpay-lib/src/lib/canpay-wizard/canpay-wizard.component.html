@@ -52,13 +52,13 @@
             the process.
             <br>Please, buy some CAN and re-check your balance to proceed.</p>
           <p class="wizard-hidden-desktop">Insufficient CAN. Please, buy some CAN and re-check your balance to proceed.</p>
-          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" [enableCanEx]="enableCanEx" (valueChange)='stepChanger($event)'
+          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" [disableCanEx]="disableCanEx" (valueChange)='stepChanger($event)'
             (check)="checkBalance($event)"></canyalib-bancor-wc>
         </div>
       </div>
 
       <div *ngIf="currStep === Step.details">
-        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' [destinationAddress]='destinationAddress'
+        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' [destinationAddress]='getCanExRecipient()'
           [userEmail]='userEmail'></canyalib-mt-wizard-payment-details>
       </div>
 

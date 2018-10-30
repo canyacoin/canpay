@@ -62,8 +62,8 @@ export interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
-  enableCanEx: boolean;
-  destinationAddress: string;
+  disableCanEx: boolean;
+  destinationAddress?: string;
   userEmail: string;
 }
 
@@ -103,7 +103,7 @@ export class CanpayWizardComponent implements OnInit {
   @Input() amount = 0;
   @Input() minAmount = 0;
   @Input() maxAmount = 0;
-  @Input() enableCanEx = true;
+  @Input() disableCanEx = false;
   @Input() destinationAddress;
   @Input() userEmail;
 
@@ -246,6 +246,10 @@ export class CanpayWizardComponent implements OnInit {
 
   stepChanger(step) {
     this.currStep = step;
+  }
+
+  getCanExRecipient(): string {
+    return this.destinationAddress || this.canyaCoinEthService.getOwnerAccount();
   }
 
   checkBalanceAfterCredit(_acc) {

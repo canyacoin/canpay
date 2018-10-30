@@ -4,5 +4,5 @@
   "lib": {
     "entryFile": "src/public_api.ts"
   },
-  "whitelistedNonPeerDependencies": ["ng2-bootstrap-modal","web3","lodash.merge"]
+  "whitelistedNonPeerDependencies": ["ng2-bootstrap-modal", "web3", "lodash.merge", "angular2-qrcode", "ngx-clipboard"]
 }

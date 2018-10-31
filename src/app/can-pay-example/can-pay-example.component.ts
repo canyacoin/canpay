@@ -36,13 +36,7 @@ export class CanPayExampleComponent {
     postAuthorisationProcessResults: null
   };
 
-  acc = '';
-
   constructor(private daoEthService: DaoEthService, private canPayService: CanPayService) { }
-
-  getAccount() {
-    this.acc = this.daoEthService.getOwnerAccount();
-  }
 
   startCanPayUserActivation(canPayData: CanPayData) {
     console.log(canPayData);

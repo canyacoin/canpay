@@ -5,7 +5,8 @@ import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
 declare let require: any;
 const Web3 = require('web3');
-declare var web3;
+// declare var web3;
+declare var window;
 
 const canDecimals = 6;
 const gas = { gasPrice: '8000000000', gas: '210000' };
@@ -50,9 +51,9 @@ export class EthService implements OnDestroy {
   public account$ = this.account.asObservable();
 
   constructor(@Inject('Config') private conf: any = {}, protected http: Http) {
-    if (typeof web3 !== 'undefined') {
+    if (typeof window.ethereum !== 'undefined') {
 
-      this.web3js = new Web3(web3.currentProvider);
+      this.web3js = new Web3(window.ethereum);
 
       this.setWalletType();
 
@@ -124,6 +125,7 @@ export class EthService implements OnDestroy {
           this.ownerAccount = accs[0];
           this.web3Status.next(Web3LoadingStatus.complete);
         } else {
+          window.ethereum.enable();
           this.web3Status.next(Web3LoadingStatus.noAccountsAvailable);
         }
         this.accountInterval = setInterval(() => this.checkAccountMetaMask(), 5000);
@@ -151,8 +153,7 @@ export class EthService implements OnDestroy {
     });
   }
 
-  async getEthBalanceAsync(userAddress: string = this.account.value): Promise<string> {
-    // TODO  - confirm useraddress has 0x
+  async getEthBalanceAsync(userAddress: string = this.getOwnerAccount()): Promise<string> {
     const balance = await this.web3js.eth.getBalance(userAddress);
     if (balance) {
       console.log(balance);
@@ -165,7 +166,15 @@ export class EthService implements OnDestroy {
   }
 
   getOwnerAccount() {
-    return this.ownerAccount;
+    if (this.web3Status.value === Web3LoadingStatus.noAccountsAvailable) {
+      window.ethereum.enable().then(acc => {
+        return acc[0];
+      }).catch(e => {
+        return this.ownerAccount;
+      });
+    } else {
+      return this.ownerAccount;
+    }
   }
 
   getDefaultGasParams() {
@@ -181,6 +190,8 @@ export class EthService implements OnDestroy {
           } else {
             resolve('11000000000');
           }
+        }).catch(e => {
+          resolve('11000000000');
         });
       } catch (e) {
         resolve('11000000000');

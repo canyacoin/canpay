@@ -4,7 +4,7 @@ Angular component for accepting payments in CAN through a seamless user experien
 
 ## Overview
 
-Accepting payment with token in any dApp can be cumbersome because a developer needs to do mulitple checks and transactions in order to finalize a payment and same applies for the CanYaCoin (CAN).
+Accepting payment with token in any dApp can be cumbersome because a developer needs to do mulitple checks and transactions in order to finalize a payment and same applies for the CanYaCoin (CAN). 
 
 To streamline the process, we've created a component that takes care of the following:
 
@@ -27,7 +27,7 @@ Component is packed in an npm package and can be used as normal angular module.
 ### Installation
 
 - Run `npm i @canyaio/canpay-lib`
-- Copy [loader image](./src/assets/img/loader.svg) and [metamask](./src/assets/img/metamask.svg) from [here](./src/assets/img) to your `/assets/img` folder.
+- Copy [loader image](../../src/assets/img/loader.svg) and [metamask](../../src/assets/img/metamask.svg) from [here](../../src/assets/img) to your `/assets/img` folder.
 
 In your module file:
 
@@ -111,6 +111,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | Property | Description |
 | --- | --- |
 | dAppName | Name of the dApp to be displayed to the user as a merchant name. |
+| onAuthTxHash | Function to execute once the hash of the transaction is returned from the authorisation operation. |
 | recepient | The dApp contract address that will receive the payment |
 | amount | **Optional** If set, no amount-input-box will be displayed to the user and the specified amount will be forced.|
 | minAmount | **Optional** If amount is set, this will be the minum accepted amount from the user.|
@@ -129,6 +130,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 interface CanPay {
   dAppName: string;
   operation?: Operation;
+  onAuthTxHash? : Function;
   recepient: string;
   amount?: number;
   minAmount?: number;
@@ -169,6 +171,7 @@ Type of CanPay operations, default is Authorise.
 enum Operation {
   auth = 'Authorise', // Request user authoisation to withdraw CAN
   pay = 'Pay' // Request user to pay CAN directly to the specified recepient
+  interact = 'Interact' // Go straight to the post auth process
 }
 ```
 
@@ -209,7 +212,7 @@ enum View {
 
 ### setProcessResult
 
-A utility function that sets the `postAuthorisationProcessResults` based on the passed in transaction param. See [usage example](./src/app/can-pay-example/can-pay-example.component.ts)
+A utility function that sets the `postAuthorisationProcessResults` based on the passed in transaction param. See [usage example](../../src/app/can-pay-example/can-pay-example.component.ts)
 
 ```javascript
 function setProcessResult(txOrErr) {
@@ -222,7 +225,7 @@ function setProcessResult(txOrErr) {
 
 ## Complete Example
 
-The [CanPayExample](./src/app/can-pay-example/can-pay-example.component.ts) is a fully working example on how to use the CanPay with postAuthorisationProcess params.
+The [CanPayExample](../../src/app/can-pay-example/can-pay-example.component.ts) is a fully working example on how to use the CanPay with postAuthorisationProcess params.
 
 ### Running the Example App
 

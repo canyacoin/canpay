@@ -39,6 +39,7 @@ export class PaymentDetailsComponent implements OnInit {
     personal: Personal;
     @Input() destinationAddress;
     @Input() userEmail;
+    @Input() amount: number;
 
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
         private paymentService: PaymentDetailsService, private canpayWizardComponent: CanpayWizardComponent) {
@@ -51,6 +52,7 @@ export class PaymentDetailsComponent implements OnInit {
         this.isFormValid = this.formDataService.isFormValid();
         this.formData.address = this.destinationAddress;
         this.formData.email = this.userEmail;
+        this.formData.amount = this.amount - this.canpayWizardComponent.canPayData().balance;
         this.paymentService.getTokens().subscribe(data => {
             for (const result of data) {
                 this.tokens.push(result);
@@ -58,16 +60,15 @@ export class PaymentDetailsComponent implements OnInit {
         });
 
         this.paymentService.getSessionId().subscribe(data => {
-            this.key = data.token;
-            this.status = data.status;
+            this.key = data.json().token;
+            this.status = data.json().status;
         });
 
         this.paymentService.getDataCmc('ETH').subscribe(
             (data) => {
 
-                this.formData.amount = this.formData.amount - this.canpayWizardComponent.canPayData().balance;
-                this.formData.eth = Number((this.formData.amount * data.data.quotes.ETH.price).toFixed(6));
-                this.formData.usd = Number((this.formData.amount * data.data.quotes.USD.price).toFixed(6));
+                this.formData.eth = Number((this.formData.amount * data.json().data.quotes.ETH.price).toFixed(6));
+                this.formData.usd = Number((this.formData.amount * data.json().data.quotes.USD.price).toFixed(6));
                 this.etherPrise = this.formData.eth;
             }
         );

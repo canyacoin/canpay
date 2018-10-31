@@ -17,7 +17,6 @@ export class InputAmountComponent {
 
   constructor() {
   }
-
   onAmountKeyUp(event) {
     this.amount = Number(event.target.value);
   }

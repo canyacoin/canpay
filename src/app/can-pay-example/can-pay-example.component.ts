@@ -29,6 +29,7 @@ export class CanPayExampleComponent {
     // CanExchange
     destinationAddress: environment.contracts.testAccount, // account to credit from CanEx (can be overriden)
     userEmail: '<your email>', // email to which the canexchange confirmation should be sent
+    disableCanEx: false,
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),
     cancel: this.cancelCanPayUserActivation.bind(this),

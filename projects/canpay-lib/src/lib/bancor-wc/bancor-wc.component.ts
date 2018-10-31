@@ -27,7 +27,7 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   @Output() valueChange = new EventEmitter();
   @Input() type = 'WITHOUT_INPUT_BOXES';
   @Input() balance = 0;
-  @Input() enableCanEx;
+  @Input() disableCanEx;
   @Input() set isLoading(isLoading: boolean) {
     if (!isLoading) {
       this.status = Status.New;
@@ -54,7 +54,7 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() { }
 
   buyCan() {
-    if (this.enableCanEx) {
+    if (!this.disableCanEx) {
       this.callCanEx();
     } else {
 

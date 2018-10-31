@@ -124,6 +124,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | startPostAuthorisationProcess | **Optional** callback to be triggered after a user authorisation for the requested amount. It's used to allow a developer to execute external/extended payment operation from the CanYaCoin contract to the dApp contract. <br/> **Input:** [CanPayData](#canpaydata)|
 | postAuthorisationProcessResults | **Optional** if *postAuthorisationProcessName* is set. It's used to notify the wizard of the success or failure of the postAuthorisationProcess.|
 | destinationAddress | It is the destination address of the user where the CANS will be transferred. |
+| disableCanEx | Should CanExchange be enabled for the purchasing of CAN (default true) |
 | userEmail | It is the email address of the user. |
 
 ## Interfaces
@@ -146,7 +147,8 @@ interface CanPay {
   complete: Function;
   cancel?: Function;
   currentStep?: Function;
-  destinationAddress: string;
+  disableCanEx? : boolean;
+  destinationAddress?: string;
   userEmail: string;
 }
 ```

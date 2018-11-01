@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { ResizeService } from '../../lib/services/resize.service';
-import { FormData, Personal } from '../canpay-data/formData.model';
-import { FormDataService } from '../canpay-data/formData.service';
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
-import { PaymentDetailsService } from './payment-details.service';
+import { CanexService } from '../services/canex.service';
+import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 @Component({
     selector: 'canyalib-mt-wizard-payment-details'
@@ -42,7 +41,7 @@ export class PaymentDetailsComponent implements OnInit {
     @Input() amount: number;
 
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
-        private paymentService: PaymentDetailsService, private canpayWizardComponent: CanpayWizardComponent) {
+        private canexService: CanexService, private canpayWizardComponent: CanpayWizardComponent) {
     }
 
     ngOnInit() {
@@ -53,18 +52,18 @@ export class PaymentDetailsComponent implements OnInit {
         this.formData.address = this.destinationAddress;
         this.formData.email = this.userEmail;
         this.formData.amount = this.amount - this.canpayWizardComponent.canPayData().balance;
-        this.paymentService.getTokens().subscribe(data => {
-            for (const result of data) {
+        this.canexService.getTokens().subscribe(data => {
+            for (const result of data.json()) {
                 this.tokens.push(result);
             }
         });
 
-        this.paymentService.getSessionId().subscribe(data => {
+        this.canexService.getSessionId().subscribe(data => {
             this.key = data.json().token;
             this.status = data.json().status;
         });
 
-        this.paymentService.getDataCmc('ETH').subscribe(
+        this.canexService.getDataCmc('ETH').subscribe(
             (data) => {
 
                 this.formData.eth = Number((this.formData.amount * data.json().data.quotes.ETH.price).toFixed(6));

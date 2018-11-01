@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormData } from '../canpay-data/formData.model';
-import { FormDataService } from '../canpay-data/formData.service';
-import { PaymentDetailsServiceERC } from './payment-erc20.service';
 import { Subscription } from 'rxjs';
+
 import { ResizeService } from '../../lib/services/resize.service';
 import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { CanexService } from '../services/canex.service';
+import { FormData, FormDataService } from '../services/formData.service';
 
 @Component({
     selector: 'canyalib-mt-wizard-erc20-details'
@@ -39,7 +39,7 @@ export class PaymentERCDetailsComponent implements OnInit {
     @Output() valueChange = new EventEmitter();
 
     constructor(private router: Router, private resizeService: ResizeService,
-        private formDataService: FormDataService, private paymentService: PaymentDetailsServiceERC) {
+        private formDataService: FormDataService, private canexService: CanexService) {
     }
 
     search(val) {
@@ -53,18 +53,18 @@ export class PaymentERCDetailsComponent implements OnInit {
         this.isFormValid = this.formDataService.isFormValid();
 
         // get list of supported erc20 tokens
-        this.paymentService.getTokens().subscribe(data => {
+        this.canexService.getTokensBancor().subscribe(data => {
             this.tokenData1 = data;
             this.listStatus = false;
-            for (const result of data) {
+            for (const result of data.json()) {
                 this.tokens.push(result);
             }
         });
 
         // get status
-        this.paymentService.getSessionId().subscribe(data => {
-            this.key = data.token;
-            this.status = data.status;
+        this.canexService.getSessionId().subscribe(data => {
+            this.key = data.json().token;
+            this.status = data.json().status;
         });
 
         if (window.innerWidth < 769) {
@@ -91,9 +91,9 @@ export class PaymentERCDetailsComponent implements OnInit {
         this.formData.erc20tokenDecimal = form.decimals;
         this.others = !this.others;
 
-        this.paymentService.getData(form.symbol).subscribe(
+        this.canexService.getData(form.symbol).subscribe(
             (data) => {
-                const price = data.data.price * + this.formData.amount;
+                const price = data.json().data.price * + this.formData.amount;
                 this.price = price;
                 this.formData.eth = Number(price.toFixed(6));
                 this.etherPrise = Number(price.toFixed(6));

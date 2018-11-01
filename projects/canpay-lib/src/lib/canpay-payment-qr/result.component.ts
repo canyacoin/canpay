@@ -3,12 +3,11 @@ import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { interval } from 'rxjs';
 
-import { FormData, Personal } from '../canpay-data/formData.model';
-import { FormDataService } from '../canpay-data/formData.service';
 import { Step } from '../canpay-wizard/canpay-wizard.component';
 import * as globals from '../globals';
+import { CanexService } from '../services/canex.service';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
-import { ResultService } from './result.service';
+import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 declare var require: any;
 const Web3 = require('web3');
@@ -44,19 +43,17 @@ export class ResultDetailsComponent implements OnInit {
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
 
-    constructor(protected http: Http, private resultService: ResultService,
+    constructor(protected http: Http, private canexService: CanexService,
         private router: Router, private formDataService: FormDataService, private route: Router, private canYaCoinEthService: CanYaCoinEthService) {
 
         try {
-
             const subscription = interval(200 * 60).subscribe(x => {
-
-                this.resultService.checkStatus(this.formData.key).subscribe(activity => {
-                    if (activity.status === 'IDENTIFIED') {
+                this.canexService.checkStatus(this.formData.key).subscribe(activity => {
+                    if (activity.json().status === 'IDENTIFIED') {
                         subscription.unsubscribe();
                         this.valueChange.emit(Step.staging);
 
-                    } else if (activity.status === 'ERROR') {
+                    } else if (activity.json().status === 'ERROR') {
                         subscription.unsubscribe();
                         this.valueChange.emit(Step.error);
                     }
@@ -95,9 +92,9 @@ export class ResultDetailsComponent implements OnInit {
         if (this.formData.currency === 'ETH') {
             this.canYaCoinEthService.payWithEth(this.formData.eth, globals.ethereumAddress);
         } else {
-            this.resultService.getGasPrice().subscribe(activity => {
+            this.canexService.getGasPrice().subscribe(activity => {
                 this.canYaCoinEthService.payWithERC20(this.formData.eth, globals.ethereumAddress, this.formData.erc20token, this.formData.erc20tokenDecimal,
-                    activity.fast + '000');
+                    activity.json().fast + '000');
             });
         }
     }
@@ -146,14 +143,14 @@ export class ResultDetailsComponent implements OnInit {
             this.ethStatus = true;
             this.metamaskEnable();
         } else {
-            this.resultService.getByAddress(this.formData.erc20token).subscribe(activity => {
-                if (activity.status === 1) {
+            this.canexService.getByAddress(this.formData.erc20token).subscribe(activity => {
+                if (activity.json().status === 1) {
                     this.metamaskEnable();
                 }
             }, (error) => { });
         }
 
-        this.resultService.save(this.formData).subscribe(activity => {
+        this.canexService.save(this.formData).subscribe(activity => {
         });
     }
 }

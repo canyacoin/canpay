@@ -1,11 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormData } from '../canpay-data/formData.model';
-import { OrderService } from './order.service';
-import { Personal } from '../canpay-data/formData.model';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+
 import * as globals from '../globals';
+import { CanexService } from '../services/canex.service';
+import { FormData, Personal } from '../services/formData.service';
 
 @Component({
     selector: 'canyalib-mt-wizard-order'
@@ -27,22 +26,22 @@ export class OrderComponent implements OnInit {
     id: string;
     currency: string;
 
-    constructor(private orderService: OrderService, private route: ActivatedRoute, private router: Router) {
+    constructor(private canexService: CanexService, private route: ActivatedRoute, private router: Router) {
     }
 
     ngOnInit() {
         this.currency = 'CAN';
-        this.orderService.getOrder(this.route.snapshot.params.id).subscribe(activity => {
+        this.canexService.getOrder(this.route.snapshot.params.id).subscribe(activity => {
             this.orderData = activity;
             this.etherUrl = globals.etherscan + this.orderData.hash;
             this.currency = this.orderData.currency;
         },
-        (error) => {
-        });
+            (error) => {
+            });
     }
 
     getOrder() {
-        this.orderService.getOrder(this.orderid).subscribe(activity => {
+        this.canexService.getOrder(this.orderid).subscribe(activity => {
             this.orderData = activity;
             this.etherUrl = globals.etherscan + this.orderData.hash;
         },

@@ -1,12 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormData } from '../canpay-data/formData.model';
-import { FormDataService } from '../canpay-data/formData.service';
-import { StagingDetailsService } from './staging.service';
-import { Personal } from '../canpay-data/formData.model';
-import { Observable } from 'rxjs';
-import { interval } from 'rxjs';
+import { interval, Observable } from 'rxjs';
+
 import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { CanexService } from '../services/canex.service';
+import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 @Component({
     selector: 'canyalib-mt-wizard-staging-details'
@@ -27,10 +25,10 @@ export class StagingDetailsComponent implements OnInit {
     @Output() valueChange = new EventEmitter();
 
     constructor(private router: Router, private formDataService: FormDataService,
-        private stagingService: StagingDetailsService) {
+        private canexService: CanexService) {
         const subscription = interval(200 * 60).subscribe(x => {
             try {
-                this.stagingService.checkStatus(this.formData.key).subscribe(activity => {
+                this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                     if (activity.status === 'COMPLETE') {
                         subscription.unsubscribe();
                         this.valueChange.emit(Step.complete);
@@ -53,11 +51,11 @@ export class StagingDetailsComponent implements OnInit {
         this.isFormValid = this.formDataService.isFormValid();
         this.etherUrl = 'https://etherscan.io/tx/' + this.formData.hash;
         this.orderUrl = 'http://staging.canexchange.io/#/order/' + this.formData.key;
-        this.stagingService.sentMail(this.formData.key).subscribe(activity => {
+        this.canexService.sentMailStaging(this.formData.key).subscribe(activity => {
 
         });
 
-        this.stagingService.submitPost(this.formData).subscribe(activity => {
+        this.canexService.submitPost(this.formData).subscribe(activity => {
 
         });
 
@@ -85,7 +83,7 @@ export class StagingDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-        //this.valueChange.emit(Step.none);
+        // this.valueChange.emit(Step.none);
     }
 
     submit() {

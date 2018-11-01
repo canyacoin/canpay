@@ -4,9 +4,8 @@ import {
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import { interval } from 'rxjs';
 
-import { FormData, Personal } from '../canpay-data/formData.model';
-import { FormDataService } from '../canpay-data/formData.service';
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
+import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 declare var BancorConvertWidget: any;
 

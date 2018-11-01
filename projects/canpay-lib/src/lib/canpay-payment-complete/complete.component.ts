@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormData } from '../canpay-data/formData.model';
-import { FormDataService } from '../canpay-data/formData.service';
-import { CompleteDetailsService } from './complete.service';
+
 import * as globals from '../globals';
+import { CanexService } from '../services/canex.service';
+import { FormData, FormDataService } from '../services/formData.service';
 
 @Component({
     selector: 'canyalib-mt-wizard-complete-details'
@@ -22,7 +22,7 @@ export class CompleteDetailsComponent implements OnInit {
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
 
-    constructor(private router: Router, private formDataService: FormDataService, private completeService: CompleteDetailsService) {
+    constructor(private router: Router, private formDataService: FormDataService, private canexService: CanexService) {
     }
 
     ngOnInit() {
@@ -31,15 +31,14 @@ export class CompleteDetailsComponent implements OnInit {
         this.etherUrl = globals.etherscan + this.formData.hash;
         this.orderUrl = globals.order + this.formData.key;
         try {
-            this.completeService.checkStatus(this.formData.key).subscribe(activity => {
+            this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                 this.formData.hash = activity.hashEthertoAccount;
-            },
-                (error) => {
+            }, (error) => {
 
-                });
+            });
         } catch (e) {
         }
-        this.completeService.sentMail(this.formData.key).subscribe(activity => {
+        this.canexService.sentMail(this.formData.key).subscribe(activity => {
 
         });
 
@@ -47,6 +46,6 @@ export class CompleteDetailsComponent implements OnInit {
 
     cancel() {
         this.formData.email = '';
-       // this.valueChange.emit(Step.none);
+        // this.valueChange.emit(Step.none);
     }
 }

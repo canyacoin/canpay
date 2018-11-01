@@ -49,6 +49,7 @@ export class PaymentDetailsComponent implements OnInit {
         this.workType = this.formDataService.getConfirmation();
         this.formData = this.formDataService.getFormData();
         this.isFormValid = this.formDataService.isFormValid();
+        console.log('sending to: ' + this.destinationAddress);
         this.formData.address = this.destinationAddress;
         this.formData.email = this.userEmail;
         this.formData.amount = this.amount - this.canpayWizardComponent.canPayData().balance;
@@ -105,19 +106,7 @@ export class PaymentDetailsComponent implements OnInit {
             this.etherium = !this.etherium;
             this.others = false;
             this.validData = true;
-
-            setTimeout(() => {
-                if (this.status && this.formData.currency != null) {
-                    this.error = null;
-                    this.formData.key = this.key;
-                    // Navigate to the result page
-                    this.formData.accept = true;
-                    this.formDataService.setConfirmation(this.workType);
-                } else {
-                    this.validData = false;
-                    this.error = 'Oops! something went wrong, Please try again later.';
-                }
-            }, 1000);
+            this.valueChange.emit(Step.qr);
 
         } else {
             this.changeButtonToSelectCurrency = true;

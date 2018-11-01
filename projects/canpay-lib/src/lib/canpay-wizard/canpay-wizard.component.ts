@@ -232,7 +232,6 @@ export class CanpayWizardComponent implements OnInit {
 
     this.canyaCoinEthService.getCanYaBalance(_acc)
       .then(_balance => {
-        console.log('balance: ', _balance);
         this.balance = Number(_balance);
         this.account = this.canyaCoinEthService.getOwnerAccount();
         this.insufficientBalance = Number(_balance) < this.amount;

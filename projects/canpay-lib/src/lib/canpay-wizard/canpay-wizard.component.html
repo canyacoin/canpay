@@ -58,7 +58,7 @@
       </div>
 
       <div *ngIf="currStep === Step.details">
-        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' [amount]="amount" [destinationAddress]='destinationAddress'
+        <canyalib-mt-wizard-payment-details (valueChange)='stepChanger($event)' [amount]="amount" [destinationAddress]='getCanExRecipient()'
           [userEmail]='userEmail'></canyalib-mt-wizard-payment-details>
       </div>
 

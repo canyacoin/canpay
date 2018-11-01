@@ -45,7 +45,6 @@ export class CanYaCoinEthService extends EthService {
   }
 
   async getCanYaBalance(userAddress: string = this.getOwnerAccount()): Promise<string> {
-    console.log('CanYaCoinEthService: getCanYaBalance: ', userAddress, this.canyaContract);
     try {
       if (userAddress) {
         const balance = await this.canyaContract.methods.balanceOf(userAddress).call();

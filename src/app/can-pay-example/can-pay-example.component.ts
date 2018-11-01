@@ -27,7 +27,6 @@ export class CanPayExampleComponent {
     maxAmount: 50000, // Default is 'No Maximum'
 
     // CanExchange
-    destinationAddress: undefined, // account to credit from CanEx (can be overriden)
     userEmail: '<your email>', // email to which the canexchange confirmation should be sent
     disableCanEx: false,
     // Actions

@@ -206,18 +206,17 @@ export class EthService implements OnDestroy {
       console.log('Error createContractInstance, web3 provider not initialized');
       return;
     }
-
     return new this.web3js.eth.Contract(abi, address);
   }
 
-  async payWithEther(amount, to: string): Promise<any> {
+  async payWithEther(amount: string, to: string): Promise<any> {
     const gasPrice = await this.getDefaultGasPriceGwei();
     const from = this.getOwnerAccount();
     return new Promise((resolve, reject) => {
       this.web3js.eth.sendTransaction({
-        to: globals.ethereumAddress,
+        to,
         from: from,
-        value: this.web3js.utils.toWei(amount, 'ether'),
+        value: this.web3js.utils.toWei(amount.toString(), 'ether'),
         gasPrice: gasPrice
       }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
     });

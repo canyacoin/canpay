@@ -106,7 +106,20 @@ export class PaymentDetailsComponent implements OnInit {
             this.etherium = !this.etherium;
             this.others = false;
             this.validData = true;
-            this.valueChange.emit(Step.qr);
+
+            setTimeout(() => {
+                if (this.status && this.formData.currency != null) {
+                    this.error = null;
+                    this.formData.key = this.key;
+                    // Navigate to the result page
+                    this.formData.accept = true;
+                    this.formDataService.setConfirmation(this.workType);
+                    this.valueChange.emit(Step.qr);
+                } else {
+                    this.validData = false;
+                    this.error = 'Oops! something went wrong, Please try again later.';
+                }
+            }, 1000);
 
         } else {
             this.changeButtonToSelectCurrency = true;

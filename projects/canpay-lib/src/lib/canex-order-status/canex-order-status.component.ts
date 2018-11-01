@@ -7,12 +7,12 @@ import { CanexService } from '../services/canex.service';
 import { FormData, Personal } from '../services/formData.service';
 
 @Component({
-    selector: 'canyalib-mt-wizard-order'
-    , templateUrl: './order.component.html',
-    styleUrls: ['../canpay-payment-details/payment-details.component.css']
+    selector: 'canyalib-canex-order-status'
+    , templateUrl: './canex-order-status.component.html',
+    styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class OrderComponent implements OnInit {
+export class CanexOrderStatusComponent implements OnInit {
     // title = 'Thanks for staying tuned!';
     title = 'Order Page.';
     titleSecond = 'Your receipt has been emailed. ';

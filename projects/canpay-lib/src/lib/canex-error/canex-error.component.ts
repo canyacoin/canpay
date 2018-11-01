@@ -5,12 +5,12 @@ import * as globals from '../globals';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 @Component({
-    selector: 'canyalib-mt-wizard-error',
-    templateUrl: './error.component.html',
-    styleUrls: ['../canpay-payment-details/payment-details.component.css']
+    selector: 'canyalib-canex-error',
+    templateUrl: './canex-error.component.html',
+    styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class ErrorComponent implements OnInit {
+export class CanexErrorComponent implements OnInit {
     title = 'Enter details.';
     personal: Personal;
     form: any;

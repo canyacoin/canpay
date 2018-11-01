@@ -16,12 +16,12 @@ declare let window: any;
 const gasStationApi = 'https://ethgasstation.info/json/ethgasAPI.json';
 
 @Component({
-    selector: 'canyalib-mt-wizard-qr-details'
-    , templateUrl: './result.component.html',
-    styleUrls: ['../canpay-payment-details/payment-details.component.css']
+    selector: 'canyalib-canex-qr'
+    , templateUrl: './canex-qr.component.html',
+    styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class ResultDetailsComponent implements OnInit {
+export class CanexQRComponent implements OnInit {
 
     title = 'Pay exactly';
     @Input() formData: FormData;
@@ -65,6 +65,30 @@ export class ResultDetailsComponent implements OnInit {
         } catch (e) {
 
         }
+    }
+
+    ngOnInit() {
+
+        this.copied = false;
+        this.formData = this.formDataService.getFormData();
+        this.orderUrl = globals.order + this.formData.key;
+
+        this.isFormValid = this.formDataService.isFormValid();
+        this.personal = this.formDataService.getPersonal();
+
+        if (this.formData.currency === 'ETH') {
+            this.ethStatus = true;
+            this.metamaskEnable();
+        } else {
+            this.canexService.getByAddress(this.formData.erc20token).subscribe(activity => {
+                if (activity.json().status === 1) {
+                    this.metamaskEnable();
+                }
+            }, (error) => { });
+        }
+
+        this.canexService.save(this.formData).subscribe(activity => {
+        });
     }
 
     submit() {
@@ -130,27 +154,5 @@ export class ResultDetailsComponent implements OnInit {
         this.valueChange.emit(Step.buyCan);
     }
 
-    ngOnInit() {
 
-        this.copied = false;
-        this.formData = this.formDataService.getFormData();
-        this.orderUrl = globals.order + this.formData.key;
-
-        this.isFormValid = this.formDataService.isFormValid();
-        this.personal = this.formDataService.getPersonal();
-
-        if (this.formData.currency === 'ETH') {
-            this.ethStatus = true;
-            this.metamaskEnable();
-        } else {
-            this.canexService.getByAddress(this.formData.erc20token).subscribe(activity => {
-                if (activity.json().status === 1) {
-                    this.metamaskEnable();
-                }
-            }, (error) => { });
-        }
-
-        this.canexService.save(this.formData).subscribe(activity => {
-        });
-    }
 }

@@ -7,12 +7,12 @@ import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 @Component({
-    selector: 'canyalib-mt-wizard-staging-details'
-    , templateUrl: './staging.component.html',
-    styleUrls: ['../canpay-payment-details/payment-details.component.css']
+    selector: 'canyalib-canex-processing'
+    , templateUrl: './canex-processing.component.html',
+    styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class StagingDetailsComponent implements OnInit {
+export class CanexProcessingComponent implements OnInit {
     title = 'Booyah! CAN sent.';
     titleSecond = 'Your receipt has been emailed. ';
     @Input() formData: FormData;

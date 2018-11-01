@@ -2,18 +2,18 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { ResizeService } from '../../lib/services/resize.service';
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
+import { ResizeService } from '../services/resize.service';
 
 @Component({
-    selector: 'canyalib-mt-wizard-payment-details'
-    , templateUrl: './payment-details.component.html',
-    styleUrls: ['./payment-details.component.css']
+    selector: 'canyalib-canex-payment-options'
+    , templateUrl: './canex-payment-options.component.html',
+    styleUrls: ['./canex-payment-options.component.css']
 })
 
-export class PaymentDetailsComponent implements OnInit {
+export class CanexPaymentOptionsComponent implements OnInit {
     title = 'Please Review and Confirm Your Transaction!';
     workType: boolean;
     form: any;

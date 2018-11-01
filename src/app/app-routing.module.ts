@@ -8,11 +8,11 @@ const routes: Routes = [
   { path: 'can-pay', component: CanPayExampleComponent, }
   // {
   //   path: 'order/:id',
-  //   component: OrderComponent
+  //   component: CanexOrderStatusComponent
   // },
   // {
   //   path: 'order',
-  //   component: OrderComponent
+  //   component: CanexOrderStatusComponent
   // },
 ];
 

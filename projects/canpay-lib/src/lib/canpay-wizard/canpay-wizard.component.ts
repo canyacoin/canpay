@@ -216,24 +216,23 @@ export class CanpayWizardComponent implements OnInit {
       ? this.updateCurrentStep(Step.process)
       : !this.amount
         ? this.updateCurrentStep(Step.paymentAmount)
-        : this.checkBalance(_acc), 200);
+        : this.checkBalance(), 200);
   }
 
   setAmount(amount) {
     console.log('setAmount: ', amount);
     this.amount = amount;
-    this.checkBalance(this.account);
+    this.checkBalance();
     this.updateProcessSummaryMsg();
   }
 
-  checkBalance(_acc) {
+  checkBalance() {
     this.updateCurrentStep(Step.balanceCheck);
     this.isLoading = true;
 
-    this.canyaCoinEthService.getCanYaBalance(_acc)
+    this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
       .then(_balance => {
         this.balance = Number(_balance);
-        this.account = this.canyaCoinEthService.getOwnerAccount();
         this.insufficientBalance = Number(_balance) < this.amount;
         if (!this.insufficientBalance) {
           this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment);
@@ -254,7 +253,6 @@ export class CanpayWizardComponent implements OnInit {
   checkBalanceAfterCredit(_acc) {
     this.canyaCoinEthService.getCanYaBalance(_acc)
       .then(_balance => {
-        console.log('balance: ', _balance);
         this.balance = Number(_balance);
         this.account = this.canyaCoinEthService.getOwnerAccount();
         this.insufficientBalance = Number(_balance) < this.amount;

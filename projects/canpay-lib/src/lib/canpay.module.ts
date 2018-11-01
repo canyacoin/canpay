@@ -10,15 +10,17 @@ import { ClipboardModule } from 'ngx-clipboard';
 
 import { ResizeService } from '../lib/services/resize.service';
 import { BancorWcComponent } from './bancor-wc/bancor-wc.component';
-import { PaymentERCDetailsComponent } from './canpay-erc20-listing/payment-erc20.component';
+import { CanexERC20Component } from './canex-erc20/canex-erc20.component';
+import { CanexErrorComponent } from './canex-error/canex-error.component';
+import { CanexOrderStatusComponent } from './canex-order-status/canex-order-status.component';
+import {
+    CanexPaymentOptionsComponent
+} from './canex-payment-options/canex-payment-options.component';
+import { CanexProcessingComponent } from './canex-processing/canex-processing.component';
+import { CanexQRComponent } from './canex-qr/canex-qr.component';
+import { CanexReceiptComponent } from './canex-receipt/canex-receipt.component';
 import { LoaderComponent } from './canpay-loader/loading-status.component';
 import { CanpayModalComponent } from './canpay-modal/canpay-modal.component';
-import { OrderComponent } from './canpay-order/order.component';
-import { CompleteDetailsComponent } from './canpay-payment-complete/complete.component';
-import { PaymentDetailsComponent } from './canpay-payment-details/payment-details.component';
-import { ErrorComponent } from './canpay-payment-error/error.component';
-import { ResultDetailsComponent } from './canpay-payment-qr/result.component';
-import { StagingDetailsComponent } from './canpay-payment-staging/staging.component';
 import { CanpayWizardComponent } from './canpay-wizard/canpay-wizard.component';
 import { CommaSepNumPipe } from './comma-sep-num.pipe';
 import { InputAmountComponent } from './input-amount/input-amount.component';
@@ -52,13 +54,13 @@ const COMPONENTS = [
   MsgBoxComponent,
   InputAmountComponent,
   CommaSepNumPipe,
-  OrderComponent,
-  PaymentDetailsComponent,
-  StagingDetailsComponent,
-  PaymentERCDetailsComponent,
-  CompleteDetailsComponent,
-  ResultDetailsComponent,
-  ErrorComponent,
+  CanexOrderStatusComponent,
+  CanexPaymentOptionsComponent,
+  CanexProcessingComponent,
+  CanexERC20Component,
+  CanexReceiptComponent,
+  CanexQRComponent,
+  CanexErrorComponent,
   LoaderComponent
 ];
 
@@ -79,7 +81,7 @@ const PROVIDERS = [
   ],
   entryComponents: [
     CanpayModalComponent,
-    OrderComponent
+    CanexOrderStatusComponent
   ],
   declarations: COMPONENTS,
   exports: COMPONENTS,

@@ -49,7 +49,9 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-
+        if (!this.destinationAddress) {
+            this.valueChange(Step.canexError);
+        }
         this.workType = this.formDataService.getConfirmation();
         this.formData = this.formDataService.getFormData();
         this.isFormValid = this.formDataService.isFormValid();

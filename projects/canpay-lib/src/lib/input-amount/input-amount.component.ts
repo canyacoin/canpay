@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'canyalib-input-amount',
@@ -16,7 +16,6 @@ export class InputAmountComponent {
   constructor() { }
 
   onAmountKeyUp(event) {
-    if ((event.keyCode !== 8 && event.keyCode < 47) || event.keyCode > 58) { return false; }
     this.amount = Number(event.target.value);
   }
 

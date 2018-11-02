@@ -4,9 +4,9 @@
     <div class="balance"> {{ balance | commaSepNum }} </div>
   </div>
 
-  <div id="bancor-wc" [hidden]="type === 'WITHOUT_INPUT_BOXES'"></div>
+  <div id="bancor-wc" *ngIf="disableCanEx"></div>
 
-  <button class="btn btn-primary" (click)="buyCan()">
+  <button class="btn btn-primary" *ngIf="!disableCanEx" (click)="buyCan()">
     Buy CAN Tokens
   </button>
 

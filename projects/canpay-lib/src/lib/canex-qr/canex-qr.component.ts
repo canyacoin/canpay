@@ -95,7 +95,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
             }, (error) => { });
         }
 
-        this.canexService.save(this.formData);
+        this.canexService.save(this.formData).subscribe(activity => { });
     }
 
     ngOnDestroy() {

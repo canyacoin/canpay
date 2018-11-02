@@ -1,8 +1,6 @@
-import {
-    Component, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { interval, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
@@ -21,10 +19,9 @@ export enum Status {
   templateUrl: './bancor-wc.component.html',
   styleUrls: ['./bancor-wc.component.css']
 })
-export class BancorWcComponent implements OnInit, OnDestroy {
+export class BancorWcComponent implements OnInit {
   @Output() check = new EventEmitter();
   @Output() valueChange = new EventEmitter();
-  @Input() type = 'WITHOUT_INPUT_BOXES';
   @Input() balance = 0;
   @Input() disableCanEx;
   @Input() set isLoading(isLoading: boolean) {
@@ -47,14 +44,9 @@ export class BancorWcComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.formData = this.formDataService.getFormData();
     this.personal = this.formDataService.getPersonal();
-    this.balanceSub = interval(3000).subscribe(x => {
-      this.canpayWizardComponent.checkBalanceAfterCredit(this.formData.address);
-    });
+
   }
 
-  ngOnDestroy() {
-    if (this.balanceSub) { this.balanceSub.unsubscribe(); }
-  }
 
   buyCan() {
     if (!this.disableCanEx) {

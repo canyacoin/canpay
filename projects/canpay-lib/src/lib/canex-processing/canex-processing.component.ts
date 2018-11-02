@@ -17,6 +17,7 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
     title = 'Booyah! CAN sent.';
     titleSecond = 'Your receipt has been emailed. ';
     @Input() formData: FormData;
+    @Input() postBalanceStep: Step;
     isFormValid = false;
     etherUrl: string;
     personal: Personal;
@@ -24,6 +25,7 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
     message: string;
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
+    @Output() purchaseComplete = new EventEmitter();
 
     statusSub: Subscription;
     statusSub2: Subscription;
@@ -36,7 +38,7 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
                 this.statusSub2 = this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                     try {
                         if (activity.json().status === 'COMPLETE') {
-                            this.valueChange.emit(Step.canexReceipt);
+                            this.purchaseComplete.emit();
                         } else if (activity.json().status === 'ERROR') {
                             this.valueChange.emit(Step.canexError);
                         }
@@ -54,8 +56,8 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
         this.isFormValid = this.formDataService.isFormValid();
         this.etherUrl = 'https://etherscan.io/tx/' + this.formData.hash;
         this.orderUrl = 'http://staging.canexchange.io/#/order/' + this.formData.key;
-        this.canexService.sentMailStaging(this.formData.key);
-        this.canexService.submitPost(this.formData);
+        this.canexService.sentMailStaging(this.formData.key).subscribe(activity => { });
+        this.canexService.submitPost(this.formData).subscribe(activity => { });
     }
 
     ngOnDestroy() {

@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import {
+    Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation
+} from '@angular/core';
+import { interval, Subscription } from 'rxjs';
 
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 
@@ -87,7 +90,7 @@ export interface CanPayData {
   styleUrls: ['./canpay-wizard.component.scss'],
   // encapsulation: ViewEncapsulation.Native
 })
-export class CanpayWizardComponent implements OnInit {
+export class CanpayWizardComponent implements OnInit, OnDestroy {
   @Output() complete = new EventEmitter();
   @Output() cancel = new EventEmitter();
   @Output() startPostAuthorisationProcess = new EventEmitter();
@@ -133,6 +136,7 @@ export class CanpayWizardComponent implements OnInit {
   };
   insufficientBalance = false;
   processSummaryMsg: string;
+  balanceSub: Subscription;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
@@ -198,6 +202,11 @@ export class CanpayWizardComponent implements OnInit {
     this.updateProcessSummaryMsg();
   }
 
+
+  ngOnDestroy() {
+    if (this.balanceSub) { this.balanceSub.unsubscribe(); }
+  }
+
   updateProcessSummaryMsg() {
     this.processSummaryMsg = `${this.operation} ${this.dAppName} ${this.operation === 'Authorise' ? 'to withdraw' : ''}` +
       ` ${this.amount ? this.amount + ' CAN' : ''}` +
@@ -230,16 +239,27 @@ export class CanpayWizardComponent implements OnInit {
     this.updateCurrentStep(Step.balanceCheck);
     this.isLoading = true;
 
-    this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
-      .then(_balance => {
-        this.balance = Number(_balance);
-        this.insufficientBalance = Number(_balance) < this.amount;
-        if (!this.insufficientBalance) {
-          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment);
-        }
-      })
-      .catch(err => this.error('Unable to retrieve user CAN balance!'))
-      .then(() => this.isLoading = false);
+    this.balanceSub = interval(3000).subscribe(x => {
+      this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
+        .then(_balance => {
+          this.balance = Number(_balance);
+          this.insufficientBalance = Number(_balance) < this.amount;
+          if (!this.insufficientBalance) {
+            this.updateCurrentStep(this.postBalanceStep);
+            this.balanceSub.unsubscribe();
+          }
+        })
+        .catch(err => this.error('Unable to retrieve user CAN balance!'))
+        .then(() => this.isLoading = false);
+    });
+  }
+  purchaseComplete() {
+    if (this.balanceSub) { this.balanceSub.unsubscribe(); }
+    this.stepChanger(this.postBalanceStep);
+  }
+
+  get postBalanceStep() {
+    return this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment;
   }
 
   stepChanger(step) {
@@ -248,18 +268,6 @@ export class CanpayWizardComponent implements OnInit {
 
   getCanExRecipient(): string {
     return this.destinationAddress || this.canyaCoinEthService.getOwnerAccount();
-  }
-
-  checkBalanceAfterCredit(_acc) {
-    this.canyaCoinEthService.getCanYaBalance(_acc)
-      .then(_balance => {
-        this.balance = Number(_balance);
-        // this.account = this.canyaCoinEthService.getOwnerAccount();
-        this.insufficientBalance = Number(_balance) < this.amount;
-        if (!this.insufficientBalance) {
-          this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : Step.payment);
-        }
-      });
   }
 
   notifyPaymentAuthorised(tx) {

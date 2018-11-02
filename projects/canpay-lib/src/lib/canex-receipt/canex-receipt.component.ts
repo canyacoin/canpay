@@ -40,7 +40,7 @@ export class CanexReceiptComponent implements OnInit, OnDestroy {
             });
         } catch (e) {
         }
-        this.canexService.sentMail(this.formData.key);
+        this.canexService.sentMail(this.formData.key).subscribe(activity => { });
 
     }
 

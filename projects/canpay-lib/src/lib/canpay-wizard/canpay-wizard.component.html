@@ -67,7 +67,8 @@
       </div>
 
       <div *ngIf="currStep === Step.canexProcessing">
-        <canyalib-canex-processing (valueChange)='stepChanger($event)'></canyalib-canex-processing>
+        <canyalib-canex-processing (valueChange)='stepChanger($event)' (purchaseComplete)="purchaseComplete()"
+          [postBalanceStep]="postBalanceStep"></canyalib-canex-processing>
       </div>
 
       <div *ngIf="currStep === Step.canexErc20">

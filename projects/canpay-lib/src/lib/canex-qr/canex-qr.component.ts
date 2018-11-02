@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Router } from '@angular/router';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
+import 'rxjs/add/operator/take';
 
 import { Step } from '../canpay-wizard/canpay-wizard.component';
 import * as globals from '../globals';
@@ -21,7 +22,7 @@ const gasStationApi = 'https://ethgasstation.info/json/ethgasAPI.json';
     styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class CanexQRComponent implements OnInit {
+export class CanexQRComponent implements OnInit, OnDestroy {
 
     title = 'Pay exactly';
     @Input() formData: FormData;
@@ -43,20 +44,27 @@ export class CanexQRComponent implements OnInit {
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
 
+    statusSub: Subscription;
+    addressSub: Subscription;
+    gasSub: Subscription;
+
     constructor(protected http: Http, private canexService: CanexService,
         private router: Router, private formDataService: FormDataService, private route: Router, private canYaCoinEthService: CanYaCoinEthService) {
 
         try {
-            const subscription = interval(200 * 60).subscribe(x => {
+            this.statusSub = interval(2000).subscribe(x => {
                 this.canexService.checkStatus(this.formData.key).subscribe(activity => {
-                    if (activity.json().status === 'IDENTIFIED') {
-                        subscription.unsubscribe();
-                        this.valueChange.emit(Step.staging);
+                    try {
+                        if (activity.json().status === 'IDENTIFIED') {
+                            this.valueChange.emit(Step.canexProcessing);
 
-                    } else if (activity.json().status === 'ERROR') {
-                        subscription.unsubscribe();
-                        this.valueChange.emit(Step.error);
+                        } else if (activity.json().status === 'ERROR') {
+                            this.valueChange.emit(Step.canexError);
+                        }
+                    } catch (e) {
+
                     }
+
                 },
                     (error) => {
 
@@ -80,15 +88,20 @@ export class CanexQRComponent implements OnInit {
             this.ethStatus = true;
             this.metamaskEnable();
         } else {
-            this.canexService.getByAddress(this.formData.erc20token).subscribe(activity => {
+            this.addressSub = this.canexService.getByAddress(this.formData.erc20token).subscribe(activity => {
                 if (activity.json().status === 1) {
                     this.metamaskEnable();
                 }
             }, (error) => { });
         }
 
-        this.canexService.save(this.formData).subscribe(activity => {
-        });
+        this.canexService.save(this.formData);
+    }
+
+    ngOnDestroy() {
+        if (this.statusSub) { this.statusSub.unsubscribe(); }
+        if (this.addressSub) { this.addressSub.unsubscribe(); }
+        if (this.gasSub) { this.gasSub.unsubscribe(); }
     }
 
     submit() {
@@ -108,15 +121,10 @@ export class CanexQRComponent implements OnInit {
 
     metamask() {
 
-        if (typeof window.web3 === 'undefined') {
-            alert('You need to install MetaMask to use this feature.  https://metamask.io');
-        }
-        this.web3 = new Web3(window.web3.currentProvider);
-
         if (this.formData.currency === 'ETH') {
             this.canYaCoinEthService.payWithEth(this.formData.eth, globals.ethereumAddress);
         } else {
-            this.canexService.getGasPrice().subscribe(activity => {
+            this.gasSub = this.canexService.getGasPrice().subscribe(activity => {
                 this.canYaCoinEthService.payWithERC20(this.formData.eth, globals.ethereumAddress, this.formData.erc20token, this.formData.erc20tokenDecimal,
                     activity.json().fast + '000');
             });
@@ -137,11 +145,11 @@ export class CanexQRComponent implements OnInit {
         this.formData.usd = this.personal.usd;
 
         if (obj.status === 'PROCESSED' && obj.currency === 'CAN') {
-            this.valueChange.emit(Step.complete);
+            this.valueChange.emit(Step.canexReceipt);
         } else if (obj.status === 'PROCESSED' && obj.currency === 'ETH') {
-            this.valueChange.emit(Step.staging);
+            this.valueChange.emit(Step.canexProcessing);
         } else if (obj.status === 'PROCESSED' && obj.currency === 'METAMASK') {
-            this.valueChange.emit(Step.complete);
+            this.valueChange.emit(Step.canexReceipt);
         }
 
         if (!existingActivity && activity.page !== 'logout') {
@@ -153,6 +161,4 @@ export class CanexQRComponent implements OnInit {
         this.formData.email = '';
         this.valueChange.emit(Step.buyCan);
     }
-
-
 }

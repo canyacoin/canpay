@@ -12,12 +12,12 @@ export enum Step {
   process = 6,
   confirmation = 7,
   completed = 8,
-  details = 9,
-  erc20 = 11,
-  qr = 13,
-  staging = 10,
-  complete = 12,
-  error = 14
+  canexPaymentOptions = 9,
+  canexErc20 = 11,
+  canexQr = 13,
+  canexProcessing = 10,
+  canexReceipt = 12,
+  canexError = 14
 }
 
 export enum Operation {
@@ -254,7 +254,7 @@ export class CanpayWizardComponent implements OnInit {
     this.canyaCoinEthService.getCanYaBalance(_acc)
       .then(_balance => {
         this.balance = Number(_balance);
-        this.account = this.canyaCoinEthService.getOwnerAccount();
+        // this.account = this.canyaCoinEthService.getOwnerAccount();
         this.insufficientBalance = Number(_balance) < this.amount;
         if (!this.insufficientBalance) {
           this.updateCurrentStep(this.operation === Operation.auth ? Step.authorisation : Step.payment);
@@ -303,7 +303,7 @@ export class CanpayWizardComponent implements OnInit {
   }
 
   finish() {
-    this.updateCurrentStep(Step.completed);
+    this.updateCurrentStep(Step.canexReceipt);
     this.complete.emit(this.canPayData());
   }
 

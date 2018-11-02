@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { interval, Observable } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
+import 'rxjs/add/operator/take';
 
 import { Step } from '../canpay-wizard/canpay-wizard.component';
 import { CanexService } from '../services/canex.service';
@@ -12,7 +13,7 @@ import { FormData, FormDataService, Personal } from '../services/formData.servic
     styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class CanexProcessingComponent implements OnInit {
+export class CanexProcessingComponent implements OnInit, OnDestroy {
     title = 'Booyah! CAN sent.';
     titleSecond = 'Your receipt has been emailed. ';
     @Input() formData: FormData;
@@ -24,25 +25,27 @@ export class CanexProcessingComponent implements OnInit {
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
 
+    statusSub: Subscription;
+    statusSub2: Subscription;
+
     constructor(private router: Router, private formDataService: FormDataService,
         private canexService: CanexService) {
-        const subscription = interval(200 * 60).subscribe(x => {
+        this.statusSub = interval(2000).subscribe(x => {
             try {
-                this.canexService.checkStatus(this.formData.key).subscribe(activity => {
-                    if (activity.status === 'COMPLETE') {
-                        subscription.unsubscribe();
-                        this.valueChange.emit(Step.complete);
+                if (this.statusSub2) { this.statusSub2.unsubscribe(); }
+                this.statusSub2 = this.canexService.checkStatus(this.formData.key).subscribe(activity => {
+                    try {
+                        if (activity.json().status === 'COMPLETE') {
+                            this.valueChange.emit(Step.canexReceipt);
+                        } else if (activity.json().status === 'ERROR') {
+                            this.valueChange.emit(Step.canexError);
+                        }
+                    } catch (e) {
 
-                    } else if (activity.status === 'ERROR') {
-                        subscription.unsubscribe();
-                        this.valueChange.emit(Step.error);
                     }
-                },
-                    (error) => {
-                    });
+                });
             } catch (e) {
             }
-
         });
     }
 
@@ -51,14 +54,13 @@ export class CanexProcessingComponent implements OnInit {
         this.isFormValid = this.formDataService.isFormValid();
         this.etherUrl = 'https://etherscan.io/tx/' + this.formData.hash;
         this.orderUrl = 'http://staging.canexchange.io/#/order/' + this.formData.key;
-        this.canexService.sentMailStaging(this.formData.key).subscribe(activity => {
+        this.canexService.sentMailStaging(this.formData.key);
+        this.canexService.submitPost(this.formData);
+    }
 
-        });
-
-        this.canexService.submitPost(this.formData).subscribe(activity => {
-
-        });
-
+    ngOnDestroy() {
+        if (this.statusSub) { this.statusSub.unsubscribe(); }
+        if (this.statusSub2) { this.statusSub2.unsubscribe(); }
     }
 
     showActivity(activity: any) {
@@ -70,10 +72,10 @@ export class CanexProcessingComponent implements OnInit {
         this.formData.date = obj.date;
         this.formData.usd = this.personal.usd;
         if (obj.status === 'PROCESSED' && obj.currency === 'CAN') {
-            this.valueChange.emit(Step.complete);
+            this.valueChange.emit(Step.canexReceipt);
 
         } else if (obj.status === 'PROCESSED' && obj.currency === 'ETH') {
-            this.valueChange.emit(Step.staging);
+            this.valueChange.emit(Step.canexProcessing);
         }
 
         if (!existingActivity && activity.page !== 'logout') {

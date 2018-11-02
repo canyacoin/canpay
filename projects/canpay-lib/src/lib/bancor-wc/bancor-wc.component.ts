@@ -1,8 +1,8 @@
 import {
-    AfterViewInit, Component, EventEmitter, Input, OnInit, Output, Renderer2
+    Component, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2
 } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
@@ -21,7 +21,7 @@ export enum Status {
   templateUrl: './bancor-wc.component.html',
   styleUrls: ['./bancor-wc.component.css']
 })
-export class BancorWcComponent implements OnInit, AfterViewInit {
+export class BancorWcComponent implements OnInit, OnDestroy {
   @Output() check = new EventEmitter();
   @Output() valueChange = new EventEmitter();
   @Input() type = 'WITHOUT_INPUT_BOXES';
@@ -39,18 +39,22 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   status: Status = Status.New;
   isLoadingBancorWidget = false;
 
+  balanceSub: Subscription;
+
   constructor(private renderer: Renderer2, private dialogService: DialogService,
     private formDataService: FormDataService, private canpayWizardComponent: CanpayWizardComponent) { }
 
   ngOnInit() {
     this.formData = this.formDataService.getFormData();
     this.personal = this.formDataService.getPersonal();
-    const subscription = interval(3000).subscribe(x => {
+    this.balanceSub = interval(3000).subscribe(x => {
       this.canpayWizardComponent.checkBalanceAfterCredit(this.formData.address);
     });
   }
 
-  ngAfterViewInit() { }
+  ngOnDestroy() {
+    if (this.balanceSub) { this.balanceSub.unsubscribe(); }
+  }
 
   buyCan() {
     if (!this.disableCanEx) {
@@ -61,7 +65,7 @@ export class BancorWcComponent implements OnInit, AfterViewInit {
   }
 
   public callCanEx() {
-    this.valueChange.emit(Step.details);
+    this.valueChange.emit(Step.canexPaymentOptions);
   }
 
   addJsToElement(src: string): HTMLScriptElement {

@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import 'rxjs/add/operator/take';
 
 import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
 import { CanexService } from '../services/canex.service';
@@ -13,7 +14,7 @@ import { ResizeService } from '../services/resize.service';
     styleUrls: ['./canex-payment-options.component.css']
 })
 
-export class CanexPaymentOptionsComponent implements OnInit {
+export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     title = 'Please Review and Confirm Your Transaction!';
     workType: boolean;
     form: any;
@@ -40,6 +41,9 @@ export class CanexPaymentOptionsComponent implements OnInit {
     @Input() userEmail;
     @Input() amount: number;
 
+    sessionSub: Subscription;
+    cmcSub: Subscription;
+
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
         private canexService: CanexService, private canpayWizardComponent: CanpayWizardComponent) {
     }
@@ -53,18 +57,13 @@ export class CanexPaymentOptionsComponent implements OnInit {
         this.formData.address = this.destinationAddress;
         this.formData.email = this.userEmail;
         this.formData.amount = this.amount - this.canpayWizardComponent.canPayData().balance;
-        this.canexService.getTokens().subscribe(data => {
-            for (const result of data.json()) {
-                this.tokens.push(result);
-            }
-        });
 
-        this.canexService.getSessionId().subscribe(data => {
+        this.sessionSub = this.canexService.getSessionId().subscribe(data => {
             this.key = data.json().token;
             this.status = data.json().status;
         });
 
-        this.canexService.getDataCmc('ETH').subscribe(
+        this.cmcSub = this.canexService.getDataCmc('ETH').subscribe(
             (data) => {
 
                 this.formData.eth = Number((this.formData.amount * data.json().data.quotes.ETH.price).toFixed(6));
@@ -88,10 +87,10 @@ export class CanexPaymentOptionsComponent implements OnInit {
         });
     }
 
-    OnDestroy() {
-        if (this.resizeSubscription) {
-            this.resizeSubscription.unsubscribe();
-        }
+    ngOnDestroy() {
+        if (this.resizeSubscription) { this.resizeSubscription.unsubscribe(); }
+        if (this.cmcSub) { this.cmcSub.unsubscribe(); }
+        if (this.sessionSub) { this.sessionSub.unsubscribe(); }
     }
 
     selectCurrency(currency) {
@@ -114,7 +113,7 @@ export class CanexPaymentOptionsComponent implements OnInit {
                     // Navigate to the result page
                     this.formData.accept = true;
                     this.formDataService.setConfirmation(this.workType);
-                    this.valueChange.emit(Step.qr);
+                    this.valueChange.emit(Step.canexQr);
                 } else {
                     this.validData = false;
                     this.error = 'Oops! something went wrong, Please try again later.';
@@ -126,7 +125,7 @@ export class CanexPaymentOptionsComponent implements OnInit {
             this.etherium = false;
             this.erc20 = !this.erc20;
             this.others = false;
-            this.valueChange.emit(Step.erc20);
+            this.valueChange.emit(Step.canexErc20);
         }
     }
 
@@ -140,12 +139,12 @@ export class CanexPaymentOptionsComponent implements OnInit {
     }
 
     goToPrevious() {
-        this.valueChange.emit(Step.details);
+        this.valueChange.emit(Step.canexPaymentOptions);
     }
 
     goToNext() {
         if (this.validData === true) {
-            this.valueChange.emit(Step.qr);
+            this.valueChange.emit(Step.canexQr);
         }
     }
 

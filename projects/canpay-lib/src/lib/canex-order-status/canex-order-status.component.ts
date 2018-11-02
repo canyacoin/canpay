@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import * as globals from '../globals';
 import { CanexService } from '../services/canex.service';
@@ -12,7 +12,7 @@ import { FormData, Personal } from '../services/formData.service';
     styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class CanexOrderStatusComponent implements OnInit {
+export class CanexOrderStatusComponent implements OnInit, OnDestroy {
     // title = 'Thanks for staying tuned!';
     title = 'Order Page.';
     titleSecond = 'Your receipt has been emailed. ';
@@ -25,13 +25,14 @@ export class CanexOrderStatusComponent implements OnInit {
     orderData: any = '';
     id: string;
     currency: string;
+    orderSub: Subscription;
 
     constructor(private canexService: CanexService, private route: ActivatedRoute, private router: Router) {
     }
 
     ngOnInit() {
         this.currency = 'CAN';
-        this.canexService.getOrder(this.route.snapshot.params.id).subscribe(activity => {
+        this.orderSub = this.canexService.getOrder(this.route.snapshot.params.id).subscribe(activity => {
             this.orderData = activity;
             this.etherUrl = globals.etherscan + this.orderData.hash;
             this.currency = this.orderData.currency;
@@ -40,8 +41,13 @@ export class CanexOrderStatusComponent implements OnInit {
             });
     }
 
+    ngOnDestroy() {
+        if (this.orderSub) { this.orderSub.unsubscribe(); }
+    }
+
     getOrder() {
-        this.canexService.getOrder(this.orderid).subscribe(activity => {
+        if (this.orderSub) { this.orderSub.unsubscribe(); }
+        this.orderSub = this.canexService.getOrder(this.orderid).subscribe(activity => {
             this.orderData = activity;
             this.etherUrl = globals.etherscan + this.orderData.hash;
         },

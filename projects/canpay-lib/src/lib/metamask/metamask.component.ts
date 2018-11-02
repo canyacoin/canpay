@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { EthService, Web3LoadingStatus, WalletType } from '../services/eth.service';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
+
+import { EthService, WalletType, Web3LoadingStatus } from '../services/eth.service';
 
 @Component({
   selector: 'canyalib-metamask',
@@ -8,7 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./metamask.component.scss']
 })
 
-export class MetamaskComponent implements OnInit {
+export class MetamaskComponent implements OnInit, OnDestroy {
   @Input() initLogin = true;
   @Output() loginResp = new EventEmitter();
   @Output() account = new EventEmitter<string>();
@@ -40,6 +41,11 @@ export class MetamaskComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.ethSub) { this.ethSub.unsubscribe(); }
+    if (this.accSub) { this.accSub.unsubscribe(); }
   }
 }
 

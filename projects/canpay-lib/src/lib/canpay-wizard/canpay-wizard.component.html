@@ -57,28 +57,28 @@
         </div>
       </div>
 
-      <div *ngIf="currStep === Step.details">
+      <div *ngIf="currStep === Step.canexPaymentOptions">
         <canyalib-canex-payment-options (valueChange)='stepChanger($event)' [amount]="amount" [destinationAddress]='getCanExRecipient()'
           [userEmail]='userEmail'></canyalib-canex-payment-options>
       </div>
 
-      <div *ngIf="currStep === Step.qr">
+      <div *ngIf="currStep === Step.canexQr">
         <canyalib-canex-qr (valueChange)='stepChanger($event)'></canyalib-canex-qr>
       </div>
 
-      <div *ngIf="currStep === Step.staging">
+      <div *ngIf="currStep === Step.canexProcessing">
         <canyalib-canex-processing (valueChange)='stepChanger($event)'></canyalib-canex-processing>
       </div>
 
-      <div *ngIf="currStep === Step.erc20">
+      <div *ngIf="currStep === Step.canexErc20">
         <canyalib-canex-erc20 (valueChange)='stepChanger($event)'></canyalib-canex-erc20>
       </div>
 
-      <div *ngIf="currStep === Step.complete">
+      <div *ngIf="currStep === Step.canexReceipt">
         <canyalib-canex-receipt></canyalib-canex-receipt>
       </div>
 
-      <div *ngIf="currStep === Step.error">
+      <div *ngIf="currStep === Step.canexError">
         <canyalib-canex-error></canyalib-canex-error>
       </div>
 

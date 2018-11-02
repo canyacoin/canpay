@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import * as globals from '../globals';
 import { CanexService } from '../services/canex.service';
@@ -11,7 +12,7 @@ import { FormData, FormDataService } from '../services/formData.service';
     styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class CanexReceiptComponent implements OnInit {
+export class CanexReceiptComponent implements OnInit, OnDestroy {
 
     title = 'Booyah! CAN sent.';
     titleSecond = 'Your receipt has been emailed. ';
@@ -21,6 +22,7 @@ export class CanexReceiptComponent implements OnInit {
     message: string;
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
+    statusSub: Subscription;
 
     constructor(private router: Router, private formDataService: FormDataService, private canexService: CanexService) {
     }
@@ -31,18 +33,21 @@ export class CanexReceiptComponent implements OnInit {
         this.etherUrl = globals.etherscan + this.formData.hash;
         this.orderUrl = globals.order + this.formData.key;
         try {
-            this.canexService.checkStatus(this.formData.key).subscribe(activity => {
+            this.statusSub = this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                 this.formData.hash = activity.hashEthertoAccount;
             }, (error) => {
 
             });
         } catch (e) {
         }
-        this.canexService.sentMail(this.formData.key).subscribe(activity => {
-
-        });
+        this.canexService.sentMail(this.formData.key);
 
     }
+
+    ngOnDestroy() {
+        if (this.statusSub) { this.statusSub.unsubscribe(); }
+    }
+
 
     cancel() {
         this.formData.email = '';

@@ -27,7 +27,7 @@ export class CanPayExampleComponent {
     maxAmount: 50000, // Default is 'No Maximum'
 
     // CanExchange
-    userEmail: '<your email>', // email to which the canexchange confirmation should be sent
+    userEmail: 'valthrex@gmail.com', // email to which the canexchange confirmation should be sent
     disableCanEx: false,
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),

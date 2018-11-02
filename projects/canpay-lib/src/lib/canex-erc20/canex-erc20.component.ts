@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import 'rxjs/add/operator/take';
 
 import { Step } from '../canpay-wizard/canpay-wizard.component';
 import { CanexService } from '../services/canex.service';
@@ -13,7 +14,7 @@ import { ResizeService } from '../services/resize.service';
     styleUrls: ['../canex-payment-options/canex-payment-options.component.css']
 })
 
-export class CanexERC20Component implements OnInit {
+export class CanexERC20Component implements OnInit, OnDestroy {
     title = 'Please Review and Confirm Your Transaction!';
     workType: boolean;
     form: any;
@@ -34,6 +35,8 @@ export class CanexERC20Component implements OnInit {
     tokenData1: any;
     token_classes = '';
     private resizeSubscription: Subscription;
+    private sessionSub: Subscription;
+    private dataSub: Subscription;
     listStatus = true;
 
     @Output() valueChange = new EventEmitter();
@@ -53,7 +56,7 @@ export class CanexERC20Component implements OnInit {
         this.isFormValid = this.formDataService.isFormValid();
 
         // get list of supported erc20 tokens
-        this.canexService.getTokensBancor().subscribe(data => {
+        this.canexService.getTokensBancor().take(1).subscribe(data => {
             this.tokenData1 = data;
             this.listStatus = false;
             for (const result of data.json()) {
@@ -62,7 +65,7 @@ export class CanexERC20Component implements OnInit {
         });
 
         // get status
-        this.canexService.getSessionId().subscribe(data => {
+        this.sessionSub = this.canexService.getSessionId().subscribe(data => {
             this.key = data.json().token;
             this.status = data.json().status;
         });
@@ -82,6 +85,12 @@ export class CanexERC20Component implements OnInit {
         });
     }
 
+    ngOnDestroy() {
+        if (this.sessionSub) { this.sessionSub.unsubscribe(); }
+        if (this.dataSub) { this.dataSub.unsubscribe(); }
+
+    }
+
     // to convert erc20 token to CAN
     selectCurrency(form, key) {
         this.selectedERC = form.symbol;
@@ -91,7 +100,7 @@ export class CanexERC20Component implements OnInit {
         this.formData.erc20tokenDecimal = form.decimals;
         this.others = !this.others;
 
-        this.canexService.getData(form.symbol).subscribe(
+        this.dataSub = this.canexService.getData(form.symbol).subscribe(
             (data) => {
                 const price = data.json().data.price * + this.formData.amount;
                 this.price = price;
@@ -121,12 +130,12 @@ export class CanexERC20Component implements OnInit {
     }
 
     goToPrevious() {
-        this.valueChange.emit(Step.erc20);
+        this.valueChange.emit(Step.canexErc20);
     }
 
     cancel() {
         this.formData.email = '';
-        this.valueChange.emit(Step.details);
+        this.valueChange.emit(Step.canexPaymentOptions);
     }
 
     goToNext(form: any, key: any) {
@@ -136,7 +145,7 @@ export class CanexERC20Component implements OnInit {
             this.formData.key = key;
             // Navigate to the result page
             this.formData.accept = true;
-            this.valueChange.emit(Step.qr);
+            this.valueChange.emit(Step.canexQr);
 
         } else {
             this.error = 'Please select a token';

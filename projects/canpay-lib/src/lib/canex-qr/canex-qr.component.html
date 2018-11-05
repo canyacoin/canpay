@@ -14,9 +14,9 @@
     <input type="text" value="{{ethereumAddress}}" disabled *ngIf="ethStatus">
     <input type="text" value="{{ethereumAddress}}" disabled *ngIf="!ethStatus">
     <span class="copy-btn">
-      <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="ethereumAddress" (click)="copyToClipboard(ethereumAddress)"
+      <img src="./assets/canex/CANExchange_Copy.svg" ngxClipboard [cbContent]="ethereumAddress" (click)="copyToClipboard(ethereumAddress)"
         *ngIf="ethStatus">
-      <img src="./assets/img/CANExchange_Copy.svg" ngxClipboard [cbContent]="ethereumAddress" (click)="copyToClipboard(ethereumAddress)"
+      <img src="./assets/canex/CANExchange_Copy.svg" ngxClipboard [cbContent]="ethereumAddress" (click)="copyToClipboard(ethereumAddress)"
         *ngIf="!ethStatus">
     </span>
     <span *ngIf="copied" style="position: absolute; right: -5px; margin-top: 8%">Copied</span>
@@ -28,7 +28,7 @@
 
   <div class="listening-payment">
     <b class="listening">Listening for Payment</b> &nbsp;
-    <img src="./assets/img/CANExchange_listening.svg">
+    <img src="./assets/canex/CANExchange_listening.svg">
   </div>
 </div>
 

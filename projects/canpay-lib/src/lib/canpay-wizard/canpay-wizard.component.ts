@@ -136,7 +136,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   };
   insufficientBalance = false;
   processSummaryMsg: string;
-  balanceSub: Subscription;
+  balanceInterval: any;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
@@ -204,7 +204,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    if (this.balanceSub) { this.balanceSub.unsubscribe(); }
+    if (this.balanceInterval) { clearInterval(this.balanceInterval); }
   }
 
   updateProcessSummaryMsg() {
@@ -238,23 +238,22 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   checkBalance() {
     this.updateCurrentStep(Step.balanceCheck);
     this.isLoading = true;
-
-    this.balanceSub = interval(3000).subscribe(x => {
+    this.balanceInterval = setInterval(() => {
       this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
         .then(_balance => {
           this.balance = Number(_balance);
           this.insufficientBalance = Number(_balance) < this.amount;
           if (!this.insufficientBalance) {
             this.updateCurrentStep(this.postBalanceStep);
-            this.balanceSub.unsubscribe();
+            clearInterval(this.balanceInterval);
           }
         })
         .catch(err => this.error('Unable to retrieve user CAN balance!'))
         .then(() => this.isLoading = false);
-    });
+    }, 3000);
   }
   purchaseComplete() {
-    if (this.balanceSub) { this.balanceSub.unsubscribe(); }
+    if (this.balanceInterval) { clearInterval(this.balanceInterval); }
     this.stepChanger(this.postBalanceStep);
   }
 

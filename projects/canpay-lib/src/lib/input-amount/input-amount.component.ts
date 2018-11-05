@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { FormData, FormDataService, Personal } from '../services/formData.service';
-
 @Component({
   selector: 'canyalib-input-amount',
   templateUrl: './input-amount.component.html',

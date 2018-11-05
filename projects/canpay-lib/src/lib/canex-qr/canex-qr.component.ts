@@ -5,7 +5,6 @@ import { interval, Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
 import { Step } from '../canpay-wizard/canpay-wizard.component';
-import * as globals from '../globals';
 import { CanexService } from '../services/canex.service';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
@@ -34,7 +33,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     ethStatus = false;
     status: string;
     public web3: any;
-    ethereumAddress: string = globals.ethereumAddress;
+    ethereumAddress: string = this.canexService.environment.backendEthAddress;
     metamaskpayment = false;
     tokenABI: any;
     public MyContract: any;
@@ -73,7 +72,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
 
         this.copied = false;
         this.formData = this.formDataService.getFormData();
-        this.orderUrl = globals.order + this.formData.key;
+        this.orderUrl = this.canexService.environment.order + this.formData.key;
 
         this.isFormValid = this.formDataService.isFormValid();
         this.personal = this.formDataService.getPersonal();
@@ -116,11 +115,11 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     metamask() {
 
         if (this.formData.currency === 'ETH') {
-            this.canYaCoinEthService.payWithEth(this.formData.eth, globals.ethereumAddress);
+            this.canYaCoinEthService.payWithEth(this.formData.eth, this.canexService.environment.backendEthAddress);
         } else {
             this.gasSub = this.canexService.getGasPrice().subscribe(activity => {
-                this.canYaCoinEthService.payWithERC20(this.formData.eth, globals.ethereumAddress, this.formData.erc20token, this.formData.erc20tokenDecimal,
-                    activity.json().fast + '000');
+                this.canYaCoinEthService.payWithERC20(this.formData.eth, this.canexService.environment.backendEthAddress,
+                    this.formData.erc20token, this.formData.erc20tokenDecimal, activity.json().fast + '000');
             });
         }
     }

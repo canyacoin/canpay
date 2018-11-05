@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import * as globals from '../globals';
 import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService } from '../services/formData.service';
 
@@ -30,8 +29,8 @@ export class CanexReceiptComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.formData = this.formDataService.getFormData();
         this.isFormValid = this.formDataService.isFormValid();
-        this.etherUrl = globals.etherscan + this.formData.hash;
-        this.orderUrl = globals.order + this.formData.key;
+        this.etherUrl = this.canexService.environment.etherscan + this.formData.hash;
+        this.orderUrl = this.canexService.environment.order + this.formData.key;
         try {
             this.statusSub = this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                 this.formData.hash = activity.hashEthertoAccount;

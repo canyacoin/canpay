@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
-import * as globals from '../globals';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 @Component({

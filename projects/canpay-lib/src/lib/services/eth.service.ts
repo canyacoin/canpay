@@ -4,7 +4,6 @@ import merge from 'lodash.merge';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
 import { Step } from '../canpay-wizard/canpay-wizard.component';
-import * as globals from '../globals';
 
 declare let require: any;
 const Web3 = require('web3');

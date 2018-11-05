@@ -2,7 +2,6 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
-import * as globals from '../globals';
 import { CanexService } from '../services/canex.service';
 import { FormData, Personal } from '../services/formData.service';
 
@@ -34,7 +33,7 @@ export class CanexOrderStatusComponent implements OnInit, OnDestroy {
         this.currency = 'CAN';
         this.orderSub = this.canexService.getOrder(this.route.snapshot.params.id).subscribe(activity => {
             this.orderData = activity;
-            this.etherUrl = globals.etherscan + this.orderData.hash;
+            this.etherUrl = this.canexService.environment.etherscan + this.orderData.hash;
             this.currency = this.orderData.currency;
         },
             (error) => {
@@ -49,7 +48,7 @@ export class CanexOrderStatusComponent implements OnInit, OnDestroy {
         if (this.orderSub) { this.orderSub.unsubscribe(); }
         this.orderSub = this.canexService.getOrder(this.orderid).subscribe(activity => {
             this.orderData = activity;
-            this.etherUrl = globals.etherscan + this.orderData.hash;
+            this.etherUrl = this.canexService.environment.etherscan + this.orderData.hash;
         },
             (error) => {
             });

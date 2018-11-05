@@ -141,7 +141,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     }
 
     goToPrevious() {
-        this.valueChange.emit(Step.canexPaymentOptions);
+        this.valueChange.emit(Step.balanceCheck);
     }
 
     goToNext() {

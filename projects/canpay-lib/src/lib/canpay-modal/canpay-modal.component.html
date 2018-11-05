@@ -13,7 +13,9 @@
         [onAuthTxHash]="canPay.onAuthTxHash" [recepient]="canPay.recepient" [amount]="canPay.amount"
         [postAuthorisationProcessName]="canPay.postAuthorisationProcessName" [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults"
         (currentStep)="currentStep($event)" (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)"
-        (complete)="canPay.complete($event)" (cancel)="canPay.cancel($event)"></canyalib-canpay>
+        (complete)="canPay.complete($event)" (cancel)="canPay.cancel($event)" [destinationAddress]="canPay.destinationAddress"
+        [disableCanEx]="canPay.disableCanEx" [userEmail]="canPay.userEmail"></canyalib-canpay>
+
     </div>
   </div>
 </div>

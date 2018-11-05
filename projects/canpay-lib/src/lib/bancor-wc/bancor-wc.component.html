@@ -4,9 +4,12 @@
     <div class="balance"> {{ balance | commaSepNum }} </div>
   </div>
 
-  <div id="bancor-wc" *ngIf="disableCanEx"></div>
+  <button class="btn btn-primary" *ngIf="!disableCanEx" (click)="callCanex()">
+    Buy CAN Tokens
+  </button>
 
-  <button class="btn btn-primary" *ngIf="!disableCanEx" (click)="buyCan()">
+  <button *ngIf="disableCanEx && status === Status.New && !isLoadingBancorWidget" class="btn btn-primary" (click)="open()"
+    [disabled]="isLoadingBancorWidget">
     Buy CAN Tokens
   </button>
 

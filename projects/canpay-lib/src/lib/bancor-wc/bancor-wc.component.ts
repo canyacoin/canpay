@@ -22,6 +22,7 @@ export enum Status {
 export class BancorWcComponent implements OnInit {
   @Output() check = new EventEmitter();
   @Output() valueChange = new EventEmitter();
+  @Input() type = 'WITHOUT_INPUT_BOXES';
   @Input() balance = 0;
   @Input() disableCanEx;
   @Input() set isLoading(isLoading: boolean) {
@@ -44,19 +45,38 @@ export class BancorWcComponent implements OnInit {
   ngOnInit() {
     this.formData = this.formDataService.getFormData();
     this.personal = this.formDataService.getPersonal();
+    if (this.isBancorLoaded()) { return; }
 
+    this.isLoadingBancorWidget = true;
+    this.addJsToElement('https://widget-convert.bancor.network/v1').onload = () => {
+      console.log('BancorConvertWidget Tag loaded');
+      this.isLoadingBancorWidget = false;
+      this.initBancorWidget();
+    };
+  }
+
+  isBancorLoaded() {
+    try {
+      if (BancorConvertWidget) { return true; }
+    } catch (e) { console.log('BancorConvertWidget is not initialized'); }
+
+    return false;
+  }
+
+  initBancorWidget() {
+    if (!this.isBancorLoaded()) { return; }
+
+    BancorConvertWidget.init({
+      'type': this.type,
+      'baseCurrencyId': '5a6f61ece3de16000123763a',
+      'pairCurrencyId': '5937d635231e97001f744267',
+      'primaryColor': '#00BFFF',
+      'primaryColorHover': '55DAFB'
+    });
   }
 
 
-  buyCan() {
-    if (!this.disableCanEx) {
-      this.callCanEx();
-    } else {
-
-    }
-  }
-
-  public callCanEx() {
+  public callCanex() {
     this.valueChange.emit(Step.canexPaymentOptions);
   }
 
@@ -69,6 +89,7 @@ export class BancorWcComponent implements OnInit {
   }
 
   open() {
+    BancorConvertWidget.showConvertPopup('buy');
     this.status = Status.PendingPurchase;
   }
 
@@ -81,5 +102,4 @@ export class BancorWcComponent implements OnInit {
   cancel() {
     this.status = Status.New;
   }
-
 }

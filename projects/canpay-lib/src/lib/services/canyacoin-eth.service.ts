@@ -74,8 +74,13 @@ export class CanYaCoinEthService extends EthService {
     console.log('CanYaCoinEthService: payWithCAN: ', from, toRecepient, amount);
     return new Promise(async (resolve, reject) => {
       const tx = await this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount));
-      const gas = await tx.estimateGas({ from });
-      const gasPrice = await this.getDefaultGasPriceGwei();
+      let gas, gasPrice;
+      try {
+        gas = await tx.estimateGas({ from });
+        gasPrice = await this.getDefaultGasPriceGwei();
+      } catch (e) {
+        reject(e);
+      }
       tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
     });
   }

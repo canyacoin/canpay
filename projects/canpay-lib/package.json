@@ -1,6 +1,6 @@
 {
   "name": "@canyaio/canpay-lib",
-  "version": "0.2.1-beta.17",
+  "version": "0.2.1-beta.19",
   "readme": "README.md",
   "dependencies": {
     "angular2-qrcode": "^2.0.1",

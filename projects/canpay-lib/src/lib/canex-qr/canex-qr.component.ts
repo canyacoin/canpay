@@ -44,7 +44,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     orderUrl: string;
     @Output() valueChange = new EventEmitter();
 
-    statusSub: Subscription;
+    statusInterval: any;
     addressSub: Subscription;
     gasSub: Subscription;
 
@@ -52,7 +52,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
         private router: Router, private formDataService: FormDataService, private route: Router, private canYaCoinEthService: CanYaCoinEthService) {
 
         try {
-            this.statusSub = interval(2000).subscribe(x => {
+            this.statusInterval = setInterval(() => {
                 this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                     try {
                         if (activity.json().status === 'IDENTIFIED') {
@@ -61,15 +61,9 @@ export class CanexQRComponent implements OnInit, OnDestroy {
                         } else if (activity.json().status === 'ERROR') {
                             this.valueChange.emit(Step.canexError);
                         }
-                    } catch (e) {
-
-                    }
-
-                },
-                    (error) => {
-
-                    });
-            });
+                    } catch (e) { }
+                }, (error) => { });
+            }, 2000);
         } catch (e) {
 
         }
@@ -99,7 +93,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.statusSub) { this.statusSub.unsubscribe(); }
+        if (this.statusInterval) { clearInterval(this.statusInterval); }
         if (this.addressSub) { this.addressSub.unsubscribe(); }
         if (this.gasSub) { this.gasSub.unsubscribe(); }
     }
@@ -133,28 +127,6 @@ export class CanexQRComponent implements OnInit, OnDestroy {
 
     metamaskEnable() {
         this.metamaskpayment = true;
-    }
-
-    showActivity(activity: any) {
-
-        const existingActivity = false;
-        const obj: any = JSON.parse(activity);
-
-        this.formData.hash = obj.hash;
-        this.formData.date = obj.date;
-        this.formData.usd = this.personal.usd;
-
-        if (obj.status === 'PROCESSED' && obj.currency === 'CAN') {
-            this.valueChange.emit(Step.canexReceipt);
-        } else if (obj.status === 'PROCESSED' && obj.currency === 'ETH') {
-            this.valueChange.emit(Step.canexProcessing);
-        } else if (obj.status === 'PROCESSED' && obj.currency === 'METAMASK') {
-            this.valueChange.emit(Step.canexReceipt);
-        }
-
-        if (!existingActivity && activity.page !== 'logout') {
-            this.activities.push(activity);
-        }
     }
 
     cancel() {

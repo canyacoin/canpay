@@ -27,15 +27,15 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
     @Output() valueChange = new EventEmitter();
     @Output() purchaseComplete = new EventEmitter();
 
+    statusInterval: any;
     statusSub: Subscription;
-    statusSub2: Subscription;
 
     constructor(private router: Router, private formDataService: FormDataService,
         private canexService: CanexService) {
-        this.statusSub = interval(2000).subscribe(x => {
+        this.statusInterval = setInterval(() => {
             try {
-                if (this.statusSub2) { this.statusSub2.unsubscribe(); }
-                this.statusSub2 = this.canexService.checkStatus(this.formData.key).subscribe(activity => {
+                if (this.statusSub) { this.statusSub.unsubscribe(); }
+                this.statusSub = this.canexService.checkStatus(this.formData.key).subscribe(activity => {
                     try {
                         if (activity.json().status === 'COMPLETE') {
                             this.purchaseComplete.emit();
@@ -48,7 +48,7 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
                 });
             } catch (e) {
             }
-        });
+        }, 2000);
     }
 
     ngOnInit() {
@@ -61,28 +61,8 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        if (this.statusInterval) { clearInterval(this.statusInterval); }
         if (this.statusSub) { this.statusSub.unsubscribe(); }
-        if (this.statusSub2) { this.statusSub2.unsubscribe(); }
-    }
-
-    showActivity(activity: any) {
-
-        const existingActivity = false;
-        const obj: any = JSON.parse(activity);
-
-        this.formData.hash = obj.hash;
-        this.formData.date = obj.date;
-        this.formData.usd = this.personal.usd;
-        if (obj.status === 'PROCESSED' && obj.currency === 'CAN') {
-            this.valueChange.emit(Step.canexReceipt);
-
-        } else if (obj.status === 'PROCESSED' && obj.currency === 'ETH') {
-            this.valueChange.emit(Step.canexProcessing);
-        }
-
-        if (!existingActivity && activity.page !== 'logout') {
-            this.activities.push(activity);
-        }
     }
 
     cancel() {

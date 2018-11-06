@@ -57,7 +57,6 @@ export class CanexProcessingComponent implements OnInit, OnDestroy {
         this.etherUrl = 'https://etherscan.io/tx/' + this.formData.hash;
         this.orderUrl = 'http://staging.canexchange.io/#/order/' + this.formData.key;
         this.canexService.sentMailStaging(this.formData.key).subscribe(activity => { });
-        this.canexService.submitPost(this.formData).subscribe(activity => { });
     }
 
     ngOnDestroy() {

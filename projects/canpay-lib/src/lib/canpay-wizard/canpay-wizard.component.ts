@@ -310,7 +310,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   }
 
   finish() {
-    this.updateCurrentStep(Step.canexReceipt);
     this.complete.emit(this.canPayData());
   }
 

@@ -45,7 +45,6 @@ export class CanYaCoinEthService extends EthService {
   }
 
   async getCanYaBalance(userAddress: string = this.getOwnerAccount()): Promise<string> {
-    console.log('CanYaCoinEthService: getCanYaBalance: ', userAddress, this.canyaContract);
     try {
       if (userAddress) {
         const balance = await this.canyaContract.methods.balanceOf(userAddress).call();
@@ -75,10 +74,24 @@ export class CanYaCoinEthService extends EthService {
     console.log('CanYaCoinEthService: payWithCAN: ', from, toRecepient, amount);
     return new Promise(async (resolve, reject) => {
       const tx = await this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount));
-      const gas = await tx.estimateGas({ from });
-      const gasPrice = await this.getDefaultGasPriceGwei();
+      let gas, gasPrice;
+      try {
+        gas = await tx.estimateGas({ from });
+        gasPrice = await this.getDefaultGasPriceGwei();
+      } catch (e) {
+        reject(e);
+      }
       tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
     });
   }
 
+  payWithEth(amount, to: string) {
+    console.log('CanYaCoinEthService: payWithEther: ', amount);
+    this.payWithEther(amount, to);
+  }
+
+  payWithERC20(amount, recipient, token, decimal, gas) {
+    console.log('CanYaCoinEthService: payWithErc20Token: ', amount, token, decimal, gas);
+    this.payWithErc20Token(this.config.contracts.canyaCoinAbi, recipient, amount, token, decimal, gas);
+  }
 }

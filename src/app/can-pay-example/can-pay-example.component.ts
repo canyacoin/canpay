@@ -26,6 +26,9 @@ export class CanPayExampleComponent {
     minAmount: 1000, // Default is 1
     maxAmount: 50000, // Default is 'No Maximum'
 
+    // CanExchange
+    userEmail: 'valthrex@gmail.com', // email to which the canexchange confirmation should be sent
+    disableCanEx: false,
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),
     cancel: this.cancelCanPayUserActivation.bind(this),
@@ -37,6 +40,10 @@ export class CanPayExampleComponent {
   };
 
   constructor(private daoEthService: DaoEthService, private canPayService: CanPayService) { }
+
+  onAuthTxHash() {
+
+  }
 
   startCanPayUserActivation(canPayData: CanPayData) {
     console.log(canPayData);

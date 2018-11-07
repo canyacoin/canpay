@@ -12,9 +12,11 @@
 
     <div class="mt-10px text-right">
       <button class="btn btn-lg btn-primary full-width" (click)="authorise()" [disabled]="isLoading">
-          <img *ngIf="isLoading" src="assets/img/loader.svg" height="21px" alt="Loader" style="mix-blend-mode: difference"> {{ isLoading ? 'Authorising Payment ...' : 'Authorise Payment' }}
+        <img *ngIf="isLoading" src="assets/img/loader.svg" height="21px" alt="Loader" style="mix-blend-mode: difference">
+        {{ isLoading ? 'Authorising Payment ...' : 'Authorise Payment' }}
       </button>
-      <p *ngIf="isLoading" class="text-center fs-12 fw-400 mt-10" style="color: #f00">It could take a while, please be patient</p>
+      <p *ngIf="isLoading" class="text-center fs-12 fw-400 mt-10" style="color: #f00">It could take a while, please be
+        patient</p>
     </div>
   </div>
 

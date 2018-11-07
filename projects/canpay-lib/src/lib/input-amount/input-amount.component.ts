@@ -10,11 +10,10 @@ export class InputAmountComponent {
   @Output() error = new EventEmitter();
   @Input() minAmount = 1;
   @Input() maxAmount = 0;
-
   amount: number;
 
-  constructor() { }
-
+  constructor() {
+  }
   onAmountKeyUp(event) {
     this.amount = Number(event.target.value);
   }

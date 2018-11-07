@@ -52,8 +52,35 @@
             the process.
             <br>Please, buy some CAN and re-check your balance to proceed.</p>
           <p class="wizard-hidden-desktop">Insufficient CAN. Please, buy some CAN and re-check your balance to proceed.</p>
-          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" (check)="checkBalance($event)"></canyalib-bancor-wc>
+          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" [disableCanEx]="disableCanEx" (valueChange)='stepChanger($event)'
+            (check)="checkBalance()"></canyalib-bancor-wc>
         </div>
+      </div>
+
+      <div *ngIf="currStep === Step.canexPaymentOptions">
+        <canyalib-canex-payment-options (valueChange)='stepChanger($event)' [amount]="amount" [destinationAddress]='getCanExRecipient()'
+          [userEmail]='userEmail'></canyalib-canex-payment-options>
+      </div>
+
+      <div *ngIf="currStep === Step.canexQr">
+        <canyalib-canex-qr (valueChange)='stepChanger($event)'></canyalib-canex-qr>
+      </div>
+
+      <div *ngIf="currStep === Step.canexProcessing">
+        <canyalib-canex-processing (valueChange)='stepChanger($event)' (purchaseComplete)="purchaseComplete()"
+          [postBalanceStep]="postBalanceStep"></canyalib-canex-processing>
+      </div>
+
+      <div *ngIf="currStep === Step.canexErc20">
+        <canyalib-canex-erc20 (valueChange)='stepChanger($event)'></canyalib-canex-erc20>
+      </div>
+
+      <div *ngIf="currStep === Step.canexReceipt">
+        <canyalib-canex-receipt></canyalib-canex-receipt>
+      </div>
+
+      <div *ngIf="currStep === Step.canexError">
+        <canyalib-canex-error></canyalib-canex-error>
       </div>
 
       <div *ngIf="currStep === Step.authorisation">
@@ -74,8 +101,6 @@
       <div *ngIf="currStep === Step.confirmation">
         <msg-box [msg]="confirmationDlg" [controls]="confirmationDlg.controls" (action)="finish()"></msg-box>
       </div>
-
     </div>
   </div>
-
 </div>

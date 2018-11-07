@@ -4,8 +4,9 @@
   </div>
 
   <canyalib-canpay *ngIf="isVisible" [dAppName]="canPay.dAppName" [successText]="canPay.successText" [operation]="canPay.operation"
-    [onAuthTxHash]="canPay.onAuthTxHash" [recepient]="canPay.recepient" [amount]="canPay.amount"
-    [postAuthorisationProcessName]="canPay.postAuthorisationProcessName" [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults"
-    (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)" (complete)="canPay.complete($event)"
-    (cancel)="canPay.cancel($event)"></canyalib-canpay>
+    [recepient]="canPay.recepient" [amount]="canPay.amount" [postAuthorisationProcessName]="canPay.postAuthorisationProcessName"
+    [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults" [destinationAddress]="canPay.destinationAddress"
+    [disableCanEx]="canPay.disableCanEx" [userEmail]="canPay.userEmail" (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)"
+    (complete)="canPay.complete($event)" (cancel)="canPay.cancel($event)"></canyalib-canpay>
+
 </div>

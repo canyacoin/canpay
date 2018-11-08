@@ -10,7 +10,7 @@
         </div>
       </div>
       <canyalib-canpay [dAppName]="canPay.dAppName" [successText]="canPay.successText" [operation]="canPay.operation"
-        [onAuthTxHash]="canPay.onAuthTxHash" [recepient]="canPay.recepient" [amount]="canPay.amount"
+        [onAuthTxHash]="canPay.onAuthTxHash" [recipient]="canPay.recipient" [amount]="canPay.amount" [paymentSummary]="canPay.paymentSummary"
         [postAuthorisationProcessName]="canPay.postAuthorisationProcessName" [postAuthorisationProcessResults]="canPay.postAuthorisationProcessResults"
         (currentStep)="currentStep($event)" (startPostAuthorisationProcess)="canPay.startPostAuthorisationProcess($event)"
         (complete)="canPay.complete($event)" (cancel)="canPay.cancel($event)" [destinationAddress]="canPay.destinationAddress"

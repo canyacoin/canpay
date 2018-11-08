@@ -3,6 +3,7 @@
  */
 
 export * from './lib/canpay.module';
+export * from './lib/interfaces';
 export * from './lib/canpay-wizard/canpay-wizard.component';
 export * from './lib/bancor-wc/bancor-wc.component';
 export * from './lib/metamask/metamask.component';

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { interval, Observable, Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
-import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 

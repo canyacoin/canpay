@@ -32,6 +32,7 @@ import { MsgBoxComponent } from './msg-box/msg-box.component';
 import {
     PaymentAuthorisationComponent
 } from './payment-authorisation/payment-authorisation.component';
+import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ProcessComponent } from './process/process.component';
 import { CanexService } from './services/canex.service';
@@ -50,6 +51,7 @@ const COMPONENTS = [
   BancorWcComponent,
   PaymentAuthorisationComponent,
   PaymentComponent,
+  PaymentSummaryComponent,
   ProcessComponent,
   MsgBoxComponent,
   InputAmountComponent,

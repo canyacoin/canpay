@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'canyalib-process',
@@ -10,7 +10,7 @@ export class ProcessComponent {
   @Output() start = new EventEmitter();
   @Input() processName;
   @Input() dAppName;
-  @Input() recepient;
+  @Input() recipient;
   @Input() amount = 0;
   @Input() set error(msg: string) {
     if (!!msg) {

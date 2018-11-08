@@ -3,86 +3,11 @@ import {
 } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 
+import {
+    CanPay, CanPayData, Contract, Operation, PaymentSummary, ProcessAction, ProcessActionResult,
+    Step, View
+} from '../interfaces';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
-
-export enum Step {
-  metamask = 0,
-  paymentAmount = 1,
-  balanceCheck = 2,
-  buyCan = 3,
-  authorisation = 4,
-  payment = 5,
-  process = 6,
-  confirmation = 7,
-  completed = 8,
-  canexPaymentOptions = 9,
-  canexErc20 = 11,
-  canexQr = 13,
-  canexProcessing = 10,
-  canexReceipt = 12,
-  canexError = 14
-}
-
-export enum Operation {
-  auth = 'Authorise',
-  pay = 'Pay',
-  interact = 'Interact'
-}
-
-export enum ProcessAction {
-  success = 0,
-  error = 1
-}
-
-export enum View {
-  Normal,
-  Compact
-}
-
-export interface ProcessActionResult {
-  type: ProcessAction;
-  msg: string;
-}
-
-export interface Contract {
-  abi: any;
-  address: string;
-}
-
-export interface CanPay {
-  dAppName: string;
-  operation?: Operation;
-  onAuthTxHash?: Function;
-  recepient: string;
-  amount?: number;
-  minAmount?: number;
-  maxAmount?: number;
-  successText?: string;
-  postAuthorisationProcessName?: string;
-  postAuthorisationProcessResults?: ProcessActionResult;
-  canyaContract?: Contract;
-  startPostAuthorisationProcess?: Function;
-  complete: Function;
-  cancel?: Function;
-  currentStep?: Function;
-  disableCanEx?: boolean;
-  destinationAddress?: string;
-  userEmail: string;
-}
-
-export function setProcessResult(txOrErr) {
-  this.postAuthorisationProcessResults = {
-    type: !txOrErr.status ? ProcessAction.error : ProcessAction.success,
-    msg: !txOrErr.status ? (txOrErr.message || 'Transaction failed') : null
-  };
-}
-
-export interface CanPayData {
-  currStep: Step;
-  amount: number;
-  account: string;
-  balance: number;
-}
 
 @Component({
   selector: 'canyalib-canpay',
@@ -100,10 +25,11 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   @Input() postAuthorisationProcessName;
   @Input() operation = Operation.auth;
   @Input() onAuthTxHash;
-  @Input() recepient;
+  @Input() recipient;
   @Input() dAppName;
   @Input() successText;
   @Input() amount = 0;
+  @Input() paymentSummary: PaymentSummary;
   @Input() minAmount = 0;
   @Input() maxAmount = 0;
   @Input() disableCanEx = false;
@@ -124,6 +50,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   errMsg: string;
   steps: Array<any>;
   currStep: Step;
+  title = 'Payment';
   isLoading = false;
   balance = 0;
   account: string;
@@ -143,19 +70,24 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.steps = [
       {
-        name: 'Metamask',
-        value: Step.metamask,
-        active: true
-      },
-      {
         name: 'Pay Amount',
         value: Step.paymentAmount,
         active: !this.amount && this.operation !== Operation.interact
       },
       {
+        name: 'Payment Summary',
+        value: Step.paymentSummary,
+        active: true
+      },
+      {
+        name: 'Metamask',
+        value: Step.metamask,
+        active: true
+      },
+      {
         name: 'Balance Check',
         value: Step.balanceCheck,
-        active: true && this.operation !== Operation.interact
+        active: this.operation !== Operation.interact
       },
       {
         name: 'Authorisation',
@@ -187,8 +119,8 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
       validationErrors.push('Missing dAppName');
     }
 
-    if (!this.recepient) {
-      validationErrors.push('Missing recepient address');
+    if (!this.recipient) {
+      validationErrors.push('Missing recipient address');
     }
 
     if (validationErrors.length) {
@@ -198,8 +130,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     if (this.successText) {
       this.confirmationDlg.title = this.successText;
     }
-
-    this.updateProcessSummaryMsg();
   }
 
 
@@ -207,14 +137,9 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     if (this.balanceInterval) { clearInterval(this.balanceInterval); }
   }
 
-  updateProcessSummaryMsg() {
-    this.processSummaryMsg = `${this.operation} ${this.dAppName} ${this.operation === 'Authorise' ? 'to withdraw' : ''}` +
-      ` ${this.amount ? this.amount + ' CAN' : ''}` +
-      ` ${this.postAuthorisationProcessName ? 'for the ' + this.postAuthorisationProcessName : ''}`;
-  }
-
   updateCurrentStep(step) {
     this.currStep = step;
+    this.title = this.steps.find(x => x.value === step).name || 'Payment';
     this.currentStep.emit(step);
   }
 
@@ -231,8 +156,8 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   setAmount(amount) {
     console.log('setAmount: ', amount);
     this.amount = amount;
-    this.checkBalance();
-    this.updateProcessSummaryMsg();
+    this.updateCurrentStep(Step.paymentSummary);
+    // this.checkBalance();
   }
 
   checkBalance() {

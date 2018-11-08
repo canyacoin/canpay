@@ -20,7 +20,6 @@
     <br />
     <div class="scrollbar scrollbar-primary">
       <div class="row method-container payment-margin-left">
-        <canyalib-loader [isLoading]="listStatus" [label]="'Loading Tokens'"></canyalib-loader>
         <div [className]="token_classes" style="margin-right: 8px; " *ngFor="let token of tokens;">
 
           <div [ngClass]="otherstest == token.address ? 'card-body active' : 'card-body'" style="cursor: pointer;"

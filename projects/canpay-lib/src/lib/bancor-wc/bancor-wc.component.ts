@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, Renderer2 } from '@angu
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
 import { Subscription } from 'rxjs';
 
-import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 
 declare var BancorConvertWidget: any;
@@ -40,7 +40,7 @@ export class BancorWcComponent implements OnInit {
   balanceSub: Subscription;
 
   constructor(private renderer: Renderer2, private dialogService: DialogService,
-    private formDataService: FormDataService, private canpayWizardComponent: CanpayWizardComponent) { }
+    private formDataService: FormDataService) { }
 
   ngOnInit() {
     this.formData = this.formDataService.getFormData();

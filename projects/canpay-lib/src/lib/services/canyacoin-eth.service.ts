@@ -44,6 +44,17 @@ export class CanYaCoinEthService extends EthService {
     }
   }
 
+  async hasAllowance(owner: string, spender: string, amount: number): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        const allowance = await this.getAllowance(owner, spender);
+        resolve(allowance >= this.getAmountWithDecimals(amount));
+      } catch (e) {
+        resolve(false);
+      }
+    });
+  }
+
   async getCanYaBalance(userAddress: string = this.getOwnerAccount()): Promise<string> {
     try {
       if (userAddress) {
@@ -60,20 +71,20 @@ export class CanYaCoinEthService extends EthService {
     }
   }
 
-  authoriseCANPayment(toRecepient, amount, from: string = this.getOwnerAccount(), onTxHash: Function = null): Promise<any> {
-    console.log('CanYaCoinEthService: authoriseCANPayment: ', from, toRecepient, amount);
+  authoriseCANPayment(torecipient, amount, from: string = this.getOwnerAccount(), onTxHash: Function = null): Promise<any> {
+    console.log('CanYaCoinEthService: authoriseCANPayment: ', from, torecipient, amount);
     return new Promise(async (resolve, reject) => {
-      const tx = await this.canyaContract.methods.approve(toRecepient, this.amountToCANTokens(amount));
+      const tx = await this.canyaContract.methods.approve(torecipient, this.amountToCANTokens(amount));
       const gas = await tx.estimateGas();
       const gasPrice = await this.getDefaultGasPriceGwei();
       tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject, onTxHash));
     });
   }
 
-  payWithCAN(toRecepient, amount, from = this.getOwnerAccount()): Promise<any> {
-    console.log('CanYaCoinEthService: payWithCAN: ', from, toRecepient, amount);
+  payWithCAN(torecipient, amount, from = this.getOwnerAccount()): Promise<any> {
+    console.log('CanYaCoinEthService: payWithCAN: ', from, torecipient, amount);
     return new Promise(async (resolve, reject) => {
-      const tx = await this.canyaContract.methods.transfer(toRecepient, this.amountToCANTokens(amount));
+      const tx = await this.canyaContract.methods.transfer(torecipient, this.amountToCANTokens(amount));
       let gas, gasPrice;
       try {
         gas = await tx.estimateGas({ from });
@@ -85,10 +96,7 @@ export class CanYaCoinEthService extends EthService {
     });
   }
 
-  payWithEth(amount, to: string) {
-    console.log('CanYaCoinEthService: payWithEther: ', amount);
-    this.payWithEther(amount, to);
-  }
+
 
   payWithERC20(amount, recipient, token, decimal, gas) {
     console.log('CanYaCoinEthService: payWithErc20Token: ', amount, token, decimal, gas);

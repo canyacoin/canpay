@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
-import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 import { ResizeService } from '../services/resize.service';
@@ -40,12 +40,13 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     @Input() destinationAddress;
     @Input() userEmail;
     @Input() amount: number;
+    @Input() balance = 0;
 
     sessionSub: Subscription;
     cmcSub: Subscription;
 
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
-        private canexService: CanexService, private canpayWizardComponent: CanpayWizardComponent) {
+        private canexService: CanexService) {
     }
 
     ngOnInit() {
@@ -58,7 +59,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         console.log('sending to: ' + this.destinationAddress);
         this.formData.address = this.destinationAddress;
         this.formData.email = this.userEmail;
-        this.formData.amount = this.amount - this.canpayWizardComponent.canPayData().balance;
+        this.formData.amount = this.amount - this.balance;
 
         this.sessionSub = this.canexService.getSessionId().subscribe(data => {
             this.key = data.json().token;

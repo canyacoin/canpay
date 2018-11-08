@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 
@@ -7,25 +8,40 @@ import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
   templateUrl: './payment-authorisation.component.html',
   styleUrls: ['./payment-authorisation.component.scss']
 })
-export class PaymentAuthorisationComponent implements OnInit {
+export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
   @Output() error = new EventEmitter();
   @Output() success = new EventEmitter();
   @Input() dAppName;
-  @Input() recepient;
+  @Input() recipient;
   @Input() onAuthTxHash = undefined;
   @Input() amount = 0;
-  isLoading = false;
+  isLoading = true;
+
+  accSub: Subscription;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
-  ngOnInit() { }
+  async ngOnInit() {
+    this.accSub = this.canyaCoinEthService.account$.subscribe(async (acc) => {
+      const hasAllowance = await this.canyaCoinEthService.hasAllowance(acc, this.recipient, this.amount);
+      if (hasAllowance) {
+        this.success.emit('');
+      } else {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.accSub) { this.accSub.unsubscribe(); }
+  }
 
   authorise() {
     if (this.isLoading) { return; }
 
     this.isLoading = true;
-    console.log('authCanPayment: ', this.recepient, this.amount);
-    this.canyaCoinEthService.authoriseCANPayment(this.recepient, this.amount, undefined, this.onAuthTxHash)
+    console.log('authCanPayment: ', this.recipient, this.amount);
+    this.canyaCoinEthService.authoriseCANPayment(this.recipient, this.amount, undefined, this.onAuthTxHash)
       .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
       .catch(err => this.error.emit(err.message))
       .then(() => this.isLoading = false);

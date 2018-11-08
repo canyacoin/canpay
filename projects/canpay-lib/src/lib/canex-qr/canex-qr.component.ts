@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
-import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { CanexService } from '../services/canex.service';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
@@ -115,7 +115,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     metamask() {
 
         if (this.formData.currency === 'ETH') {
-            this.canYaCoinEthService.payWithEth(this.formData.eth, this.canexService.environment.backendEthAddress);
+            this.canYaCoinEthService.payWithEther(this.formData.eth, this.canexService.environment.backendEthAddress);
         } else {
             this.gasSub = this.canexService.getGasPrice().subscribe(activity => {
                 this.canYaCoinEthService.payWithERC20(this.formData.eth, this.canexService.environment.backendEthAddress,

@@ -11,7 +11,7 @@ export class PaymentComponent implements OnInit {
   @Output() error = new EventEmitter();
   @Output() success = new EventEmitter();
   @Input() dAppName;
-  @Input() recepient;
+  @Input() recipient;
   @Input() amount = 0;
   isLoading = false;
 
@@ -23,7 +23,7 @@ export class PaymentComponent implements OnInit {
     if (this.isLoading) { return; }
 
     this.isLoading = true;
-    this.canyaCoinEthService.payWithCAN(this.recepient, this.amount)
+    this.canyaCoinEthService.payWithCAN(this.recipient, this.amount)
       .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
       .catch(err => this.error.emit(err.message))
       .then(() => this.isLoading = false);

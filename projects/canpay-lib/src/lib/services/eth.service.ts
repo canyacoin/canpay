@@ -3,11 +3,8 @@ import { Http, Response } from '@angular/http';
 import merge from 'lodash.merge';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
-import { Step } from '../canpay-wizard/canpay-wizard.component';
-
 declare let require: any;
 const Web3 = require('web3');
-// declare var web3;
 declare var window;
 
 const canDecimals = 6;
@@ -217,7 +214,7 @@ export class EthService implements OnDestroy {
     return new this.web3js.eth.Contract(abi, address);
   }
 
-  async payWithEther(amount: string, to: string): Promise<any> {
+  async payWithEther(amount: number, to: string): Promise<any> {
     const gasPrice = await this.getDefaultGasPriceGwei();
     const from = this.getOwnerAccount();
     return new Promise((resolve, reject) => {

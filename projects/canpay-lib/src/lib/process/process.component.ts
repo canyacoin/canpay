@@ -14,16 +14,16 @@ export class ProcessComponent {
   @Input() amount = 0;
   @Input() set error(msg: string) {
     if (!!msg) {
-      this.isLoading = false;
+      this.sendingTx = false;
     }
   }
 
-  isLoading = false;
+  sendingTx = false;
 
   constructor() { }
 
   submit() {
-    this.isLoading = true;
+    this.sendingTx = true;
     this.start.emit(true);
   }
 }

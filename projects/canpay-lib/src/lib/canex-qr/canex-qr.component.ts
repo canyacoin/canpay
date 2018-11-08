@@ -72,6 +72,9 @@ export class CanexQRComponent implements OnInit, OnDestroy {
 
         this.copied = false;
         this.formData = this.formDataService.getFormData();
+        if (!this.formData.key || this.formData.key === '') {
+            this.valueChange.emit(Step.canexError);
+        }
         this.orderUrl = this.canexService.environment.order + this.formData.key;
 
         this.isFormValid = this.formDataService.isFormValid();

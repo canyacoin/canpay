@@ -13,20 +13,20 @@ export class PaymentComponent implements OnInit {
   @Input() dAppName;
   @Input() recipient;
   @Input() amount = 0;
-  isLoading = false;
+  sendingTx = false;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
   ngOnInit() { }
 
   pay() {
-    if (this.isLoading) { return; }
+    if (this.sendingTx) { return; }
 
-    this.isLoading = true;
+    this.sendingTx = true;
     this.canyaCoinEthService.payWithCAN(this.recipient, this.amount)
       .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
       .catch(err => this.error.emit(err.message))
-      .then(() => this.isLoading = false);
+      .then(() => this.sendingTx = false);
 
     return false;
   }

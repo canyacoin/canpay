@@ -45,6 +45,8 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     sessionSub: Subscription;
     cmcSub: Subscription;
 
+    isLoading = true;
+
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
         private canexService: CanexService) {
     }
@@ -61,9 +63,10 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         this.formData.email = this.userEmail;
         this.formData.amount = this.amount - this.balance;
 
-        this.sessionSub = this.canexService.getSessionId().subscribe(data => {
+        this.canexService.getSessionId().take(1).subscribe(data => {
             this.key = data.json().token;
             this.status = data.json().status;
+            this.isLoading = false;
         });
 
         this.cmcSub = this.canexService.getDataCmc('ETH').subscribe(
@@ -109,18 +112,16 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
             this.others = false;
             this.validData = true;
 
-            setTimeout(() => {
-                if (this.status && this.formData.currency != null) {
-                    this.error = null;
-                    this.formData.key = this.key;
-                    // Navigate to the result page
-                    this.formData.accept = true;
-                    this.formDataService.setConfirmation(this.workType);
-                } else {
-                    this.validData = false;
-                    this.error = 'Oops! something went wrong, Please try again later.';
-                }
-            }, 1000);
+            if (this.status && this.formData.currency != null) {
+                this.error = null;
+                this.formData.key = this.key;
+                // Navigate to the result page
+                this.formData.accept = true;
+                this.formDataService.setConfirmation(this.workType);
+            } else {
+                this.validData = false;
+                this.error = 'Oops! something went wrong, Please try again later.';
+            }
 
         } else {
             this.changeButtonToSelectCurrency = true;
@@ -144,7 +145,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     }
 
     next() {
-        if (this.validData === true) {
+        if (this.validData) {
             if (this.erc20) {
                 this.valueChange.emit(Step.canexErc20);
             } else if (this.ethereum) {

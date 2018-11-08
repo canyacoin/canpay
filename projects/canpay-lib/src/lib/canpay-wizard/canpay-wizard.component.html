@@ -64,8 +64,8 @@
       </div>
 
       <div *ngIf="currStep === Step.process">
-        <canyalib-process [processName]="postAuthorisationProcessName" [dAppName]="dAppName" [amount]="amount" [error]="errMsg"
-          (start)="doStartPostAuthorisationProcess()"></canyalib-process>
+        <canyalib-process [processName]="postAuthorisationProcessName" [recipient]="recipient" [dAppName]="dAppName"
+          [amount]="amount" [error]="errMsg" (start)="doStartPostAuthorisationProcess()"></canyalib-process>
       </div>
 
       <div *ngIf="currStep === Step.confirmation">

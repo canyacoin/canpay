@@ -1,8 +1,8 @@
-<div class="card p-30 row mh-250">
+<div class="card px-30 pt-10 pb-30 row mh-250">
 
-  <form #personalForm="ngForm" class="form" novalidate>
+  <canyalib-loader [isLoading]="isLoading"></canyalib-loader>
+  <form *ngIf="!isLoading" #personalForm="ngForm" class="form" novalidate>
     <div class="text-center payment-body text-center">
-      <br />
       <div class="currency-data">
         <span class="payments-font">{{formData.amount | number : '1.6-6'}} CAN</span>
         <span class="payments-font">{{formData.usd | number : '1.2-2'}} USD</span>
@@ -99,7 +99,6 @@
     </div>
   </form>
 </div>
-<div class="text-right m-30">
-  <button class="btn btn-primary" (click)="next()">NEXT</button>
+<div *ngIf="!isLoading" class="text-right m-30">
+  <button class="btn btn-primary" [disabled]="!validData" (click)="next()">NEXT</button>
 </div>
-<span class="text-center help-line">{{error}}</span>

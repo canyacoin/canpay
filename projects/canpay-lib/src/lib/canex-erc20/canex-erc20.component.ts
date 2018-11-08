@@ -32,7 +32,6 @@ export class CanexERC20Component implements OnInit, OnDestroy {
     selectedERC: string;
     price: any;
     message: string;
-    tokenData1: any;
     token_classes = '';
     private resizeSubscription: Subscription;
     private sessionSub: Subscription;
@@ -47,7 +46,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
     search(val) {
         // for erc token search
-        this.tokens = this.tokenData1.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
+        this.tokens = this.tokens.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
     }
 
     ngOnInit() {
@@ -57,7 +56,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
         // get list of supported erc20 tokens
         this.canexService.getTokensBancor().take(1).subscribe(data => {
-            this.tokenData1 = data;
+            const tokenData1 = data;
             this.listStatus = false;
             for (const result of data.json()) {
                 this.tokens.push(result);

@@ -1,22 +1,22 @@
-<div class="card px-30 py-10 row mh-250">
+<div class="card px-30 pt-10 pb-30 row mh-250">
 
   <canyalib-loader [isLoading]="isLoading"></canyalib-loader>
   <div *ngIf="!isLoading" class="row">
-    <div class="col col-lg-4 col-sm-12">
-
+    <div class="col col-lg-5 col-sm-12">
+      <img src="assets/img/metamask-send.png" width="70%" title="Metamask help">
     </div>
-    <div class="col col-lg-8 col-sm-12">
+    <div class="col col-lg-7 col-sm-12">
 
       <div class="container">
         <header class="text-center">
-          <h5 class="fw-600">Confirmation 1 of 2</h5>
+          <h6 class="fw-600">Confirmation 1 of 2</h6>
           <img src="assets/img/metamask.svg" width="60px" height="60px">
           <p class="fw-300 my-20">
             Hit <b>confirm</b> on the pop up to give our smart contract permission to withdraw {{amount}} CAN from
             your
             account.
           </p>
-          <p class="text-center fs-12 fw-400 mt-10" style="color: #f00">It could take a while, please
+          <p class="text-center fs-12 fw-400 mt-10" style="color: #ff6666">It could take a while, please
             be
             patient</p>
           <hr>

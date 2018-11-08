@@ -137,11 +137,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     if (this.balanceInterval) { clearInterval(this.balanceInterval); }
   }
 
-  updateCurrentStep(step) {
-    this.currStep = step;
-    this.title = this.steps.find(x => x.value === step).name || 'Payment';
-    this.currentStep.emit(step);
-  }
+
 
   setAccount(_acc) {
     console.log('setAccount: ', _acc);
@@ -168,27 +164,31 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         .then(_balance => {
           this.balance = Number(_balance);
           this.insufficientBalance = Number(_balance) < this.amount;
+          this.isLoading = false;
           if (!this.insufficientBalance) {
             this.updateCurrentStep(this.postBalanceStep);
             clearInterval(this.balanceInterval);
           }
         })
-        .catch(err => this.error('Unable to retrieve user CAN balance!'))
-        .then(() => this.isLoading = false);
+        .catch(err => this.error('Unable to retrieve user CAN balance!'));
     }, 3000);
   }
+
   purchaseComplete() {
     if (this.balanceInterval) { clearInterval(this.balanceInterval); }
-    this.stepChanger(this.postBalanceStep);
+    this.updateCurrentStep(this.postBalanceStep);
   }
 
   get postBalanceStep() {
     return this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment;
   }
 
-  stepChanger(step) {
+  updateCurrentStep(step) {
     this.currStep = step;
+    this.title = this.steps.find(x => x.value === step).name || 'Payment';
+    this.currentStep.emit(step);
   }
+
 
   getCanExRecipient(): string {
     return this.destinationAddress || this.canyaCoinEthService.getOwnerAccount();

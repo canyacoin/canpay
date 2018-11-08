@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BancorWcComponent } from './bancor-wc.component';
+import { BancorWcComponent } from './balance-check.component';
 
 describe('BancorWcComponent', () => {
   let component: BancorWcComponent;
@@ -8,9 +8,9 @@ describe('BancorWcComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BancorWcComponent ]
+      declarations: [BancorWcComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

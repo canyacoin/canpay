@@ -42,6 +42,8 @@ export class EthService implements OnDestroy {
   walletType: WalletType;
   ownerAccount: string;
 
+  configUseTestNet = false;
+
   public web3Status = new BehaviorSubject<Web3LoadingStatus>(Web3LoadingStatus.loading);
   public web3Status$ = this.web3Status.asObservable();
 
@@ -49,6 +51,8 @@ export class EthService implements OnDestroy {
   public account$ = this.account.asObservable();
 
   constructor(@Inject('Config') private conf: any = {}, protected http: Http) {
+    this.configUseTestNet = this.conf.useTestNet;
+
     if (typeof window.ethereum !== 'undefined') {
 
       this.web3js = new Web3(window.ethereum);

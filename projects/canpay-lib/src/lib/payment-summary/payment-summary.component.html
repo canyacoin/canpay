@@ -1,5 +1,5 @@
-<div class="card p-30 row">
-  <canyalib-loader *ngIf="!paymentSummary"></canyalib-loader>
+<div class="card p-30 row mh-250">
+  <canyalib-loader [isLoading]="!paymentSummary"></canyalib-loader>
   <div *ngIf="paymentSummary" class="container text-center">
     <div class="row">
       <div class="col-8 text-left">

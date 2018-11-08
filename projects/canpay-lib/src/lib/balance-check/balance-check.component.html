@@ -1,16 +1,22 @@
-<div class="text-center">
-  <div class="balance-section">
-    <small>CAN Balance:</small>
-    <div class="balance"> {{ balance | commaSepNum }} </div>
+<div class="card p-30 row mh-250">
+  <canyalib-loader [isLoading]="isLoading"></canyalib-loader>
+  <div *ngIf="!isLoading" class="container text-center">
+    <h5>Insufficient Balance</h5>
+    <div class="balance-section">
+      <small>CAN Balance:</small>
+      <div class="balance"> {{ balance | commaSepNum }} </div>
+    </div>
   </div>
+</div>
 
+<div class="text-right m-30" *ngIf="!isLoading">
   <button class="btn btn-primary" *ngIf="!disableCanEx" (click)="callCanex()">
-    Buy CAN Tokens
+    BUY CAN
   </button>
 
   <button *ngIf="disableCanEx && status === Status.New && !isLoadingBancorWidget" class="btn btn-primary" (click)="open()"
     [disabled]="isLoadingBancorWidget">
-    Buy CAN Tokens
+    BUY CAN
   </button>
 
   <div *ngIf="status === Status.PendingPurchase || status === Status.InProgress" class="buttons-bar">

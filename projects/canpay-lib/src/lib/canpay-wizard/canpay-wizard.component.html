@@ -2,7 +2,7 @@
   <div>
     <!-- Wizard Steps Components -->
     <div class="col col-12">
-      <div class="card px-30 py-10 mb-neg5 row">
+      <div class="card px-30 pt-25 mb-neg5 row">
         <div class="row">
           <h3 class="m-auto">{{title}}</h3>
         </div>
@@ -18,43 +18,35 @@
 
       <div *ngIf="currStep === Step.paymentSummary">
         <canyalib-payment-summary [amount]="amount" [paymentSummary]="paymentSummary" (error)="error($event)"
-          (stepChange)="stepChanger($event)">
+          (stepChange)="updateCurrentStep($event)">
         </canyalib-payment-summary>
       </div>
 
       <div *ngIf="currStep === Step.metamask">
-        <!-- <h5>Metamask Checks</h5> -->
         <canyalib-metamask (account)="setAccount($event)"></canyalib-metamask>
       </div>
+
       <div *ngIf="currStep === Step.balanceCheck">
-        <canyalib-loading-status [isLoading]="isLoading" [label]="'Checking CAN balance'"></canyalib-loading-status>
-        <div *ngIf="insufficientBalance">
-          <h5>Insufficient Balance</h5>
-          <p class="wizard-hidden-mobile">You don't have the minimum amount of {{this.amount}} CAN required to complete
-            the process.
-            <br>Please, buy some CAN and re-check your balance to proceed.</p>
-          <p class="wizard-hidden-desktop">Insufficient CAN. Please, buy some CAN and re-check your balance to proceed.</p>
-          <canyalib-bancor-wc [isLoading]="isLoading" [balance]="balance" [disableCanEx]="disableCanEx" (valueChange)='stepChanger($event)'
-            (check)="checkBalance()"></canyalib-bancor-wc>
-        </div>
+        <canyalib-balance-check [isLoading]="isLoading" [balance]="balance" [disableCanEx]="disableCanEx" (valueChange)='updateCurrentStep($event)'
+          (check)="checkBalance()"></canyalib-balance-check>
       </div>
 
       <div *ngIf="currStep === Step.canexPaymentOptions">
-        <canyalib-canex-payment-options (valueChange)='stepChanger($event)' [balance]="balance" [amount]="amount"
+        <canyalib-canex-payment-options (valueChange)='updateCurrentStep($event)' [balance]="balance" [amount]="amount"
           [destinationAddress]='getCanExRecipient()' [userEmail]='userEmail'></canyalib-canex-payment-options>
       </div>
 
       <div *ngIf="currStep === Step.canexQr">
-        <canyalib-canex-qr (valueChange)='stepChanger($event)'></canyalib-canex-qr>
+        <canyalib-canex-qr (valueChange)='updateCurrentStep($event)'></canyalib-canex-qr>
       </div>
 
       <div *ngIf="currStep === Step.canexProcessing">
-        <canyalib-canex-processing (valueChange)='stepChanger($event)' (purchaseComplete)="purchaseComplete()"
+        <canyalib-canex-processing (valueChange)='updateCurrentStep($event)' (purchaseComplete)="purchaseComplete()"
           [postBalanceStep]="postBalanceStep"></canyalib-canex-processing>
       </div>
 
       <div *ngIf="currStep === Step.canexErc20">
-        <canyalib-canex-erc20 (valueChange)='stepChanger($event)'></canyalib-canex-erc20>
+        <canyalib-canex-erc20 (valueChange)='updateCurrentStep($event)'></canyalib-canex-erc20>
       </div>
 
       <div *ngIf="currStep === Step.canexReceipt">

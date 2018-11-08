@@ -15,36 +15,31 @@ export enum Status {
 }
 
 @Component({
-  selector: 'canyalib-bancor-wc',
-  templateUrl: './bancor-wc.component.html',
-  styleUrls: ['./bancor-wc.component.css']
+  selector: 'canyalib-balance-check',
+  templateUrl: './balance-check.component.html',
+  styleUrls: ['./balance-check.component.css']
 })
-export class BancorWcComponent implements OnInit {
+export class BalanceCheckComponent implements OnInit {
   @Output() check = new EventEmitter();
   @Output() valueChange = new EventEmitter();
-  @Input() type = 'WITHOUT_INPUT_BOXES';
   @Input() balance = 0;
   @Input() disableCanEx;
-  @Input() set isLoading(isLoading: boolean) {
-    if (!isLoading) {
-      this.status = Status.New;
-    }
-  }
-  @Input() formData: FormData;
-  personal: Personal;
-  currentBalance: Number;
+  @Input() isLoading;
+
+  type = 'WITHOUT_INPUT_BOXES';
   Status = Status;
   status: Status = Status.New;
+
   isLoadingBancorWidget = false;
 
-  balanceSub: Subscription;
 
-  constructor(private renderer: Renderer2, private dialogService: DialogService,
-    private formDataService: FormDataService) { }
+  constructor(private renderer: Renderer2) { }
 
   ngOnInit() {
-    this.formData = this.formDataService.getFormData();
-    this.personal = this.formDataService.getPersonal();
+    this.initBancor();
+  }
+
+  initBancor() {
     if (this.isBancorLoaded()) { return; }
 
     this.isLoadingBancorWidget = true;
@@ -53,14 +48,6 @@ export class BancorWcComponent implements OnInit {
       this.isLoadingBancorWidget = false;
       this.initBancorWidget();
     };
-  }
-
-  isBancorLoaded() {
-    try {
-      if (BancorConvertWidget) { return true; }
-    } catch (e) { console.log('BancorConvertWidget is not initialized'); }
-
-    return false;
   }
 
   initBancorWidget() {
@@ -75,6 +62,13 @@ export class BancorWcComponent implements OnInit {
     });
   }
 
+  isBancorLoaded() {
+    try {
+      if (BancorConvertWidget) { return true; }
+    } catch (e) { console.log('BancorConvertWidget is not initialized'); }
+
+    return false;
+  }
 
   public callCanex() {
     this.valueChange.emit(Step.canexPaymentOptions);

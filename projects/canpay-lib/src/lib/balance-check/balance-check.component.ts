@@ -23,6 +23,8 @@ export class BalanceCheckComponent implements OnInit {
   @Output() check = new EventEmitter();
   @Output() valueChange = new EventEmitter();
   @Input() balance = 0;
+  @Input() paymentSummary;
+  @Input() amount = 0;
   @Input() disableCanEx;
   @Input() isLoading;
 

@@ -21,8 +21,8 @@ export class CanexERC20Component implements OnInit, OnDestroy {
     @Input() formData: FormData;
     isFormValid = false;
     can = false;
-    etherium = false;
-    etherPrise: number;
+    ethereum = false;
+    etherPrice: number;
     key: any;
     status: any;
     error: any;
@@ -105,7 +105,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
                 const price = data.json().data.price * + this.formData.amount;
                 this.price = price;
                 this.formData.eth = Number(price.toFixed(6));
-                this.etherPrise = Number(price.toFixed(6));
+                this.etherPrice = Number(price.toFixed(6));
             }
         );
 

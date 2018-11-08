@@ -31,6 +31,9 @@ import { MsgBoxComponent } from './msg-box/msg-box.component';
 import {
     PaymentAuthorisationComponent
 } from './payment-authorisation/payment-authorisation.component';
+import {
+    PaymentSummaryTemplateComponent
+} from './payment-summary-template/payment-summary-template.component';
 import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ProcessComponent } from './process/process.component';
@@ -50,6 +53,7 @@ const COMPONENTS = [
   PaymentAuthorisationComponent,
   PaymentComponent,
   PaymentSummaryComponent,
+  PaymentSummaryTemplateComponent,
   ProcessComponent,
   MsgBoxComponent,
   InputAmountComponent,

@@ -51,7 +51,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   steps: Array<any>;
   currStep: Step;
   title = 'Payment';
-  isLoading = false;
   balance = 0;
   account: string;
   confirmationDlg = {
@@ -70,32 +69,57 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.steps = [
       {
-        name: 'Pay Amount',
+        name: 'AMOUNT',
         value: Step.paymentAmount,
         active: !this.amount && this.operation !== Operation.interact
       },
       {
-        name: 'Payment Summary',
+        name: 'PAYMENT',
         value: Step.paymentSummary,
         active: true
       },
       {
-        name: 'Metamask',
+        name: 'PAYMENT',
         value: Step.metamask,
         active: true
       },
       {
-        name: 'Balance Check',
+        name: 'PAYMENT',
         value: Step.balanceCheck,
         active: this.operation !== Operation.interact
       },
       {
-        name: 'Authorisation',
+        name: 'PAYMENT',
+        value: Step.canexPaymentOptions,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexErc20,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexQr,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexProcessing,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'Error',
+        value: Step.canexError,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
         value: Step.authorisation,
         active: this.operation === Operation.auth
       },
       {
-        name: 'Payment',
+        name: 'PAYMENT',
         value: Step.payment,
         active: this.operation === Operation.pay
       },
@@ -105,7 +129,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         active: !!this.postAuthorisationProcessName || this.operation === Operation.interact
       },
       {
-        name: 'Confirmation',
+        name: 'PAYMENT',
         value: Step.confirmation,
         active: true
       }
@@ -138,7 +162,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   }
 
 
-
   setAccount(_acc) {
     console.log('setAccount: ', _acc);
     this.account = _acc;
@@ -152,56 +175,71 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   setAmount(amount) {
     console.log('setAmount: ', amount);
     this.amount = amount;
-    this.updateCurrentStep(Step.paymentSummary);
-    // this.checkBalance();
+    this.stepFinished();
   }
 
   checkBalance() {
-    this.updateCurrentStep(Step.balanceCheck);
-    this.isLoading = true;
+    let isLoading = true;
     this.balanceInterval = setInterval(() => {
       this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
         .then(_balance => {
           this.balance = Number(_balance);
           this.insufficientBalance = Number(_balance) < this.amount;
-          this.isLoading = false;
           if (!this.insufficientBalance) {
-            this.updateCurrentStep(this.postBalanceStep);
+            this.stepFinished(Step.balanceCheck);
             clearInterval(this.balanceInterval);
+          } else if (isLoading) {
+            isLoading = false;
+            this.updateCurrentStep(Step.balanceCheck);
           }
         })
         .catch(err => this.error('Unable to retrieve user CAN balance!'));
-    }, 3000);
+    }, 2000);
   }
 
-  purchaseComplete() {
-    if (this.balanceInterval) { clearInterval(this.balanceInterval); }
-    this.updateCurrentStep(this.postBalanceStep);
+  stepFinished(step: Step = this.currStep) {
+    switch (step) {
+      case Step.paymentAmount:
+        this.updateCurrentStep(Step.paymentSummary);
+        break;
+      case Step.paymentSummary:
+        if (this.canyaCoinEthService.account.value) {
+          this.checkBalance();
+        } else {
+          this.updateCurrentStep(Step.metamask);
+        }
+        break;
+      case Step.balanceCheck:
+        this.updateCurrentStep(this.postBalanceStep);
+        break;
+      case Step.canexProcessing:
+        if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+        this.updateCurrentStep(this.postBalanceStep);
+        break;
+      case Step.authorisation:
+      case Step.payment:
+        this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
+        break;
+      default:
+        break;
+    }
+  }
+
+  updateCurrentStep(step) {
+    if (step !== this.currStep) {
+      this.currStep = step;
+      this.title = this.steps.find(x => x.value === step).name || 'Payment';
+      this.currentStep.emit(step);
+    }
   }
 
   get postBalanceStep() {
     return this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment;
   }
 
-  updateCurrentStep(step) {
-    this.currStep = step;
-    this.title = this.steps.find(x => x.value === step).name || 'Payment';
-    this.currentStep.emit(step);
-  }
-
 
   getCanExRecipient(): string {
     return this.destinationAddress || this.canyaCoinEthService.getOwnerAccount();
-  }
-
-  notifyPaymentAuthorised(tx) {
-    console.log('authorisedTx: ', tx);
-    this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
-  }
-
-  notifyPaymentCollected(tx) {
-    console.log('paidTx: ', tx);
-    this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
   }
 
   doStartPostAuthorisationProcess() {

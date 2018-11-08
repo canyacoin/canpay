@@ -1,48 +1,5 @@
-<div class="card p-30 row mh-250">
-  <canyalib-loader [isLoading]="!paymentSummary"></canyalib-loader>
-  <div *ngIf="paymentSummary" class="container text-center">
-    <div class="row">
-      <div class="col-8 text-left">
-        <i class="fas fa-shopping-cart"></i> Your order summary
-      </div>
-    </div>
-    <div class="row" *ngFor="let item of paymentSummary.items">
-      <div class="col-8 text-left">
-        <span class="fw-800">{{item.name}}</span>
-      </div>
-      <div class="col-4 text-right">
-        <span>
-          {{item.value}}
-          <img *ngIf="currencyIsCan" src="assets/img/canya-media-coin.png" width="16px" height="16px" alt="CanYa">
-          {{paymentSummary.currency}}
-        </span>
-      </div>
-    </div>
-    <hr>
-    <div class="row">
-      <div class="col-8 text-left">
-        <span class="fw-800">Total:</span>
-      </div>
-      <div class="col-4 text-right">
-        <span>
-          {{paymentSummary.total}}
-          <img *ngIf="currencyIsCan" src="assets/img/canya-media-coin.png" width="16px" height="16px" alt="CanYa">
-          {{paymentSummary.currency}}
-        </span>
-      </div>
-    </div>
-    <div class="row" *ngIf="currencyIsUsd">
-      <div class="col-8 text-left">
-        <span class="fw-400">1 CAN = {{usdPerCan}}</span>
-      </div>
-      <div class="col-4 text-right">
-        <span class="fw-800">{{amount}} <img src="assets/img/canya-media-coin.png" width="16px" height="16px" alt="CanYa">
-          CAN</span>
-      </div>
-    </div>
-  </div>
-</div>
+<canyalib-payment-summary-template [paymentSummary]="paymentSummary" [amount]="amount" [showBalance]="false"></canyalib-payment-summary-template>
 
-<div class="text-right m-30">
-  <button class="btn btn-primary" (click)="next()">NEXT</button>
+<div class="text-right m-30"><img *ngIf="isLoading" src="assets/img/loader.svg" height="36px" alt="Loader">
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="next()">NEXT</button>
 </div>

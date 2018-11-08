@@ -9,38 +9,21 @@ import { PaymentItem, PaymentItemCurrency, PaymentSummary, Step } from '../inter
 })
 export class PaymentSummaryComponent implements OnInit {
   @Output() error = new EventEmitter();
-  @Output() stepChange = new EventEmitter();
+  @Output() stepFinished = new EventEmitter();
   @Input() paymentSummary: PaymentSummary = null;
   @Input() amount = 0;
+
+  isLoading = false;
 
   constructor() { }
 
   ngOnInit() {
-    if (!this.paymentSummary) {
-      this.paymentSummary = {
-        currency: PaymentItemCurrency.can,
-        items: [{ name: 'Transfer', value: this.amount }],
-        total: this.amount
-      };
-    }
-  }
 
-  get currencyIsUsd() {
-    return this.paymentSummary.currency === PaymentItemCurrency.usd;
-  }
-  get currencyIsCan() {
-    return this.paymentSummary.currency === PaymentItemCurrency.can;
-  }
-
-  get usdPerCan(): string {
-    if (!this.amount || !this.paymentSummary.total) {
-      return '?';
-    }
-    return (this.paymentSummary.total / this.amount).toPrecision(4).toString();
   }
 
   next() {
-    this.stepChange.emit(Step.metamask);
+    this.isLoading = true;
+    this.stepFinished.emit();
   }
 
 }

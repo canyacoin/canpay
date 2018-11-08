@@ -15,7 +15,9 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
   @Input() recipient;
   @Input() onAuthTxHash = undefined;
   @Input() amount = 0;
+
   isLoading = true;
+  sendingTx = false;
 
   accSub: Subscription;
 
@@ -28,6 +30,7 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
         this.success.emit('');
       } else {
         this.isLoading = false;
+        this.authorise();
       }
     });
   }
@@ -37,14 +40,14 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
   }
 
   authorise() {
-    if (this.isLoading) { return; }
+    if (this.sendingTx) { return; }
 
-    this.isLoading = true;
+    this.sendingTx = true;
     console.log('authCanPayment: ', this.recipient, this.amount);
     this.canyaCoinEthService.authoriseCANPayment(this.recipient, this.amount, undefined, this.onAuthTxHash)
       .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
       .catch(err => this.error.emit(err.message))
-      .then(() => this.isLoading = false);
+      .then(() => this.sendingTx = false);
 
     return false;
   }

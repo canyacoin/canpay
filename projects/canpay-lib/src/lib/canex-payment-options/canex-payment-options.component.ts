@@ -21,8 +21,8 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     isFormValid = false;
     can = false;
     @Input() formData: FormData;
-    etherium = false;
-    etherPrise: number;
+    ethereum = false;
+    etherPrice: number;
     key: any;
     status: any;
     error: any;
@@ -71,7 +71,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
 
                 this.formData.eth = Number((this.formData.amount * data.json().data.quotes.ETH.price).toFixed(6));
                 this.formData.usd = Number((this.formData.amount * data.json().data.quotes.USD.price).toFixed(6));
-                this.etherPrise = this.formData.eth;
+                this.etherPrice = this.formData.eth;
             }
         );
 
@@ -105,7 +105,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
             this.changeButtonToSelectCurrency = false;
             this.erc20 = false;
             this.can = false;
-            this.etherium = !this.etherium;
+            this.ethereum = !this.ethereum;
             this.others = false;
             this.validData = true;
 
@@ -116,7 +116,6 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
                     // Navigate to the result page
                     this.formData.accept = true;
                     this.formDataService.setConfirmation(this.workType);
-                    this.valueChange.emit(Step.canexQr);
                 } else {
                     this.validData = false;
                     this.error = 'Oops! something went wrong, Please try again later.';
@@ -125,10 +124,9 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
 
         } else {
             this.changeButtonToSelectCurrency = true;
-            this.etherium = false;
+            this.ethereum = false;
             this.erc20 = !this.erc20;
             this.others = false;
-            this.valueChange.emit(Step.canexErc20);
         }
     }
 
@@ -145,9 +143,13 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         this.valueChange.emit(Step.balanceCheck);
     }
 
-    goToNext() {
+    next() {
         if (this.validData === true) {
-            this.valueChange.emit(Step.canexQr);
+            if (this.erc20) {
+                this.valueChange.emit(Step.canexErc20);
+            } else if (this.ethereum) {
+                this.valueChange.emit(Step.canexQr);
+            }
         }
     }
 

@@ -6,10 +6,10 @@
         <div class="row">
           <h3 class="m-auto">{{title}}</h3>
         </div>
-        <hr>
+        <hr class="mb-5">
 
+        <div *ngIf="errMsg" class="alert alert-danger">{{ errMsg }}</div>
       </div>
-      <div *ngIf="errMsg" class="alert alert-danger">{{ errMsg }}</div>
 
       <div *ngIf="currStep === Step.paymentAmount" class="text-center">
         <canyalib-input-amount [minAmount]="minAmount" [maxAmount]="maxAmount" (amountUpdate)="setAmount($event)"
@@ -18,7 +18,7 @@
 
       <div *ngIf="currStep === Step.paymentSummary">
         <canyalib-payment-summary [amount]="amount" [paymentSummary]="paymentSummary" (error)="error($event)"
-          (stepChange)="updateCurrentStep($event)">
+          (stepFinished)="stepFinished()">
         </canyalib-payment-summary>
       </div>
 
@@ -27,8 +27,8 @@
       </div>
 
       <div *ngIf="currStep === Step.balanceCheck">
-        <canyalib-balance-check [isLoading]="isLoading" [balance]="balance" [disableCanEx]="disableCanEx" (valueChange)='updateCurrentStep($event)'
-          (check)="checkBalance()"></canyalib-balance-check>
+        <canyalib-balance-check [balance]="balance" [disableCanEx]="disableCanEx" [paymentSummary]="paymentSummary"
+          [amount]="amount" (valueChange)='updateCurrentStep($event)' (check)="checkBalance()"></canyalib-balance-check>
       </div>
 
       <div *ngIf="currStep === Step.canexPaymentOptions">
@@ -41,16 +41,12 @@
       </div>
 
       <div *ngIf="currStep === Step.canexProcessing">
-        <canyalib-canex-processing (valueChange)='updateCurrentStep($event)' (purchaseComplete)="purchaseComplete()"
+        <canyalib-canex-processing (valueChange)='updateCurrentStep($event)' (purchaseComplete)="stepFinished()"
           [postBalanceStep]="postBalanceStep"></canyalib-canex-processing>
       </div>
 
       <div *ngIf="currStep === Step.canexErc20">
         <canyalib-canex-erc20 (valueChange)='updateCurrentStep($event)'></canyalib-canex-erc20>
-      </div>
-
-      <div *ngIf="currStep === Step.canexReceipt">
-        <canyalib-canex-receipt></canyalib-canex-receipt>
       </div>
 
       <div *ngIf="currStep === Step.canexError">
@@ -59,12 +55,12 @@
 
       <div *ngIf="currStep === Step.authorisation">
         <canyalib-payment-authorisation [recipient]="recipient" [onAuthTxHash]="onAuthTxHash" [dAppName]="dAppName"
-          [amount]="amount" (error)="error($event)" (success)="notifyPaymentAuthorised($event)"></canyalib-payment-authorisation>
+          [amount]="amount" (error)="error($event)" (success)="stepFinished()"></canyalib-payment-authorisation>
       </div>
 
       <div *ngIf="currStep === Step.payment">
         <canyalib-payment [recipient]="recipient" [dAppName]="dAppName" [amount]="amount" (error)="error($event)"
-          (success)="notifyPaymentCollected($event)"></canyalib-payment>
+          (success)="stepFinished()"></canyalib-payment>
       </div>
 
       <div *ngIf="currStep === Step.process">

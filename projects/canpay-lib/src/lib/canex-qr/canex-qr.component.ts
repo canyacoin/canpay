@@ -127,9 +127,4 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     metamaskEnable() {
         this.metamaskpayment = true;
     }
-
-    cancel() {
-        this.formData.email = '';
-        this.valueChange.emit(Step.buyCan);
-    }
 }

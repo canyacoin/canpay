@@ -1,24 +1,27 @@
-<div class="text-center complete-body">
-  <span>Sit tight! We need to work out back end</span>
-  <br />
-  <span>magic to process your transaction</span>
-  <div>
-    <img src="./assets/canex/complete-step-img.png">
-  </div>
-  <span>Your order ID is
-    <b style="color: #6d6d6d;"><a href="{{orderUrl}}" target="_blank">{{formData.key}}</a></b>
-  </span>
-  <br />
+<div class="card p-30 row mh-250">
+  <div class="row text-center">
+    <span>Sit tight! We need to work out back end</span>
+    <br />
+    <span>magic to process your transaction</span>
+    <br />
+    <br />
+    <span><b>Order ID:</b>
+      <b style="color: #6d6d6d;"><a href="{{orderUrl}}" target="_blank">{{formData.key}}</a></b>
+    </span>
+    <br />
 
-  <div class="text-center">
-    <div class="spinner">
-      <div class="bounce1"></div>
-      <div class="bounce2"></div>
-      <div class="bounce3"></div>
+    <div class="text-center mb-20">
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+    </div>
+
+    <span class="mb-10">You will be notified via email when your transaction is successful</span>
+
+    <div class="alert alert-warning">
+      Reminder: You will still need to make a further transaction
     </div>
   </div>
-
-  <span>You will be notified via email when your transaction is successful</span>
-
 </div>
-<br />

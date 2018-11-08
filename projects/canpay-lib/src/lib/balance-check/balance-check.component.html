@@ -1,13 +1,4 @@
-<div class="card p-30 row mh-250">
-  <canyalib-loader [isLoading]="isLoading"></canyalib-loader>
-  <div *ngIf="!isLoading" class="container text-center">
-    <h5>Insufficient Balance</h5>
-    <div class="balance-section">
-      <small>CAN Balance:</small>
-      <div class="balance"> {{ balance | commaSepNum }} </div>
-    </div>
-  </div>
-</div>
+<canyalib-payment-summary-template [paymentSummary]="paymentSummary" [amount]="amount" [showBalance]="true" [balance]="balance"></canyalib-payment-summary-template>
 
 <div class="text-right m-30" *ngIf="!isLoading">
   <button class="btn btn-primary" *ngIf="!disableCanEx" (click)="callCanex()">

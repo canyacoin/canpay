@@ -8,6 +8,7 @@ import {
     Step, View
 } from '../interfaces';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
+import { FormDataService } from '../services/formData.service';
 
 @Component({
   selector: 'canyalib-canpay',
@@ -30,7 +31,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   @Input() successText;
   @Input() amount = 0;
   @Input() paymentSummary: PaymentSummary;
-  @Input() minAmount = 0;
+  @Input() minAmount = 1;
   @Input() maxAmount = 0;
   @Input() disableCanEx = false;
   @Input() destinationAddress;
@@ -66,7 +67,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   balanceInterval: any;
   totalTransactions = 1;
 
-  constructor(private canyaCoinEthService: CanYaCoinEthService) { }
+  constructor(private canyaCoinEthService: CanYaCoinEthService, private formDataService: FormDataService) { }
 
   ngOnInit() {
     this.steps = [
@@ -202,6 +203,70 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     this.totalTransactions += 1;
   }
 
+  get showBackButton(): boolean {
+    switch (this.currStep) {
+      case Step.paymentAmount:
+        return true;
+      case Step.paymentSummary:
+        return !this.paymentSummary;
+      case Step.canexPaymentOptions:
+      case Step.canexErc20:
+      case Step.canexQr:
+      case Step.canexError:
+        return true;
+      case Step.balanceCheck:
+      case Step.metamask:
+      case Step.authorisation:
+      case Step.payment:
+      case Step.process:
+        return true;
+      case Step.confirmation:
+      case Step.canexProcessing:
+      default:
+        return false;
+    }
+  }
+
+  goBack() {
+    switch (this.currStep) {
+      case Step.paymentAmount:
+        this.cancel.emit();
+        break;
+      case Step.paymentSummary:
+        this.updateCurrentStep(Step.paymentAmount);
+        break;
+      case Step.canexPaymentOptions:
+        this.formDataService.resetFormData();
+        this.updateCurrentStep(Step.balanceCheck);
+        break;
+      case Step.canexErc20:
+      case Step.canexError:
+        this.formDataService.resetFormData();
+        this.updateCurrentStep(Step.canexPaymentOptions);
+        break;
+      case Step.canexQr:
+        if (confirm('Are you sure you want to go back?')) {
+          this.formDataService.resetFormData();
+          this.updateCurrentStep(Step.canexPaymentOptions);
+        }
+        break;
+      case Step.balanceCheck:
+      case Step.metamask:
+      case Step.authorisation:
+      case Step.payment:
+      case Step.process:
+        this.cancelBalanceCheck();
+        this.updateCurrentStep(Step.paymentSummary);
+        break;
+      default:
+        break;
+    }
+  }
+
+  cancelBalanceCheck() {
+    if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+  }
+
   stepFinished(step: Step = this.currStep) {
     switch (step) {
       case Step.paymentAmount:
@@ -215,15 +280,15 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         }
         break;
       case Step.balanceCheck:
-        if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+        this.cancelBalanceCheck();
         this.updateCurrentStep(this.postBalanceStep);
         break;
       case Step.canexProcessing:
-        if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+        this.cancelBalanceCheck();
         this.updateCurrentStep(this.postBalanceStep);
         break;
       case Step.authorisation:
-        if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+        this.cancelBalanceCheck();
         this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
         break;
       case Step.payment:
@@ -236,6 +301,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
 
   updateCurrentStep(step) {
     if (step !== this.currStep) {
+      this.warning(null);
       this.currStep = step;
       this.title = this.steps.find(x => x.value === step).name || 'Payment';
       this.currentStep.emit(step);

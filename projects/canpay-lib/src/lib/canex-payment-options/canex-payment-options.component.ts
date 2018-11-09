@@ -145,13 +145,14 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     }
 
     next() {
-        if (this.validData) {
-            if (this.erc20) {
-                this.valueChange.emit(Step.canexErc20);
-            } else if (this.ethereum) {
-                this.valueChange.emit(Step.canexQr);
-            }
+        if (this.erc20) {
+            this.valueChange.emit(Step.canexErc20);
+        } else if (this.validData && this.ethereum) {
+            this.valueChange.emit(Step.canexQr);
         }
+    }
+    get enableButton() {
+        return (this.validData && this.ethereum) || this.erc20;
     }
 
     cancel() {

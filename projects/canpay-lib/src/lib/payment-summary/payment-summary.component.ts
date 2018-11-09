@@ -15,6 +15,7 @@ export class PaymentSummaryComponent implements OnInit {
 
   isLoading = false;
 
+
   constructor() { }
 
   ngOnInit() {

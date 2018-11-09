@@ -21,7 +21,7 @@
 </div>
 
 <div class="text-right m-30 float-right">
-  <img *ngIf="sendingTx" src="assets/img/loader.svg" height="36px" alt="Loader" style="mix-blend-mode: difference">
+  <img *ngIf="sendingTx" src="assets/img/loader.svg" height="36px" alt="Loader">
   <button class="btn btn-primary" (click)="pay()" [disabled]="sendingTx">
     {{ sendingTx ? 'Paying' : 'Pay' }}
   </button>

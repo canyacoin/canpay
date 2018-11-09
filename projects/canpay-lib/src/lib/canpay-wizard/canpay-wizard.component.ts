@@ -79,7 +79,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
       {
         name: 'PAYMENT',
         value: Step.paymentSummary,
-        active: true
+        active: this.operation !== Operation.interact
       },
       {
         name: 'PAYMENT',
@@ -206,9 +206,8 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   get showBackButton(): boolean {
     switch (this.currStep) {
       case Step.paymentAmount:
-        return true;
       case Step.paymentSummary:
-        return !this.paymentSummary;
+        return true;
       case Step.canexPaymentOptions:
       case Step.canexErc20:
       case Step.canexQr:
@@ -230,10 +229,14 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   goBack() {
     switch (this.currStep) {
       case Step.paymentAmount:
-        this.cancel.emit();
+        this.doCancel();
         break;
       case Step.paymentSummary:
-        this.updateCurrentStep(Step.paymentAmount);
+        if (this.paymentSummary) {
+          this.doCancel();
+        } else {
+          this.updateCurrentStep(Step.paymentAmount);
+        }
         break;
       case Step.canexPaymentOptions:
         this.formDataService.resetFormData();

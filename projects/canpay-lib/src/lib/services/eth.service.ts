@@ -6,6 +6,8 @@ import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 declare let require: any;
 const Web3 = require('web3');
 declare var window;
+declare var web3;
+declare var ethereum;
 
 const canDecimals = 6;
 const gas = { gasPrice: '8000000000', gas: '210000' };
@@ -53,9 +55,12 @@ export class EthService implements OnDestroy {
   constructor(@Inject('Config') private conf: any = {}, protected http: Http) {
     this.configUseTestNet = this.conf.useTestNet;
 
-    if (typeof window.ethereum !== 'undefined') {
-
-      this.web3js = new Web3(window.ethereum);
+    if (window.ethereum || window.web3) {
+      if (window.ethereum) {
+        this.web3js = new Web3(window.ethereum);
+      } else {
+        this.web3js = new Web3(web3.currentProvider);
+      }
 
       this.setWalletType();
 

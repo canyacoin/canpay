@@ -155,13 +155,16 @@ export class EthService implements OnDestroy {
   }
 
   async getEthBalanceAsync(userAddress: string = this.getOwnerAccount()): Promise<string> {
-    const balance = await this.web3js.eth.getBalance(userAddress);
-    if (balance) {
-      console.log(balance);
-      const tokens = this.web3js.utils.toBN(balance).toString();
-      console.log('Eth Owned: ' + this.web3js.utils.fromWei(tokens, 'ether'));
-      return Promise.resolve(this.web3js.utils.fromWei(tokens, 'ether'));
+    if (userAddress) {
+      const balance = await this.web3js.eth.getBalance(userAddress);
+      if (balance) {
+        console.log(balance);
+        const tokens = this.web3js.utils.toBN(balance).toString();
+        console.log('Eth Owned: ' + this.web3js.utils.fromWei(tokens, 'ether'));
+        return Promise.resolve(this.web3js.utils.fromWei(tokens, 'ether'));
+      }
     }
+
 
     return Promise.reject(null);
   }

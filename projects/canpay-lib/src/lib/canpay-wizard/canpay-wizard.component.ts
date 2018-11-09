@@ -257,9 +257,18 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
       case Step.metamask:
       case Step.authorisation:
       case Step.payment:
-      case Step.process:
         this.cancelBalanceCheck();
         this.updateCurrentStep(Step.paymentSummary);
+        break;
+
+      case Step.process:
+        if (this.operation === Operation.interact) {
+          this.cancelBalanceCheck();
+          this.doCancel();
+        } else {
+          this.cancelBalanceCheck();
+          this.updateCurrentStep(Step.paymentSummary);
+        }
         break;
       default:
         break;

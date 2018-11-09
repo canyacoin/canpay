@@ -1,8 +1,8 @@
 <div class="card p-30 row mh-250" [ngSwitch]="web3State">
-  <div *ngSwitchCase="web3LoadingStatus.loading">
+  <div *ngIf="web3State == web3LoadingStatus.loading || web3State == web3LoadingStatus.complete">
     <canyalib-loader [isLoading]="web3State === web3LoadingStatus.loading"></canyalib-loader>
   </div>
-  <div *ngSwitchCase="web3LoadingStatus.noMetaMask || web3LoadingStatus.error">
+  <div *ngIf="web3State == web3LoadingStatus.noMetaMask || web3State == web3LoadingStatus.error">
     <div class="container">
       <header class="text-center">
         <h4 class="fw-300">We noticed that you don't have MetaMask!</h4>
@@ -13,25 +13,29 @@
         </h6>
         <hr>
       </header>
-
-      <canyalib-instructions></canyalib-instructions>
+      <div class="row">
+        <button class="btn btn-primary m-auto" (click)="showHideInstructions()">
+          {{showInstructions ? 'Hide' : 'Show'}} instructions
+        </button>
+      </div>
+      <canyalib-instructions *ngIf="showInstructions"></canyalib-instructions>
     </div>
   </div>
 
-  <div *ngSwitchCase="web3LoadingStatus.noAccountsAvailable">
+  <div *ngIf="web3State == web3LoadingStatus.noAccountsAvailable">
     <div class="container">
       <header class="text-center">
-        <img *ngIf="walletType == walletTypes.metaMask" src="assets/img/metamask.svg" width="60px" height="60px">
+        <img *ngIf="walletType != walletTypes.trust" src="assets/img/metamask.svg" width="60px" height="60px">
         <img *ngIf="walletType == walletTypes.trust" src="assets/img/trust-logo.svg" width="60px" height="60px">
         <h6 class="fw-300 my-30">Please log in to {{walletType}} to continue</h6>
       </header>
     </div>
   </div>
 
-  <div *ngSwitchCase="web3LoadingStatus.wrongNetwork">
+  <div *ngIf="web3State == web3LoadingStatus.wrongNetwork">
     <div class="container">
       <header class="text-center">
-        <img *ngIf="walletType == walletTypes.metaMask" src="assets/img/metamask.svg" width="60px" height="60px">
+        <img *ngIf="walletType != walletTypes.trust" src="assets/img/metamask.svg" width="60px" height="60px">
         <img *ngIf="walletType == walletTypes.trust" src="assets/img/trust-logo.svg" width="60px" height="60px">
         <h6 class="fw-300 my-30">Please switch your wallet to Ethereum
           <span class="fw-500">{{netType}}</span></h6>

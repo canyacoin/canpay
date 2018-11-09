@@ -55,21 +55,21 @@
 
       <div *ngIf="currStep === Step.authorisation">
         <canyalib-payment-authorisation [recipient]="recipient" [onAuthTxHash]="onAuthTxHash" [dAppName]="dAppName"
-          [amount]="amount" (error)="error($event)" (success)="stepFinished()"></canyalib-payment-authorisation>
+          [amount]="amount" [hasPostAuthProcess]="hasPostAuthProcess" (error)="error($event)" (success)="stepFinished()"></canyalib-payment-authorisation>
       </div>
 
       <div *ngIf="currStep === Step.payment">
-        <canyalib-payment [recipient]="recipient" [dAppName]="dAppName" [amount]="amount" (error)="error($event)"
-          (success)="stepFinished()"></canyalib-payment>
+        <canyalib-payment [recipient]="recipient" [dAppName]="dAppName" [amount]="amount" [totalTransactions]="totalTransactions"
+          (error)="error($event)" (success)="stepFinished()"></canyalib-payment>
       </div>
 
       <div *ngIf="currStep === Step.process">
         <canyalib-process [processName]="postAuthorisationProcessName" [recipient]="recipient" [dAppName]="dAppName"
-          [amount]="amount" [error]="errMsg" (start)="doStartPostAuthorisationProcess()"></canyalib-process>
+          [amount]="amount" [totalTransactions]="totalTransactions" [error]="errMsg" (start)="doStartPostAuthorisationProcess()"></canyalib-process>
       </div>
 
       <div *ngIf="currStep === Step.confirmation">
-        <msg-box [msg]="confirmationDlg" [controls]="confirmationDlg.controls" (action)="finish()"></msg-box>
+        <canyalib-msg-box [msg]="confirmationDlg" [controls]="confirmationDlg.controls" (action)="finish()"></canyalib-msg-box>
       </div>
     </div>
   </div>

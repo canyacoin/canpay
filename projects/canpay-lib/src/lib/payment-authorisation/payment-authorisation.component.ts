@@ -15,6 +15,7 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
   @Input() recipient;
   @Input() onAuthTxHash = undefined;
   @Input() amount = 0;
+  @Input() hasPostAuthProcess = true;
 
   isLoading = true;
   sendingTx = false;
@@ -30,7 +31,6 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
         this.success.emit('');
       } else {
         this.isLoading = false;
-        this.authorise();
       }
     });
   }

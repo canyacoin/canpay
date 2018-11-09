@@ -63,6 +63,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   insufficientBalance = false;
   processSummaryMsg: string;
   balanceInterval: any;
+  totalTransactions = 1;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
@@ -187,7 +188,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
           this.insufficientBalance = Number(_balance) < this.amount;
           if (!this.insufficientBalance) {
             this.stepFinished(Step.balanceCheck);
-            clearInterval(this.balanceInterval);
           } else if (isLoading) {
             isLoading = false;
             this.updateCurrentStep(Step.balanceCheck);
@@ -210,6 +210,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         }
         break;
       case Step.balanceCheck:
+        if (this.balanceInterval) { clearInterval(this.balanceInterval); }
         this.updateCurrentStep(this.postBalanceStep);
         break;
       case Step.canexProcessing:
@@ -217,6 +218,10 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         this.updateCurrentStep(this.postBalanceStep);
         break;
       case Step.authorisation:
+        this.totalTransactions = 2;
+        if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+        this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
+        break;
       case Step.payment:
         this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
         break;
@@ -240,6 +245,10 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
 
   getCanExRecipient(): string {
     return this.destinationAddress || this.canyaCoinEthService.getOwnerAccount();
+  }
+
+  get hasPostAuthProcess() {
+    return !!this.postAuthorisationProcessName || this.operation === Operation.interact;
   }
 
   doStartPostAuthorisationProcess() {
@@ -279,7 +288,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   error(msg, autoDismiss = true) {
     this.errMsg = msg;
     if (autoDismiss) {
-      setTimeout(() => this.errMsg = null, 30000);
+      setTimeout(() => this.errMsg = null, 10000);
     }
   }
 }

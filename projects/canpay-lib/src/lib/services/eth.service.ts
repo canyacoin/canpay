@@ -88,12 +88,6 @@ export class EthService implements OnDestroy {
       this.web3js = new Web3();
       this.web3Status.next(Web3LoadingStatus.noMetaMask);
     }
-
-    setTimeout(() => {
-      if (!this.netType) {
-        this.web3Status.next(Web3LoadingStatus.unableToConnectToSelectedNetwork);
-      }
-    }, 5000);
   }
 
   ngOnDestroy() {

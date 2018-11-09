@@ -27,6 +27,8 @@ export class MetamaskComponent implements OnInit, OnDestroy {
   ethSub: Subscription;
   accSub: Subscription;
 
+  showInstructions = false;
+
   constructor(private ethService: EthService) { }
 
   async ngOnInit() {
@@ -44,6 +46,10 @@ export class MetamaskComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  showHideInstructions() {
+    this.showInstructions = !this.showInstructions;
   }
 
   get netType(): string {

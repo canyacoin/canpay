@@ -12,6 +12,7 @@ export class ProcessComponent {
   @Input() dAppName;
   @Input() recipient;
   @Input() amount = 0;
+  @Input() totalTransactions = 0;
   @Input() set error(msg: string) {
     if (!!msg) {
       this.sendingTx = false;

@@ -9,16 +9,13 @@
 
       <div class="container">
         <header class="text-center">
-          <h6 class="fw-600">Confirmation 1 of 2</h6>
+          <h6 class="fw-600">Confirmation 1 of {{hasPostAuthProcess ? 2 : 1}}</h6>
           <img src="assets/img/metamask.svg" width="60px" height="60px">
           <p class="fw-300 my-20">
             Hit <b>confirm</b> on the pop up to give our smart contract permission to withdraw {{amount}} CAN from
             your
             account.
           </p>
-          <p class="text-center fs-12 fw-400 mt-10" style="color: #ff6666">It could take a while, please
-            be
-            patient</p>
           <hr>
           <div class="text-right lh-1">
             <span class="fs-12">Smart contract address</span>
@@ -36,5 +33,10 @@
   <button class="btn btn-lg btn-primary" (click)="authorise()" [disabled]="sendingTx">
     {{ sendingTx ? 'Authorising Payment' : 'Authorise Payment' }}
   </button>
+  <br />
+
+  <span class="fs-12 fw-400 mt-10" style="color: #ff6666">It could take a while, please
+    be
+    patient</span>
 
 </div>

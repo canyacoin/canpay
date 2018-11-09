@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 
@@ -7,17 +7,19 @@ import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss']
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements AfterViewInit {
   @Output() error = new EventEmitter();
   @Output() success = new EventEmitter();
   @Input() dAppName;
   @Input() recipient;
   @Input() amount = 0;
+  @Input() totalTransactions = 1;
   sendingTx = false;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
-  ngOnInit() { }
+  ngAfterViewInit(): void {
+  }
 
   pay() {
     if (this.sendingTx) { return; }

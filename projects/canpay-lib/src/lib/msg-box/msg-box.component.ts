@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export enum View {
   horizontal,
@@ -6,7 +6,7 @@ export enum View {
 }
 
 @Component({
-  selector: 'msg-box',
+  selector: 'canyalib-msg-box',
   templateUrl: './msg-box.component.html',
   styleUrls: ['./msg-box.component.css']
 })

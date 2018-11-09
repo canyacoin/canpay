@@ -10,7 +10,9 @@ import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 })
 export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
   @Output() error = new EventEmitter();
+  @Output() warning = new EventEmitter();
   @Output() success = new EventEmitter();
+  @Output() transactionSent = new EventEmitter();
   @Input() dAppName;
   @Input() recipient;
   @Input() onAuthTxHash = undefined;
@@ -29,7 +31,11 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
       const hasAllowance = await this.canyaCoinEthService.hasAllowance(acc, this.recipient, this.amount);
       if (hasAllowance) {
         this.success.emit('');
-      } else {
+      } else if (this.isLoading) {
+        const ethBal = await this.canyaCoinEthService.getEthBalanceAsync(acc);
+        if (Number(ethBal) <= 0) {
+          this.warning.emit('You do not have enough gas (ETH) to send this transaction');
+        }
         this.isLoading = false;
       }
     });
@@ -45,7 +51,13 @@ export class PaymentAuthorisationComponent implements OnInit, OnDestroy {
     this.sendingTx = true;
     console.log('authCanPayment: ', this.recipient, this.amount);
     this.canyaCoinEthService.authoriseCANPayment(this.recipient, this.amount, undefined, this.onAuthTxHash)
-      .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
+      .then((tx) => {
+        if (tx.status) {
+          this.transactionSent.emit(tx); this.success.emit();
+        } else {
+          this.error.emit('Transaction failed');
+        }
+      })
       .catch(err => this.error.emit(err.message))
       .then(() => this.sendingTx = false);
 

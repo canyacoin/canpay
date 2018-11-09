@@ -48,6 +48,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   View = View;
   Step = Step; // to access the enum from the .html template
   errMsg: string;
+  warningMsg: string;
   steps: Array<any>;
   currStep: Step;
   title = 'Payment';
@@ -197,6 +198,10 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     }, 2000);
   }
 
+  transactionSent() {
+    this.totalTransactions += 1;
+  }
+
   stepFinished(step: Step = this.currStep) {
     switch (step) {
       case Step.paymentAmount:
@@ -218,7 +223,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         this.updateCurrentStep(this.postBalanceStep);
         break;
       case Step.authorisation:
-        this.totalTransactions = 2;
         if (this.balanceInterval) { clearInterval(this.balanceInterval); }
         this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
         break;
@@ -287,6 +291,13 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
 
   error(msg, autoDismiss = true) {
     this.errMsg = msg;
+    if (autoDismiss) {
+      setTimeout(() => this.errMsg = null, 10000);
+    }
+  }
+
+  warning(msg, autoDismiss = false) {
+    this.warningMsg = msg;
     if (autoDismiss) {
       setTimeout(() => this.errMsg = null, 10000);
     }

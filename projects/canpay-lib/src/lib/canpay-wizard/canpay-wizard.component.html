@@ -8,7 +8,9 @@
         </div>
         <hr class="mb-5">
 
-        <div *ngIf="errMsg" class="alert alert-danger">{{ errMsg }}</div>
+        <div *ngIf="errMsg" (click)="errMsg = ''" class="alert alert-danger text-center cursor-pointer">{{ errMsg }}</div>
+        <div *ngIf="warningMsg" (click)="warningMsg = ''" class="alert alert-warning text-center cursor-pointer">{{
+          warningMsg }}</div>
       </div>
 
       <div *ngIf="currStep === Step.paymentAmount" class="text-center">
@@ -55,17 +57,19 @@
 
       <div *ngIf="currStep === Step.authorisation">
         <canyalib-payment-authorisation [recipient]="recipient" [onAuthTxHash]="onAuthTxHash" [dAppName]="dAppName"
-          [amount]="amount" [hasPostAuthProcess]="hasPostAuthProcess" (error)="error($event)" (success)="stepFinished()"></canyalib-payment-authorisation>
+          [amount]="amount" [hasPostAuthProcess]="hasPostAuthProcess" (warning)="warning($event)" (error)="error($event)"
+          (success)="stepFinished()" (transactionSent)="transactionSent()"></canyalib-payment-authorisation>
       </div>
 
       <div *ngIf="currStep === Step.payment">
         <canyalib-payment [recipient]="recipient" [dAppName]="dAppName" [amount]="amount" [totalTransactions]="totalTransactions"
-          (error)="error($event)" (success)="stepFinished()"></canyalib-payment>
+          (error)="error($event)" (warning)="warning($event)" (success)="stepFinished()"></canyalib-payment>
       </div>
 
       <div *ngIf="currStep === Step.process">
         <canyalib-process [processName]="postAuthorisationProcessName" [recipient]="recipient" [dAppName]="dAppName"
-          [amount]="amount" [totalTransactions]="totalTransactions" [error]="errMsg" (start)="doStartPostAuthorisationProcess()"></canyalib-process>
+          [amount]="amount" (warning)="warning($event)" [totalTransactions]="totalTransactions" [error]="errMsg"
+          (start)="doStartPostAuthorisationProcess()"></canyalib-process>
       </div>
 
       <div *ngIf="currStep === Step.confirmation">

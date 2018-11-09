@@ -9,6 +9,7 @@ import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 })
 export class PaymentComponent implements AfterViewInit {
   @Output() error = new EventEmitter();
+  @Output() warning = new EventEmitter();
   @Output() success = new EventEmitter();
   @Input() dAppName;
   @Input() recipient;
@@ -18,7 +19,13 @@ export class PaymentComponent implements AfterViewInit {
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
+    const ethBal = await this.canyaCoinEthService.getEthBalanceAsync();
+    if (Number(ethBal) <= 0) {
+      this.warning.emit('You do not have enough gas (ETH) to send this transaction');
+    } else if (Number(ethBal) <= 0.01) {
+      this.warning.emit('You might not have enough gas (ETH) to send this transaction');
+    }
   }
 
   pay() {

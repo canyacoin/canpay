@@ -61,7 +61,7 @@ export class CanYaCoinEthService extends EthService {
         const balance = await this.canyaContract.methods.balanceOf(userAddress).call();
         console.log('CAN balance: ', balance);
         const t = this.web3js.utils.toBN(balance);
-        return Promise.resolve(t.div(this.web3js.utils.toBN(1000000)).toString());
+        return Promise.resolve(t.div(this.web3js.utils.toBN(10 ** this.decimals)).toString());
       }
 
       return Promise.resolve('0.00');

@@ -23,6 +23,7 @@ import { LoaderComponent } from './canpay-loader/loading-status.component';
 import { CanpayModalComponent } from './canpay-modal/canpay-modal.component';
 import { CanpayWizardComponent } from './canpay-wizard/canpay-wizard.component';
 import { CommaSepNumPipe } from './comma-sep-num.pipe';
+import { EtherscanLinkComponent } from './etherscan-link/etherscan-link.component';
 import { InputAmountComponent } from './input-amount/input-amount.component';
 import { LoadingStatusComponent } from './loading-status/loading-status.component';
 import { InstructionsComponent } from './metamask/instructions/instructions.component';
@@ -65,6 +66,7 @@ const COMPONENTS = [
   CanexReceiptComponent,
   CanexQRComponent,
   CanexErrorComponent,
+  EtherscanLinkComponent,
   LoaderComponent
 ];
 

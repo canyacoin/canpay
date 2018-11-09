@@ -19,7 +19,7 @@ export class CanPayExampleComponent {
     // properties
     dAppName: 'CanYaDAO',
     successText: 'Mission success!', // Default 'Sweet, payment done!'
-    recipient: environment.contracts.testAccount,
+    recipient: environment.contracts.canYaDao,
     operation: Operation.auth, // Authorise, Pay or Interact, Default is: Authorise
     onAuthTxHash: function () { }.bind(this), // Call a function after the txHash is available (i.e. once the tx has been sent)
     amount: 0, // allow the user to enter amount through an input box

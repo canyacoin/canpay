@@ -155,7 +155,7 @@ export class EthService implements OnDestroy {
       console.log(balance);
       const tokens = this.web3js.utils.toBN(balance).toString();
       console.log('Eth Owned: ' + this.web3js.utils.fromWei(tokens, 'ether'));
-      return Promise.resolve(tokens);
+      return Promise.resolve(this.web3js.utils.fromWei(tokens, 'ether'));
     }
 
     return Promise.reject(null);

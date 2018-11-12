@@ -62,7 +62,7 @@ In your module file:
   // In your controller file, define an object with the following params
   canPay = {
     dAppName: 'CANWork',
-    recepient: <CANWORK_CONTRACT_ADDRESS>,
+    recipient: <CANWORK_CONTRACT_ADDRESS>,
     amount: <AMOUNT_IN_CAN>,
     complete: <CALLBACK_ON_SUCCESS>,
     cancel: <CALLBACK_ON_CANCEL>
@@ -74,7 +74,7 @@ In your module file:
   <canyalib-canpay
     [dAppName]="canPay.dAppName"
     [successText]="canPay.successText"
-    [recepient]="canPay.recepient"
+    [recipient]="canPay.recipient"
     [amount]="canPay.amount"
     (complete)="canPay.complete($event)"
     (cancel)="canPay.cancel($event)"  
@@ -89,7 +89,7 @@ Nothing to be defiend in the template file, only in the controller file.
   // In your controller file, define an object with the following params
   canPay = {
     dAppName: 'CANWork',
-    recepient: <CANWORK_CONTRACT_ADDRESS>,
+    recipient: <CANWORK_CONTRACT_ADDRESS>,
     amount: <AMOUNT_IN_CAN>,
     complete: <CALLBACK_ON_SUCCESS>,
     cancel: <CALLBACK_ON_CANCEL>
@@ -114,8 +114,9 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | --- | --- |
 | dAppName | Name of the dApp to be displayed to the user as a merchant name. |
 | onAuthTxHash | Function to execute once the hash of the transaction is returned from the authorisation operation. |
-| recepient | The dApp contract address that will receive the payment |
+| recipient | The dApp contract address that will receive the payment |
 | amount | **Optional** If set, no amount-input-box will be displayed to the user and the specified amount will be forced.|
+| paymentSummary | **Optional** If set, will show a nice payment summary screen of the transaction, if not set, uses amount.|
 | minAmount | **Optional** If amount is set, this will be the minum accepted amount from the user.|
 | maxAmount | **Optional** If amount is set, this will be the maximum accepted amount from the user.|
 | complete | Callback to be triggered upon successful completion of the whole wizard steps. <br/> **Input:** [CanPayData](#canpaydata) |
@@ -125,7 +126,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | postAuthorisationProcessResults | **Optional** if *postAuthorisationProcessName* is set. It's used to notify the wizard of the success or failure of the postAuthorisationProcess.|
 | destinationAddress | It is the destination address of the user where the CANS will be transferred. |
 | disableCanEx | Should CanExchange be enabled for the purchasing of CAN (default true) |
-| userEmail | It is the email address of the user. |
+| userEmail | Email address to send canexchange verification email |
 
 ## Interfaces
 
@@ -136,8 +137,9 @@ interface CanPay {
   dAppName: string;
   operation?: Operation;
   onAuthTxHash? : Function;
-  recepient: string;
+  recipient: string;
   amount?: number;
+  paymentSummary?: PaymentSummary;
   minAmount?: number;
   maxAmount?: number;
   postAuthorisationProcessName?: string;
@@ -149,7 +151,7 @@ interface CanPay {
   currentStep?: Function;
   disableCanEx? : boolean;
   destinationAddress?: string;
-  userEmail: string;
+  userEmail?: string;
 }
 ```
 
@@ -184,7 +186,7 @@ Type of CanPay operations, default is Authorise.
 ```javascript
 enum Operation {
   auth = 'Authorise', // Request user authoisation to withdraw CAN
-  pay = 'Pay' // Request user to pay CAN directly to the specified recepient
+  pay = 'Pay' // Request user to pay CAN directly to the specified recipient
   interact = 'Interact' // Go straight to the post auth process
 }
 ```

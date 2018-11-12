@@ -9,7 +9,7 @@ import { BootstrapModalModule } from 'ng2-bootstrap-modal';
 import { ClipboardModule } from 'ngx-clipboard';
 
 import { ResizeService } from '../lib/services/resize.service';
-import { BancorWcComponent } from './bancor-wc/bancor-wc.component';
+import { BalanceCheckComponent } from './balance-check/balance-check.component';
 import { CanexERC20Component } from './canex-erc20/canex-erc20.component';
 import { CanexErrorComponent } from './canex-error/canex-error.component';
 import { CanexOrderStatusComponent } from './canex-order-status/canex-order-status.component';
@@ -23,15 +23,19 @@ import { LoaderComponent } from './canpay-loader/loading-status.component';
 import { CanpayModalComponent } from './canpay-modal/canpay-modal.component';
 import { CanpayWizardComponent } from './canpay-wizard/canpay-wizard.component';
 import { CommaSepNumPipe } from './comma-sep-num.pipe';
+import { EtherscanLinkComponent } from './etherscan-link/etherscan-link.component';
 import { InputAmountComponent } from './input-amount/input-amount.component';
 import { LoadingStatusComponent } from './loading-status/loading-status.component';
-import { FaqComponent } from './metamask/faq/faq.component';
 import { InstructionsComponent } from './metamask/instructions/instructions.component';
 import { MetamaskComponent } from './metamask/metamask.component';
 import { MsgBoxComponent } from './msg-box/msg-box.component';
 import {
     PaymentAuthorisationComponent
 } from './payment-authorisation/payment-authorisation.component';
+import {
+    PaymentSummaryTemplateComponent
+} from './payment-summary-template/payment-summary-template.component';
+import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 import { PaymentComponent } from './payment/payment.component';
 import { ProcessComponent } from './process/process.component';
 import { CanexService } from './services/canex.service';
@@ -44,12 +48,13 @@ const COMPONENTS = [
   CanpayModalComponent,
   CanpayWizardComponent,
   MetamaskComponent,
-  FaqComponent,
   InstructionsComponent,
   LoadingStatusComponent,
-  BancorWcComponent,
+  BalanceCheckComponent,
   PaymentAuthorisationComponent,
   PaymentComponent,
+  PaymentSummaryComponent,
+  PaymentSummaryTemplateComponent,
   ProcessComponent,
   MsgBoxComponent,
   InputAmountComponent,
@@ -61,6 +66,7 @@ const COMPONENTS = [
   CanexReceiptComponent,
   CanexQRComponent,
   CanexErrorComponent,
+  EtherscanLinkComponent,
   LoaderComponent
 ];
 

@@ -3,12 +3,11 @@ import { Http, Response } from '@angular/http';
 import merge from 'lodash.merge';
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
 
-import { Step } from '../canpay-wizard/canpay-wizard.component';
-
 declare let require: any;
 const Web3 = require('web3');
-// declare var web3;
 declare var window;
+declare var web3;
+declare var ethereum;
 
 const canDecimals = 6;
 const gas = { gasPrice: '8000000000', gas: '210000' };
@@ -45,6 +44,8 @@ export class EthService implements OnDestroy {
   walletType: WalletType;
   ownerAccount: string;
 
+  configUseTestNet = false;
+
   public web3Status = new BehaviorSubject<Web3LoadingStatus>(Web3LoadingStatus.loading);
   public web3Status$ = this.web3Status.asObservable();
 
@@ -52,9 +53,14 @@ export class EthService implements OnDestroy {
   public account$ = this.account.asObservable();
 
   constructor(@Inject('Config') private conf: any = {}, protected http: Http) {
-    if (typeof window.ethereum !== 'undefined') {
+    this.configUseTestNet = this.conf.useTestNet;
 
-      this.web3js = new Web3(window.ethereum);
+    if (window.ethereum || window.web3) {
+      if (window.ethereum) {
+        this.web3js = new Web3(window.ethereum);
+      } else {
+        this.web3js = new Web3(web3.currentProvider);
+      }
 
       this.setWalletType();
 
@@ -87,12 +93,6 @@ export class EthService implements OnDestroy {
       this.web3js = new Web3();
       this.web3Status.next(Web3LoadingStatus.noMetaMask);
     }
-
-    setTimeout(() => {
-      if (!this.netType) {
-        this.web3Status.next(Web3LoadingStatus.unableToConnectToSelectedNetwork);
-      }
-    }, 5000);
   }
 
   ngOnDestroy() {
@@ -155,13 +155,16 @@ export class EthService implements OnDestroy {
   }
 
   async getEthBalanceAsync(userAddress: string = this.getOwnerAccount()): Promise<string> {
-    const balance = await this.web3js.eth.getBalance(userAddress);
-    if (balance) {
-      console.log(balance);
-      const tokens = this.web3js.utils.toBN(balance).toString();
-      console.log('Eth Owned: ' + this.web3js.utils.fromWei(tokens, 'ether'));
-      return Promise.resolve(tokens);
+    if (userAddress) {
+      const balance = await this.web3js.eth.getBalance(userAddress);
+      if (balance) {
+        console.log(balance);
+        const tokens = this.web3js.utils.toBN(balance).toString();
+        console.log('Eth Owned: ' + this.web3js.utils.fromWei(tokens, 'ether'));
+        return Promise.resolve(this.web3js.utils.fromWei(tokens, 'ether'));
+      }
     }
+
 
     return Promise.reject(null);
   }
@@ -217,7 +220,7 @@ export class EthService implements OnDestroy {
     return new this.web3js.eth.Contract(abi, address);
   }
 
-  async payWithEther(amount: string, to: string): Promise<any> {
+  async payWithEther(amount: number, to: string): Promise<any> {
     const gasPrice = await this.getDefaultGasPriceGwei();
     const from = this.getOwnerAccount();
     return new Promise((resolve, reject) => {

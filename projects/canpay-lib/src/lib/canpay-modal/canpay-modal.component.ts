@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DialogComponent, DialogService } from 'ng2-bootstrap-modal';
-import { CanPay, Step } from '../canpay-wizard/canpay-wizard.component';
+
+import { CanPay, Step } from '../interfaces';
 
 export interface CanPayInit {
   canPay: CanPay;

@@ -3,86 +3,12 @@ import {
 } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
 
+import {
+    CanPay, CanPayData, Contract, Operation, PaymentSummary, ProcessAction, ProcessActionResult,
+    Step, View
+} from '../interfaces';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
-
-export enum Step {
-  metamask = 0,
-  paymentAmount = 1,
-  balanceCheck = 2,
-  buyCan = 3,
-  authorisation = 4,
-  payment = 5,
-  process = 6,
-  confirmation = 7,
-  completed = 8,
-  canexPaymentOptions = 9,
-  canexErc20 = 11,
-  canexQr = 13,
-  canexProcessing = 10,
-  canexReceipt = 12,
-  canexError = 14
-}
-
-export enum Operation {
-  auth = 'Authorise',
-  pay = 'Pay',
-  interact = 'Interact'
-}
-
-export enum ProcessAction {
-  success = 0,
-  error = 1
-}
-
-export enum View {
-  Normal,
-  Compact
-}
-
-export interface ProcessActionResult {
-  type: ProcessAction;
-  msg: string;
-}
-
-export interface Contract {
-  abi: any;
-  address: string;
-}
-
-export interface CanPay {
-  dAppName: string;
-  operation?: Operation;
-  onAuthTxHash?: Function;
-  recepient: string;
-  amount?: number;
-  minAmount?: number;
-  maxAmount?: number;
-  successText?: string;
-  postAuthorisationProcessName?: string;
-  postAuthorisationProcessResults?: ProcessActionResult;
-  canyaContract?: Contract;
-  startPostAuthorisationProcess?: Function;
-  complete: Function;
-  cancel?: Function;
-  currentStep?: Function;
-  disableCanEx?: boolean;
-  destinationAddress?: string;
-  userEmail: string;
-}
-
-export function setProcessResult(txOrErr) {
-  this.postAuthorisationProcessResults = {
-    type: !txOrErr.status ? ProcessAction.error : ProcessAction.success,
-    msg: !txOrErr.status ? (txOrErr.message || 'Transaction failed') : null
-  };
-}
-
-export interface CanPayData {
-  currStep: Step;
-  amount: number;
-  account: string;
-  balance: number;
-}
+import { FormDataService } from '../services/formData.service';
 
 @Component({
   selector: 'canyalib-canpay',
@@ -100,11 +26,12 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   @Input() postAuthorisationProcessName;
   @Input() operation = Operation.auth;
   @Input() onAuthTxHash;
-  @Input() recepient;
+  @Input() recipient;
   @Input() dAppName;
   @Input() successText;
   @Input() amount = 0;
-  @Input() minAmount = 0;
+  @Input() paymentSummary: PaymentSummary;
+  @Input() minAmount = 1;
   @Input() maxAmount = 0;
   @Input() disableCanEx = false;
   @Input() destinationAddress;
@@ -122,9 +49,10 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   View = View;
   Step = Step; // to access the enum from the .html template
   errMsg: string;
+  warningMsg: string;
   steps: Array<any>;
   currStep: Step;
-  isLoading = false;
+  title = 'Payment';
   balance = 0;
   account: string;
   confirmationDlg = {
@@ -137,33 +65,64 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   insufficientBalance = false;
   processSummaryMsg: string;
   balanceInterval: any;
+  totalTransactions = 1;
 
-  constructor(private canyaCoinEthService: CanYaCoinEthService) { }
+  constructor(private canyaCoinEthService: CanYaCoinEthService, private formDataService: FormDataService) { }
 
   ngOnInit() {
     this.steps = [
       {
-        name: 'Metamask',
-        value: Step.metamask,
-        active: true
-      },
-      {
-        name: 'Pay Amount',
+        name: 'AMOUNT',
         value: Step.paymentAmount,
         active: !this.amount && this.operation !== Operation.interact
       },
       {
-        name: 'Balance Check',
-        value: Step.balanceCheck,
-        active: true && this.operation !== Operation.interact
+        name: 'PAYMENT',
+        value: Step.paymentSummary,
+        active: this.operation !== Operation.interact
       },
       {
-        name: 'Authorisation',
+        name: 'PAYMENT',
+        value: Step.metamask,
+        active: true
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.balanceCheck,
+        active: this.operation !== Operation.interact
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexPaymentOptions,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexErc20,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexQr,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
+        value: Step.canexProcessing,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'Error',
+        value: Step.canexError,
+        active: !this.disableCanEx
+      },
+      {
+        name: 'PAYMENT',
         value: Step.authorisation,
         active: this.operation === Operation.auth
       },
       {
-        name: 'Payment',
+        name: 'PAYMENT',
         value: Step.payment,
         active: this.operation === Operation.pay
       },
@@ -173,7 +132,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         active: !!this.postAuthorisationProcessName || this.operation === Operation.interact
       },
       {
-        name: 'Confirmation',
+        name: 'PAYMENT',
         value: Step.confirmation,
         active: true
       }
@@ -187,8 +146,8 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
       validationErrors.push('Missing dAppName');
     }
 
-    if (!this.recepient) {
-      validationErrors.push('Missing recepient address');
+    if (!this.recipient) {
+      validationErrors.push('Missing recipient address');
     }
 
     if (validationErrors.length) {
@@ -198,8 +157,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     if (this.successText) {
       this.confirmationDlg.title = this.successText;
     }
-
-    this.updateProcessSummaryMsg();
   }
 
 
@@ -207,16 +164,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
     if (this.balanceInterval) { clearInterval(this.balanceInterval); }
   }
 
-  updateProcessSummaryMsg() {
-    this.processSummaryMsg = `${this.operation} ${this.dAppName} ${this.operation === 'Authorise' ? 'to withdraw' : ''}` +
-      ` ${this.amount ? this.amount + ' CAN' : ''}` +
-      ` ${this.postAuthorisationProcessName ? 'for the ' + this.postAuthorisationProcessName : ''}`;
-  }
-
-  updateCurrentStep(step) {
-    this.currStep = step;
-    this.currentStep.emit(step);
-  }
 
   setAccount(_acc) {
     console.log('setAccount: ', _acc);
@@ -231,52 +178,159 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   setAmount(amount) {
     console.log('setAmount: ', amount);
     this.amount = amount;
-    this.checkBalance();
-    this.updateProcessSummaryMsg();
+    this.stepFinished();
   }
 
   checkBalance() {
-    this.updateCurrentStep(Step.balanceCheck);
-    this.isLoading = true;
+    let isLoading = true;
     this.balanceInterval = setInterval(() => {
       this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
         .then(_balance => {
           this.balance = Number(_balance);
           this.insufficientBalance = Number(_balance) < this.amount;
           if (!this.insufficientBalance) {
-            this.updateCurrentStep(this.postBalanceStep);
-            clearInterval(this.balanceInterval);
+            this.stepFinished(Step.balanceCheck);
+          } else if (isLoading) {
+            isLoading = false;
+            this.updateCurrentStep(Step.balanceCheck);
           }
         })
-        .catch(err => this.error('Unable to retrieve user CAN balance!'))
-        .then(() => this.isLoading = false);
-    }, 3000);
+        .catch(err => this.error('Unable to retrieve user CAN balance!'));
+    }, 2000);
   }
-  purchaseComplete() {
+
+  transactionSent() {
+    this.totalTransactions += 1;
+  }
+
+  get showBackButton(): boolean {
+    switch (this.currStep) {
+      case Step.paymentAmount:
+      case Step.paymentSummary:
+        return true;
+      case Step.canexPaymentOptions:
+      case Step.canexErc20:
+      case Step.canexQr:
+      case Step.canexError:
+        return true;
+      case Step.balanceCheck:
+      case Step.metamask:
+      case Step.authorisation:
+      case Step.payment:
+      case Step.process:
+        return true;
+      case Step.confirmation:
+      case Step.canexProcessing:
+      default:
+        return false;
+    }
+  }
+
+  goBack() {
+    switch (this.currStep) {
+      case Step.paymentAmount:
+        this.doCancel();
+        break;
+      case Step.paymentSummary:
+        if (this.paymentSummary) {
+          this.doCancel();
+        } else {
+          this.updateCurrentStep(Step.paymentAmount);
+        }
+        break;
+      case Step.canexPaymentOptions:
+        this.formDataService.resetFormData();
+        this.updateCurrentStep(Step.balanceCheck);
+        break;
+      case Step.canexErc20:
+      case Step.canexError:
+        this.formDataService.resetFormData();
+        this.updateCurrentStep(Step.canexPaymentOptions);
+        break;
+      case Step.canexQr:
+        if (confirm('Are you sure you want to go back?')) {
+          this.formDataService.resetFormData();
+          this.updateCurrentStep(Step.canexPaymentOptions);
+        }
+        break;
+      case Step.balanceCheck:
+      case Step.metamask:
+      case Step.authorisation:
+      case Step.payment:
+        this.cancelBalanceCheck();
+        this.updateCurrentStep(Step.paymentSummary);
+        break;
+
+      case Step.process:
+        if (this.operation === Operation.interact) {
+          this.cancelBalanceCheck();
+          this.doCancel();
+        } else {
+          this.cancelBalanceCheck();
+          this.updateCurrentStep(Step.paymentSummary);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  cancelBalanceCheck() {
     if (this.balanceInterval) { clearInterval(this.balanceInterval); }
-    this.stepChanger(this.postBalanceStep);
+  }
+
+  stepFinished(step: Step = this.currStep) {
+    switch (step) {
+      case Step.paymentAmount:
+        this.updateCurrentStep(Step.paymentSummary);
+        break;
+      case Step.paymentSummary:
+        if (this.canyaCoinEthService.account.value) {
+          this.checkBalance();
+        } else {
+          this.updateCurrentStep(Step.metamask);
+        }
+        break;
+      case Step.balanceCheck:
+        this.cancelBalanceCheck();
+        this.updateCurrentStep(this.postBalanceStep);
+        break;
+      case Step.canexProcessing:
+        this.cancelBalanceCheck();
+        this.updateCurrentStep(this.postBalanceStep);
+        break;
+      case Step.authorisation:
+        this.cancelBalanceCheck();
+        this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
+        break;
+      case Step.payment:
+        this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
+        break;
+      default:
+        break;
+    }
+  }
+
+  updateCurrentStep(step) {
+    if (step !== this.currStep) {
+      this.warning(null);
+      this.currStep = step;
+      this.title = this.steps.find(x => x.value === step).name || 'Payment';
+      this.currentStep.emit(step);
+    }
   }
 
   get postBalanceStep() {
     return this.operation === Operation.auth ? Step.authorisation : this.operation === Operation.interact ? Step.process : Step.payment;
   }
 
-  stepChanger(step) {
-    this.currStep = step;
-  }
 
   getCanExRecipient(): string {
     return this.destinationAddress || this.canyaCoinEthService.getOwnerAccount();
   }
 
-  notifyPaymentAuthorised(tx) {
-    console.log('authorisedTx: ', tx);
-    this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
-  }
-
-  notifyPaymentCollected(tx) {
-    console.log('paidTx: ', tx);
-    this.updateCurrentStep(this.postAuthorisationProcessName ? Step.process : Step.confirmation);
+  get hasPostAuthProcess() {
+    return !!this.postAuthorisationProcessName || this.operation === Operation.interact;
   }
 
   doStartPostAuthorisationProcess() {
@@ -316,7 +370,14 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   error(msg, autoDismiss = true) {
     this.errMsg = msg;
     if (autoDismiss) {
-      setTimeout(() => this.errMsg = null, 30000);
+      setTimeout(() => this.errMsg = null, 10000);
+    }
+  }
+
+  warning(msg, autoDismiss = false) {
+    this.warningMsg = msg;
+    if (autoDismiss) {
+      setTimeout(() => this.errMsg = null, 10000);
     }
   }
 }

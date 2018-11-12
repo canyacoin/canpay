@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
-import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService } from '../services/formData.service';
 import { ResizeService } from '../services/resize.service';
@@ -21,8 +21,8 @@ export class CanexERC20Component implements OnInit, OnDestroy {
     @Input() formData: FormData;
     isFormValid = false;
     can = false;
-    etherium = false;
-    etherPrise: number;
+    ethereum = false;
+    etherPrice: number;
     key: any;
     status: any;
     error: any;
@@ -32,7 +32,6 @@ export class CanexERC20Component implements OnInit, OnDestroy {
     selectedERC: string;
     price: any;
     message: string;
-    tokenData1: any;
     token_classes = '';
     private resizeSubscription: Subscription;
     private sessionSub: Subscription;
@@ -47,7 +46,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
     search(val) {
         // for erc token search
-        this.tokens = this.tokenData1.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
+        this.tokens = this.tokens.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
     }
 
     ngOnInit() {
@@ -57,7 +56,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
         // get list of supported erc20 tokens
         this.canexService.getTokensBancor().take(1).subscribe(data => {
-            this.tokenData1 = data;
+            const tokenData1 = data;
             this.listStatus = false;
             for (const result of data.json()) {
                 this.tokens.push(result);
@@ -105,7 +104,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
                 const price = data.json().data.price * + this.formData.amount;
                 this.price = price;
                 this.formData.eth = Number(price.toFixed(6));
-                this.etherPrise = Number(price.toFixed(6));
+                this.etherPrice = Number(price.toFixed(6));
             }
         );
 

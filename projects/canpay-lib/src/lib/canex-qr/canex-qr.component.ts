@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
-import { Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { CanexService } from '../services/canex.service';
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
@@ -72,6 +72,9 @@ export class CanexQRComponent implements OnInit, OnDestroy {
 
         this.copied = false;
         this.formData = this.formDataService.getFormData();
+        if (!this.formData.key || this.formData.key === '') {
+            this.valueChange.emit(Step.canexError);
+        }
         this.orderUrl = this.canexService.environment.order + this.formData.key;
 
         this.isFormValid = this.formDataService.isFormValid();
@@ -115,7 +118,7 @@ export class CanexQRComponent implements OnInit, OnDestroy {
     metamask() {
 
         if (this.formData.currency === 'ETH') {
-            this.canYaCoinEthService.payWithEth(this.formData.eth, this.canexService.environment.backendEthAddress);
+            this.canYaCoinEthService.payWithEther(this.formData.eth, this.canexService.environment.backendEthAddress);
         } else {
             this.gasSub = this.canexService.getGasPrice().subscribe(activity => {
                 this.canYaCoinEthService.payWithERC20(this.formData.eth, this.canexService.environment.backendEthAddress,
@@ -126,10 +129,5 @@ export class CanexQRComponent implements OnInit, OnDestroy {
 
     metamaskEnable() {
         this.metamaskpayment = true;
-    }
-
-    cancel() {
-        this.formData.email = '';
-        this.valueChange.emit(Step.buyCan);
     }
 }

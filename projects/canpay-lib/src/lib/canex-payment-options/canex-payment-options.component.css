@@ -440,7 +440,7 @@
 
 /* metamask */
 .tip-button {
-  width: 40%;
+  width: 200px;
   height: 33px;
   background-size: 100%;
   background-image: url('/assets/canex/4_pay_mm_over.png');

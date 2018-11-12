@@ -18,8 +18,8 @@ export class CanPayExampleComponent {
   canPay: CanPay = {
     // properties
     dAppName: 'CanYaDAO',
-    successText: 'Customized success message!', // Default 'Sweet, payment done!'
-    recepient: environment.contracts.testAccount,
+    successText: 'Mission success!', // Default 'Sweet, payment done!'
+    recipient: environment.contracts.canYaDao,
     operation: Operation.auth, // Authorise, Pay or Interact, Default is: Authorise
     onAuthTxHash: function () { }.bind(this), // Call a function after the txHash is available (i.e. once the tx has been sent)
     amount: 0, // allow the user to enter amount through an input box
@@ -27,7 +27,7 @@ export class CanPayExampleComponent {
     maxAmount: 50000, // Default is 'No Maximum'
 
     // CanExchange
-    userEmail: 'valthrex@gmail.com', // email to which the canexchange confirmation should be sent
+    userEmail: 'example@gmail.com', // email to which the canexchange confirmation should be sent
     disableCanEx: false,
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),

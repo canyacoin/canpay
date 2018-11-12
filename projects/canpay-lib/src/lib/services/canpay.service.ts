@@ -1,7 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal/dist/dialog.service';
-import { CanPay } from '../canpay-wizard/canpay-wizard.component';
+
 import { CanpayModalComponent } from '../canpay-modal/canpay-modal.component';
+import { CanPay } from '../interfaces';
 
 export type SubscribeFn = (isConfirmed: boolean) => void;
 

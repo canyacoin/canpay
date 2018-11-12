@@ -40,7 +40,7 @@ export class CanexService {
                 backendEthAddress: '0xf0725197ca2c41e61912d97c91febcee21664f65',
                 bancor: 'https://api.bancor.network/0.1/currencies/CAN/ticker?fromCurrencyCode=',
                 cmc: 'https://api.coinmarketcap.com/v2/ticker/2343/?convert=',
-                etherscan: 'https://ropsten.etherscan.io/tx/',
+                etherscan: 'https://etherscan.io/tx/',
                 order: 'http://staging.canexchange.io/#/order/'
             };
         }

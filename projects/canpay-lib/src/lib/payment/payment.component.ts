@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
 
@@ -7,26 +7,35 @@ import { CanYaCoinEthService } from '../services/canyacoin-eth.service';
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss']
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements AfterViewInit {
   @Output() error = new EventEmitter();
+  @Output() warning = new EventEmitter();
   @Output() success = new EventEmitter();
   @Input() dAppName;
-  @Input() recepient;
+  @Input() recipient;
   @Input() amount = 0;
-  isLoading = false;
+  @Input() totalTransactions = 1;
+  sendingTx = false;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
 
-  ngOnInit() { }
+  async ngAfterViewInit() {
+    const ethBal = await this.canyaCoinEthService.getEthBalanceAsync();
+    if (Number(ethBal) <= 0) {
+      this.warning.emit('You do not have enough gas (ETH) to send this transaction');
+    } else if (Number(ethBal) <= 0.01) {
+      this.warning.emit('You might not have enough gas (ETH) to send this transaction');
+    }
+  }
 
   pay() {
-    if (this.isLoading) { return; }
+    if (this.sendingTx) { return; }
 
-    this.isLoading = true;
-    this.canyaCoinEthService.payWithCAN(this.recepient, this.amount)
+    this.sendingTx = true;
+    this.canyaCoinEthService.payWithCAN(this.recipient, this.amount)
       .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
       .catch(err => this.error.emit(err.message))
-      .then(() => this.isLoading = false);
+      .then(() => this.sendingTx = false);
 
     return false;
   }

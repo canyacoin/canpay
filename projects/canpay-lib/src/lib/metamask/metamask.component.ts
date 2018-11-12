@@ -5,7 +5,7 @@ import { EthService, WalletType, Web3LoadingStatus } from '../services/eth.servi
 
 @Component({
   selector: 'canyalib-metamask',
-  templateUrl: './metamask.component1.html',
+  templateUrl: './metamask.component.html',
   styleUrls: ['./metamask.component.scss']
 })
 
@@ -20,14 +20,19 @@ export class MetamaskComponent implements OnInit, OnDestroy {
   walletType: WalletType;
   walletTypes = WalletType;
 
+  configUseTestNet = false;
+
   loading = true;
 
   ethSub: Subscription;
   accSub: Subscription;
 
+  showInstructions = false;
+
   constructor(private ethService: EthService) { }
 
   async ngOnInit() {
+    this.configUseTestNet = this.ethService.configUseTestNet;
     this.ethSub = this.ethService.web3Status$.subscribe((state: Web3LoadingStatus) => {
       console.log('state: ', state);
       this.web3State = state;
@@ -41,6 +46,14 @@ export class MetamaskComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  showHideInstructions() {
+    this.showInstructions = !this.showInstructions;
+  }
+
+  get netType(): string {
+    return this.configUseTestNet ? 'Test Network' : 'Main Network';
   }
 
   ngOnDestroy() {

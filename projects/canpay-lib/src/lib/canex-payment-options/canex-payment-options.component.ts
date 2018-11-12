@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import 'rxjs/add/operator/take';
 
-import { CanpayWizardComponent, Step } from '../canpay-wizard/canpay-wizard.component';
+import { Step } from '../interfaces';
 import { CanexService } from '../services/canex.service';
 import { FormData, FormDataService, Personal } from '../services/formData.service';
 import { ResizeService } from '../services/resize.service';
@@ -21,8 +21,8 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     isFormValid = false;
     can = false;
     @Input() formData: FormData;
-    etherium = false;
-    etherPrise: number;
+    ethereum = false;
+    etherPrice: number;
     key: any;
     status: any;
     error: any;
@@ -40,12 +40,15 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     @Input() destinationAddress;
     @Input() userEmail;
     @Input() amount: number;
+    @Input() balance = 0;
 
     sessionSub: Subscription;
     cmcSub: Subscription;
 
+    isLoading = true;
+
     constructor(private router: Router, private resizeService: ResizeService, private formDataService: FormDataService,
-        private canexService: CanexService, private canpayWizardComponent: CanpayWizardComponent) {
+        private canexService: CanexService) {
     }
 
     ngOnInit() {
@@ -58,11 +61,12 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         console.log('sending to: ' + this.destinationAddress);
         this.formData.address = this.destinationAddress;
         this.formData.email = this.userEmail;
-        this.formData.amount = this.amount - this.canpayWizardComponent.canPayData().balance;
+        this.formData.amount = this.amount - this.balance;
 
-        this.sessionSub = this.canexService.getSessionId().subscribe(data => {
+        this.canexService.getSessionId().take(1).subscribe(data => {
             this.key = data.json().token;
             this.status = data.json().status;
+            this.isLoading = false;
         });
 
         this.cmcSub = this.canexService.getDataCmc('ETH').subscribe(
@@ -70,7 +74,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
 
                 this.formData.eth = Number((this.formData.amount * data.json().data.quotes.ETH.price).toFixed(6));
                 this.formData.usd = Number((this.formData.amount * data.json().data.quotes.USD.price).toFixed(6));
-                this.etherPrise = this.formData.eth;
+                this.etherPrice = this.formData.eth;
             }
         );
 
@@ -104,30 +108,26 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
             this.changeButtonToSelectCurrency = false;
             this.erc20 = false;
             this.can = false;
-            this.etherium = !this.etherium;
+            this.ethereum = !this.ethereum;
             this.others = false;
             this.validData = true;
 
-            setTimeout(() => {
-                if (this.status && this.formData.currency != null) {
-                    this.error = null;
-                    this.formData.key = this.key;
-                    // Navigate to the result page
-                    this.formData.accept = true;
-                    this.formDataService.setConfirmation(this.workType);
-                    this.valueChange.emit(Step.canexQr);
-                } else {
-                    this.validData = false;
-                    this.error = 'Oops! something went wrong, Please try again later.';
-                }
-            }, 1000);
+            if (this.status && this.formData.currency != null) {
+                this.error = null;
+                this.formData.key = this.key;
+                // Navigate to the result page
+                this.formData.accept = true;
+                this.formDataService.setConfirmation(this.workType);
+            } else {
+                this.validData = false;
+                this.error = 'Oops! something went wrong, Please try again later.';
+            }
 
         } else {
             this.changeButtonToSelectCurrency = true;
-            this.etherium = false;
+            this.ethereum = false;
             this.erc20 = !this.erc20;
             this.others = false;
-            this.valueChange.emit(Step.canexErc20);
         }
     }
 
@@ -144,10 +144,15 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         this.valueChange.emit(Step.balanceCheck);
     }
 
-    goToNext() {
-        if (this.validData === true) {
+    next() {
+        if (this.erc20) {
+            this.valueChange.emit(Step.canexErc20);
+        } else if (this.validData && this.ethereum) {
             this.valueChange.emit(Step.canexQr);
         }
+    }
+    get enableButton() {
+        return (this.validData && this.ethereum) || this.erc20;
     }
 
     cancel() {

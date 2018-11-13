@@ -1,6 +1,6 @@
 <div class="card p-30 row mh-250" [ngSwitch]="web3State">
   <div *ngIf="web3State == web3LoadingStatus.loading || web3State == web3LoadingStatus.complete">
-    <canyalib-loader [isLoading]="web3State === web3LoadingStatus.loading"></canyalib-loader>
+    <canyalib-loader [isLoading]="web3State === web3LoadingStatus.loading || web3State == web3LoadingStatus.complete"></canyalib-loader>
   </div>
   <div *ngIf="web3State == web3LoadingStatus.noMetaMask || web3State == web3LoadingStatus.error">
     <div class="container">

@@ -28,7 +28,6 @@ export enum NetworkType {
 
 export enum Web3LoadingStatus {
   loading = 'Wallet loading is in progress',
-  unableToConnectToSelectedNetwork = 'Unable to connect to the selected network. Check your provider configuration (Metamask or TrustWallet)',
   noMetaMask = 'Wallet is not connected.',
   noAccountsAvailable = 'Your wallet is locked or there are no accounts available.',
   wrongNetwork = 'Your wallet is connected to the wrong Network.',

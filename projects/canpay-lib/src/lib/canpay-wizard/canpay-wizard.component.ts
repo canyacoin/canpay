@@ -183,20 +183,22 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
 
   checkBalance() {
     let isLoading = true;
-    this.balanceInterval = setInterval(() => {
-      this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
-        .then(_balance => {
-          this.balance = Number(_balance);
-          this.insufficientBalance = Number(_balance) < this.amount;
-          if (!this.insufficientBalance) {
-            this.stepFinished(Step.balanceCheck);
-          } else if (isLoading) {
-            isLoading = false;
-            this.updateCurrentStep(Step.balanceCheck);
-          }
-        })
-        .catch(err => this.error('Unable to retrieve user CAN balance!'));
-    }, 2000);
+    if (!this.balanceInterval) {
+      this.balanceInterval = setInterval(() => {
+        this.canyaCoinEthService.getCanYaBalance(this.canyaCoinEthService.getOwnerAccount())
+          .then(_balance => {
+            this.balance = Number(_balance);
+            this.insufficientBalance = Number(_balance) < this.amount;
+            if (!this.insufficientBalance) {
+              this.stepFinished(Step.balanceCheck);
+            } else if (isLoading) {
+              isLoading = false;
+              this.updateCurrentStep(Step.balanceCheck);
+            }
+          })
+          .catch(err => this.error('Unable to retrieve user CAN balance!'));
+      }, 2000);
+    }
   }
 
   transactionSent() {
@@ -260,7 +262,6 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
         this.cancelBalanceCheck();
         this.updateCurrentStep(Step.paymentSummary);
         break;
-
       case Step.process:
         if (this.operation === Operation.interact) {
           this.cancelBalanceCheck();
@@ -276,7 +277,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   }
 
   cancelBalanceCheck() {
-    if (this.balanceInterval) { clearInterval(this.balanceInterval); }
+    if (this.balanceInterval) { clearInterval(this.balanceInterval); this.balanceInterval = null; }
   }
 
   stepFinished(step: Step = this.currStep) {

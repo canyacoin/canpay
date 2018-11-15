@@ -10,6 +10,8 @@
     BUY CAN
   </button>
 
+  <div class="bancor-wc" id="bancor-wc-id-1"></div>
+
   <div *ngIf="status === Status.PendingPurchase || status === Status.InProgress" class="buttons-bar">
     <button class="btn btn-primary fixed-width-200" [disabled]="status === Status.InProgress" (click)="checkBalance()">
       <i *ngIf="status === Status.InProgress" class="fa fa-circle-o-notch fa-spin fa-fw"></i> Check Balance

@@ -34,6 +34,8 @@ export class BalanceCheckComponent implements OnInit {
 
   isLoadingBancorWidget = false;
 
+  widget: any;
+
 
   constructor(private renderer: Renderer2) { }
 
@@ -55,12 +57,15 @@ export class BalanceCheckComponent implements OnInit {
   initBancorWidget() {
     if (!this.isBancorLoaded()) { return; }
 
-    BancorConvertWidget.init({
-      'type': this.type,
+    this.widget = BancorConvertWidget.createInstance({
+      'type': '0',
+      'blockchainType': 'ethereum',
       'baseCurrencyId': '5a6f61ece3de16000123763a',
       'pairCurrencyId': '5937d635231e97001f744267',
       'primaryColor': '#00BFFF',
-      'primaryColorHover': '55DAFB'
+      'primaryColorHover': '55DAFB',
+      'widgetContainerId': 'bancor-wc-id-1',
+      'displayCurrency': 'ETH'
     });
   }
 
@@ -85,7 +90,7 @@ export class BalanceCheckComponent implements OnInit {
   }
 
   open() {
-    BancorConvertWidget.showConvertPopup('buy');
+    this.widget.showConvertPopup('buy');
     this.status = Status.PendingPurchase;
   }
 

@@ -27,6 +27,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
     status: any;
     error: any;
     tokens: any = [];
+    filteredTokens: any = [];
     others = false;
     otherstest: any;
     selectedERC: string;
@@ -46,7 +47,11 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
     search(val) {
         // for erc token search
-        this.tokens = this.tokens.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
+        if (val) {
+            this.filteredTokens = this.tokens.filter(c => c.name.toUpperCase().match(val.toUpperCase()) || c.symbol.toUpperCase().match(val.toUpperCase()));
+        } else {
+            this.filteredTokens = this.tokens;
+        }
     }
 
     ngOnInit() {
@@ -60,6 +65,7 @@ export class CanexERC20Component implements OnInit, OnDestroy {
             this.listStatus = false;
             for (const result of data.json()) {
                 this.tokens.push(result);
+                this.filteredTokens.push(result);
             }
         });
 
@@ -92,8 +98,9 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
     // to convert erc20 token to CAN
     selectCurrency(form, key) {
+        this.formData.eth = null;
         this.selectedERC = form.symbol;
-        this.otherstest = form.address;
+        this.otherstest = form.name;
         this.formData.currency = form.name;
         this.formData.erc20token = form.address;
         this.formData.erc20tokenDecimal = form.decimals;
@@ -126,6 +133,11 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
         this.formDataService.setConfirmation(this.workType);
         return true;
+    }
+
+    get nextButtonDisabled(): boolean {
+        return !this.status || this.formData.currency === 'erc20' || !this.formData.eth;
+
     }
 
     goToPrevious() {

@@ -15,10 +15,10 @@
       <br />
       <div class="scrollbar scrollbar-primary">
         <div class="row method-container payment-margin-left">
-          <div [className]="token_classes" style="margin-right: 8px; " *ngFor="let token of tokens;">
+          <div [className]="token_classes" style="margin-right: 8px; " *ngFor="let token of filteredTokens;">
 
-            <div [ngClass]="otherstest == token.address ? 'card-body active' : 'card-body'" style="cursor: pointer;"
-              *ngIf="token.status > 0" (click)="selectCurrency(token, key)">
+            <div [ngClass]="otherstest == token.name ? 'card-body active' : 'card-body'" style="cursor: pointer;" *ngIf="token.status > 0"
+              (click)="selectCurrency(token, key)">
               <div class="radio float-right">
 
                 <input type="radio" name="optradio">
@@ -41,14 +41,14 @@
 <span class="text-center help-line">{{error}}</span>
 
 <div class="text-right m-30 float-right">
-  <div class="currency-conversion">
+  <div>
     <span class="payments-font can-display">{{formData.amount
       | number : '1.6-6'}} CAN
     </span>
     <span class="payments-font erc-display">=
       {{price | number : '1.8-8'}} {{selectedERC }}</span>
   </div>
-  <button class="btn btn-primary" (click)="goToNext(personalForm,key)">
+  <button class="btn btn-primary" [disabled]="nextButtonDisabled" (click)="goToNext(personalForm,key)">
     NEXT</button>
 
 </div>

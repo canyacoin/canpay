@@ -206,8 +206,8 @@ export class EthService implements OnDestroy {
     return this.amountToERCTokens(amount, canDecimals);
   }
 
-  amountToERCTokens(amount, decimal) {
-    return amount * Math.pow(10, decimal);
+  amountToERCTokens(amount, decimal): string {
+    return this.web3js.utils.toBN(amount * Math.pow(10, decimal)).toString();
   }
 
   createContractInstance(abi, address) {
@@ -232,14 +232,23 @@ export class EthService implements OnDestroy {
     });
   }
 
-  async payWithErc20Token(abi, recipient: string, amount, address, decimal, gasPrice): Promise<any> {
+  async payWithErc20Token(abi, recipient: string, amount: number, address, decimal, gasPrice): Promise<any> {
     const from = this.getOwnerAccount();
     const contract = this.createContractInstance(abi, address);
     const amountWithDecimals = this.amountToERCTokens(amount, decimal);
+    // const amountWithDecimals = 10000000000000000000;
+
+
     return new Promise(async (resolve, reject) => {
       const tx = await contract.methods.transfer(recipient, amountWithDecimals);
-      const txGas = await tx.estimateGas({ from });
-      tx.send({ from, gas: txGas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
+      let txGas, txGasPrice;
+      try {
+        txGas = await tx.estimateGas({ from });
+        txGasPrice = await this.getDefaultGasPriceGwei();
+      } catch (e) {
+        reject(e);
+      }
+      tx.send({ from, gas: txGas, gasPrice: txGasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
     });
   }
 

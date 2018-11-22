@@ -6,10 +6,10 @@
       <div class="currency-data">
         <span class="payments-font">{{formData.amount | number : '1.6-6'}} CAN</span>
         <span class="payments-font">{{formData.usd | number : '1.2-2'}} USD</span>
-        <span class="payments-font">
+        <!-- <span class="payments-font">
           <b *ngIf="formData.currency == 'CAN'">= {{formData.eth | number : '1.6-6'}} ETH</b>
           <b *ngIf="formData.currency != 'CAN'">= {{etherPrice | number : '1.6-6'}} ETH</b>
-        </span>
+        </span> -->
       </div>
 
       <div class="row method-container payment-margin-left">
@@ -34,6 +34,19 @@
               <img class="logo-default" src="/assets/canex/erc20.png" width="auto" height="60px" alt="logo">
             </div>
             <h6 class="card-subtitle">ERC20</h6>
+          </div>
+        </div>
+
+        <div [className]="token_classes" style="cursor: pointer;">
+          <div [ngClass]="bnb ? 'card-body active' : 'card-body'" (click)="selectCurrency('bnb')">
+            <div class="radio float-right">
+              <input type="radio" name="optradio">
+            </div>
+            <div class="circle-cover" style="width: 80px;">
+              <img class="logo-default" src="/assets/canex/1839.png" width="auto" height="60px" alt="logo">
+            </div>
+            <h6 class="card-subtitle">BNB</h6>
+            <span class="card-subtitle">Binance Coin</span>
           </div>
         </div>
 

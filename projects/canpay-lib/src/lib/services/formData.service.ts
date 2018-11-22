@@ -13,7 +13,7 @@ export class FormData {
     eth = 0;
     id = '';
     erc20token = '';
-    erc20tokenDecimal = 0;
+    erc20tokenDecimal = '0';
 
     clear() {
         this.currency = '';

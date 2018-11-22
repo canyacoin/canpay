@@ -140,13 +140,6 @@ export class CanexERC20Component implements OnInit, OnDestroy {
 
     }
 
-    goToPrevious() {
-        this.valueChange.emit(Step.canexPaymentOptions);
-    }
-
-    cancel() {
-        this.valueChange.emit(Step.canexPaymentOptions);
-    }
 
     goToNext(form: any, key: any) {
 

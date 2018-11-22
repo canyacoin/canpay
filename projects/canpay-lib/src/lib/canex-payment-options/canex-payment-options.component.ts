@@ -30,8 +30,9 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     others = false;
     otherstest: any;
     message: string;
-    changeButtonToSelectCurrency = false;
     erc20 = false;
+    bnb = false;
+    gotBnbPrice = false;
     validData = false;
     token_classes = '';
     private resizeSubscription: Subscription;
@@ -44,6 +45,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
 
     sessionSub: Subscription;
     cmcSub: Subscription;
+    dataSub: Subscription;
 
     isLoading = true;
 
@@ -74,7 +76,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
 
                 this.formData.eth = Number((this.formData.amount * data.json().data.quotes.ETH.price).toFixed(6));
                 this.formData.usd = Number((this.formData.amount * data.json().data.quotes.USD.price).toFixed(6));
-                this.etherPrice = this.formData.eth;
+                // this.etherPrice = this.formData.eth;
             }
         );
 
@@ -97,6 +99,7 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         if (this.resizeSubscription) { this.resizeSubscription.unsubscribe(); }
         if (this.cmcSub) { this.cmcSub.unsubscribe(); }
         if (this.sessionSub) { this.sessionSub.unsubscribe(); }
+        if (this.dataSub) { this.dataSub.unsubscribe(); }
     }
 
     selectCurrency(currency) {
@@ -105,8 +108,8 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
         this.formData.currency = currency;
 
         if (currency === 'ETH') {
-            this.changeButtonToSelectCurrency = false;
             this.erc20 = false;
+            this.bnb = false;
             this.can = false;
             this.ethereum = !this.ethereum;
             this.others = false;
@@ -123,11 +126,38 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
                 this.error = 'Oops! something went wrong, Please try again later.';
             }
 
-        } else {
-            this.changeButtonToSelectCurrency = true;
+        } else if (currency === 'bnb') {
+            this.gotBnbPrice = false;
             this.ethereum = false;
+            this.erc20 = false;
+            this.bnb = true;
+            this.formData.accept = true;
+            this.formData.currency = 'Binance Coin';
+            this.formData.erc20token = '0xb8c77482e45f1f44de1745f52c74426c631bdd52';
+            this.formData.erc20tokenDecimal = '18';
+
+            this.dataSub = this.canexService.getData('BNB').subscribe(
+                (data) => {
+                    const price = data.json().data.price * + this.formData.amount;
+                    this.formData.eth = Number(price.toFixed(6));
+                    this.gotBnbPrice = true;
+                }
+            );
+            if (this.status && this.formData.currency != null) {
+                this.validData = true;
+                this.error = null;
+                this.formData.key = this.key;
+                // Navigate to the result page
+                this.formDataService.setConfirmation(true);
+            } else {
+                this.validData = false;
+            }
+        } else {
+            this.ethereum = false;
+            this.bnb = false;
             this.erc20 = !this.erc20;
             this.others = false;
+
         }
     }
 
@@ -147,12 +177,14 @@ export class CanexPaymentOptionsComponent implements OnInit, OnDestroy {
     next() {
         if (this.erc20) {
             this.valueChange.emit(Step.canexErc20);
+        } else if (this.validData && this.bnb && this.gotBnbPrice) {
+            this.valueChange.emit(Step.canexQr);
         } else if (this.validData && this.ethereum) {
             this.valueChange.emit(Step.canexQr);
         }
     }
     get enableButton() {
-        return (this.validData && this.ethereum) || this.erc20;
+        return (this.validData && this.ethereum) || (this.validData && this.bnb && this.gotBnbPrice) || this.erc20;
     }
 
     cancel() {

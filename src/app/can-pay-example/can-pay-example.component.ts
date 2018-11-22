@@ -28,7 +28,7 @@ export class CanPayExampleComponent {
 
     // CanExchange
     userEmail: 'example@gmail.com', // email to which the canexchange confirmation should be sent
-    disableCanEx: true,
+    disableCanEx: false,
     // Actions
     complete: this.completeCanPayUserActivation.bind(this),
     cancel: this.cancelCanPayUserActivation.bind(this),

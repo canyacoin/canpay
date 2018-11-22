@@ -290,7 +290,7 @@ export class EthService implements OnDestroy {
     return (typeof s === 'string' || s instanceof String);
   }
 
-  toBaseUnit(value, decimals, BN) {
+  toBaseUnit(value, decimals, BN): string {
     if (!this.isString(value)) {
       value = value.toString();
     }
@@ -333,6 +333,6 @@ export class EthService implements OnDestroy {
       wei = wei.mul(-1);
     }
 
-    return new BN(wei.toString(10), 10);
+    return new BN(wei.toString(10), 10).toString();
   }
 }

@@ -50,6 +50,19 @@
           </div>
         </div>
 
+        <div [className]="token_classes" style="cursor: pointer;">
+          <div [ngClass]="dai ? 'card-body active' : 'card-body'" (click)="selectCurrency('dai')">
+            <div class="radio float-right">
+              <input type="radio" name="optradio">
+            </div>
+            <div class="circle-cover" style="width: 80px;">
+              <img class="logo-default" src="/assets/canex/2308.png" width="auto" height="60px" alt="logo">
+            </div>
+            <h6 class="card-subtitle">DAI</h6>
+            <span class="card-subtitle">Dai</span>
+          </div>
+        </div>
+
         <div [className]="token_classes">
           <div class="card-body disable">
             <div class="radio float-right">

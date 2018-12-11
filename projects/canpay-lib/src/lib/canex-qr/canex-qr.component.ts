@@ -82,14 +82,8 @@ export class CanexQRComponent implements OnInit, OnDestroy {
 
         if (this.formData.currency === 'ETH') {
             this.ethStatus = true;
-            this.metamaskEnable();
-        } else {
-            this.addressSub = this.canexService.getByAddress(this.formData.erc20token).subscribe(activity => {
-                if (activity.json().status === 1) {
-                    this.metamaskEnable();
-                }
-            }, (error) => { });
         }
+        this.metamaskEnable();
 
         this.canexService.save(this.formData).subscribe(activity => { });
     }

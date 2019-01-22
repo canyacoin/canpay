@@ -21,7 +21,8 @@ export class CanPayExampleComponent {
     successText: 'Mission success!', // Default 'Sweet, payment done!'
     recipient: environment.contracts.canYaDao,
     operation: Operation.auth, // Authorise, Pay or Interact, Default is: Authorise
-    onAuthTxHash: function () { }.bind(this), // Call a function after the txHash is available (i.e. once the tx has been sent)
+    onAuthTxHash: function () { }.bind(this), // Call a function after the authorisation txHash is available (i.e. once the tx has been sent)
+    onPaymentTxHash: function () { }.bind(this), // Call a function after the payment txHash is available (i.e. once the tx has been sent)
     amount: 0, // allow the user to enter amount through an input box
     minAmount: 1000, // Default is 1
     maxAmount: 50000, // Default is 'No Maximum'

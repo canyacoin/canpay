@@ -15,6 +15,7 @@ export class PaymentComponent implements AfterViewInit {
   @Input() recipient;
   @Input() amount = 0;
   @Input() totalTransactions = 1;
+  @Input() onPaymentTxHash = undefined;
   sendingTx = false;
 
   constructor(private canyaCoinEthService: CanYaCoinEthService) { }
@@ -32,7 +33,7 @@ export class PaymentComponent implements AfterViewInit {
     if (this.sendingTx) { return; }
 
     this.sendingTx = true;
-    this.canyaCoinEthService.payWithCAN(this.recipient, this.amount)
+    this.canyaCoinEthService.payWithCAN(this.recipient, this.amount, this.onPaymentTxHash)
       .then(tx => tx.status === true ? this.success.emit(tx) : this.error.emit('Transaction failed'))
       .catch(err => this.error.emit(err.message))
       .then(() => this.sendingTx = false);

@@ -81,7 +81,7 @@ export class CanYaCoinEthService extends EthService {
     });
   }
 
-  payWithCAN(torecipient, amount, from = this.getOwnerAccount()): Promise<any> {
+  payWithCAN(torecipient, amount, from = this.getOwnerAccount(), onTxHash: Function = null): Promise<any> {
     console.log('CanYaCoinEthService: payWithCAN: ', from, torecipient, amount);
     return new Promise(async (resolve, reject) => {
       const tx = await this.canyaContract.methods.transfer(torecipient, this.amountToCANTokens(amount));
@@ -92,7 +92,7 @@ export class CanYaCoinEthService extends EthService {
       } catch (e) {
         reject(e);
       }
-      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject));
+      tx.send({ from, gas, gasPrice }, async (err, txHash) => this.resolveTransaction(err, from, txHash, resolve, reject, onTxHash));
     });
   }
 

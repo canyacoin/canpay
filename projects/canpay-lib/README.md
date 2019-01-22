@@ -114,6 +114,7 @@ Here is a list of the full list of peroperties to configure the CANPay component
 | --- | --- |
 | dAppName | Name of the dApp to be displayed to the user as a merchant name. |
 | onAuthTxHash | Function to execute once the hash of the transaction is returned from the authorisation operation. |
+| onPaymentTxHash | Function to execute once the hash of the transaction is returned from the payment operation. |
 | recipient | The dApp contract address that will receive the payment |
 | amount | **Optional** If set, no amount-input-box will be displayed to the user and the specified amount will be forced.|
 | paymentSummary | **Optional** If set, will show a nice payment summary screen of the transaction, if not set, uses amount.|

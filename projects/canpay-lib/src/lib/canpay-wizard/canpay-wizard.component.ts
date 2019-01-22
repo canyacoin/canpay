@@ -26,6 +26,7 @@ export class CanpayWizardComponent implements OnInit, OnDestroy {
   @Input() postAuthorisationProcessName;
   @Input() operation = Operation.auth;
   @Input() onAuthTxHash;
+  @Input() onPaymentTxHash;
   @Input() recipient;
   @Input() dAppName;
   @Input() successText;

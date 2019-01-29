@@ -125,7 +125,6 @@ export class EthService implements OnDestroy {
           this.ownerAccount = accs[0];
           this.web3Status.next(Web3LoadingStatus.complete);
         } else {
-          window.ethereum.enable();
           this.web3Status.next(Web3LoadingStatus.noAccountsAvailable);
         }
         this.accountInterval = setInterval(() => this.checkAccountMetaMask(), 5000);

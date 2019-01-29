@@ -48,6 +48,14 @@ export class MetamaskComponent implements OnInit, OnDestroy {
     });
   }
 
+  getAccount() {
+    const acc = this.ethService.getOwnerAccount();
+    if (acc) {
+      this.loading = true;
+      this.account.emit(acc);
+    }
+  }
+
   showHideInstructions() {
     this.showInstructions = !this.showInstructions;
   }

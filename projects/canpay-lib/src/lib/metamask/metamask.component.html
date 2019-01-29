@@ -28,6 +28,7 @@
         <img *ngIf="walletType != walletTypes.trust" src="assets/img/metamask.svg" width="60px" height="60px">
         <img *ngIf="walletType == walletTypes.trust" src="assets/img/trust-logo.svg" width="60px" height="60px">
         <h6 class="fw-300 my-30">Please log in to {{walletType}} to continue</h6>
+        <i class="fa fa-refresh fs-30 pointer" (click)="getAccount()"></i>
       </header>
     </div>
   </div>

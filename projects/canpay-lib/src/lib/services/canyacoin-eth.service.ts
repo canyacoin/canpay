@@ -27,6 +27,28 @@ export class CanYaCoinEthService extends EthService {
 
   initContract(abi = this.config.contracts.canyaCoinAbi, address = this.config.contracts.canyaCoinAddress) {
     console.log('CanYaCoinEthService configs: ', this.config);
+
+    // const tokenImage = 'https://canstyle.io/assets/img/canya-circle.svg';
+
+    // this.web3js.sendAsync({
+    //     method: 'wallet_watchAsset',
+    //     params: {
+    //       'type': 'ERC20',
+    //       'options': {
+    //         'address': address,
+    //         'symbol': `CAN`,
+    //         'decimals': this.decimals,
+    //         'image': tokenImage,
+    //       },
+    //     },
+    //     id: Math.round(Math.random() * 100000),
+    // }, (err, added) => {
+    //   if (added) {
+    //     console.log('Thanks for your interest!');
+    //   } else {
+    //     console.log('Your loss!');
+    //   }
+    // });
     return this.canyaContract = this.createContractInstance(abi, address);
   }
 

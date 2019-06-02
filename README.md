@@ -1,3 +1,11 @@
+****
+
+> **Mirror**
+> This repo mirrors from Gitlab to Github. Please commit to the Gitlab repo:
+> https://gitlab.com/canyacoin/canyacore/canpay
+
+****
+
 # CanPay
 
 Angular component for accepting payments in CAN through a seamless user experience using an a configurable params, [See how does it work.](./src/assets/video/PayInCAN.gif)
